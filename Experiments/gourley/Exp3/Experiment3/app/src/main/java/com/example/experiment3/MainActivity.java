@@ -24,7 +24,11 @@ public class MainActivity extends AppCompatActivity {
         btnSecondScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int number = Integer.parseInt(etNumber.getText().toString());
+                String input = etNumber.getText().toString();
+                if (input.isEmpty()) {
+                    input = "0";
+                }
+                int number = Integer.parseInt(input);
                 Intent intent = new Intent(MainActivity.this, MainActivity2.class);
                 intent.putExtra("EXTRA_NUMBER", number);
                 startActivity(intent);
