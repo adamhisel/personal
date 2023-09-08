@@ -10,11 +10,9 @@ import android.widget.TextView;
 
 public class CounterActivity extends AppCompatActivity {
 
-    Button makeBtn;
-    Button missBtn;
+    Button increaseBtn;
     Button backBtn;
-    TextView numberMakesTxt;
-    TextView numberMissesTxt;
+    TextView numberTxt;
 
     int counter = 0;
 
@@ -23,24 +21,18 @@ public class CounterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_counter);
 
-        makeBtn = findViewById(R.id.makeBtn);
-        missBtn = findViewById(R.id.missBtn);
+        increaseBtn = findViewById(R.id.increaseBtn);
         backBtn = findViewById(R.id.backBtn);
-        numberMakesTxt = findViewById(R.id.numberMakes);
-        numberMissesTxt = findViewById(R.id.numberMisses);
+        numberTxt = findViewById(R.id.number);
 
-        makeBtn.setOnClickListener(new View.OnClickListener() {
+        increaseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                numberMakesTxt.setText(String.valueOf(++counter));
+                numberTxt.setText(String.valueOf(++counter));
             }
         });
 
-        missBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { numberMissesTxt.setText(String.valueOf(++counter)); }
-        });
 
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
