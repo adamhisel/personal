@@ -7,33 +7,55 @@
     tools:context=".CounterActivity">
 
     <TextView
-        android:id="@+id/number"
+        android:id="@+id/numberMakes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="350dp"
         android:text="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/increaseBtn"
+        android:id="@+id/makeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Increase"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/number" />
+        android:layout_marginTop="100dp"
+        android:text="Make"
+        app:layout_constraintEnd_toEndOf="@+id/numberMakes"
+        app:layout_constraintStart_toStartOf="@+id/numberMakes"
+        app:layout_constraintTop_toBottomOf="@+id/numberMakes" />
 
     <Button
         android:id="@+id/backBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
         android:text="Back to Main"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/increaseBtn" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/missBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="Miss"
+        app:layout_constraintEnd_toEndOf="@+id/numberMisses"
+        app:layout_constraintStart_toStartOf="@+id/numberMisses"
+        app:layout_constraintTop_toBottomOf="@+id/numberMisses"
+        tools:layout_editor_absoluteX="293dp" />
+
+    <TextView
+        android:id="@+id/numberMisses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="350dp"
+        android:layout_marginEnd="110dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
