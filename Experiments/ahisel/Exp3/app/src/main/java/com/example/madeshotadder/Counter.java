@@ -58,6 +58,7 @@ public class Counter extends AppCompatActivity {
 
             @Override
             public void onClick(View view){
+
                 Intent i = new Intent(Counter.this, ShootingPercentage.class);
                 i.putExtra("madeNum", counter1);
                 i.putExtra("missNum", counter2);

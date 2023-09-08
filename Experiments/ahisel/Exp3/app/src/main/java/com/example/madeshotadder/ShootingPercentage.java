@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public class ShootingPercentage extends AppCompatActivity {
 
-    TextView shootingpercent;
+    TextView shootingPercent;
     double made;
 
     double miss;
@@ -20,11 +20,12 @@ public class ShootingPercentage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shooting_percentage);
         Intent i = getIntent();
+        shootingPercent = findViewById(R.id.percent);
 
-        made = Integer.parseInt(i.getStringExtra("madeNum"));
-        miss = Integer.parseInt(i.getStringExtra("missNum"));
+        made = i.getIntExtra("madeNum", 0);
+        miss = i.getIntExtra("missNum",0);
         total = (made/miss) * 100;
-        shootingpercent.setText(String.valueOf(total));
+        shootingPercent.setText(String.valueOf(total) + "%");
 
 
     }
