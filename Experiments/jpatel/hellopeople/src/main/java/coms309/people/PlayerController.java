@@ -35,7 +35,7 @@ public class PlayerController {
     // in this case because of @ResponseBody
     // Note: To LIST, we use the GET method
     @GetMapping("/people")
-    public @ResponseBody HashMap<String,Player> getAllPlauers() {
+    public @ResponseBody HashMap<String,Player> getAllPlayers() {
         return peopleList;
     }
 
