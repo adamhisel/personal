@@ -16,7 +16,8 @@ public class CounterActivity extends AppCompatActivity {
     TextView numberMakesTxt;
     TextView numberMissesTxt;
 
-    int counter = 0;
+    int counter1 = 0;
+    int counter2 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +34,13 @@ public class CounterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                numberMakesTxt.setText(String.valueOf(++counter));
+                numberMakesTxt.setText(String.valueOf(++counter1));
             }
         });
 
         missBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { numberMissesTxt.setText(String.valueOf(++counter)); }
+            public void onClick(View v) { numberMissesTxt.setText(String.valueOf(++counter2)); }
         });
 
         backBtn.setOnClickListener(new View.OnClickListener() {
