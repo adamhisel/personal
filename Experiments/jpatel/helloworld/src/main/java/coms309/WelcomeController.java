@@ -1,6 +1,7 @@
 package coms309;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -17,3 +18,4 @@ class WelcomeController {
         return ( "Your name is:  " + name + "Your age is: "+ number);
     }
 }
+
