@@ -19,11 +19,11 @@ import java.util.HashMap;
  */
 
 @RestController
-public class PeopleController {
+public class PlayerController {
 
     // Note that there is only ONE instance of PeopleController in 
     // Springboot system.
-    HashMap<String, Person> peopleList = new  HashMap<>();
+    HashMap<String, Player> peopleList = new  HashMap<>();
 
     //CRUDL (create/read/update/delete/list)
     // use POST, GET, PUT, DELETE, GET methods for CRUDL
@@ -35,7 +35,7 @@ public class PeopleController {
     // in this case because of @ResponseBody
     // Note: To LIST, we use the GET method
     @GetMapping("/people")
-    public @ResponseBody HashMap<String,Person> getAllPersons() {
+    public @ResponseBody HashMap<String,Player> getAllPlauers() {
         return peopleList;
     }
 
@@ -45,8 +45,8 @@ public class PeopleController {
     // It returns a string message in THIS example.
     // in this case because of @ResponseBody
     // Note: To CREATE we use POST method
-    @PostMapping("/people")
-    public @ResponseBody String createPerson(@RequestBody Person person) {
+    @PostMapping("/people/create")
+    public @ResponseBody String createPerson(@RequestBody Player person) {
         System.out.println(person);
         peopleList.put(person.getFirstName(), person);
         return "New person "+ person.getFirstName() + " Saved";
@@ -59,8 +59,8 @@ public class PeopleController {
     // in this case because of @ResponseBody
     // Note: To READ we use GET method
     @GetMapping("/people/{firstName}")
-    public @ResponseBody Person getPerson(@PathVariable String firstName) {
-        Person p = peopleList.get(firstName);
+    public @ResponseBody Player getPlayer(@PathVariable String firstName) {
+        Player p = peopleList.get(firstName);
         return p;
     }
 
@@ -72,7 +72,8 @@ public class PeopleController {
     // in this case because of @ResponseBody
     // Note: To UPDATE we use PUT method
     @PutMapping("/people/{firstName}")
-    public @ResponseBody Person updatePerson(@PathVariable String firstName, @RequestBody Person p) {
+    public @ResponseBody Player
+    updatePerson(@PathVariable String firstName, @RequestBody Player p) {
         peopleList.replace(firstName, p);
         return peopleList.get(firstName);
     }
@@ -84,7 +85,7 @@ public class PeopleController {
     // Note: To DELETE we use delete method
     
     @DeleteMapping("/people/{firstName}")
-    public @ResponseBody HashMap<String, Person> deletePerson(@PathVariable String firstName) {
+    public @ResponseBody HashMap<String, Player> deletePerson(@PathVariable String firstName) {
         peopleList.remove(firstName);
         return peopleList;
     }

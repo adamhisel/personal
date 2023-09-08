@@ -7,25 +7,23 @@ package coms309.people;
  * @author Vivek Bengre
  */
 
-public class Person {
+public class Player {
 
     private String firstName;
 
     private String lastName;
 
-    private String address;
+    private String position;
 
-    private String telephone;
 
-    public Person(){
+    public Player(){
         
     }
 
-    public Person(String firstName, String lastName, String address, String telephone){
+    public Player(String firstName, String lastName){
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
-        this.telephone = telephone;
+
     }
 
     public String getFirstName() {
@@ -44,27 +42,20 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public String getAddress() {
-        return this.address;
+    public String getPosition() {
+        return this.position;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
-    public String getTelephone() {
-        return this.telephone;
-    }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
 
     @Override
     public String toString() {
         return firstName + " " 
                + lastName + " "
-               + address + " "
-               + telephone;
+               + position + " ";
     }
 }
