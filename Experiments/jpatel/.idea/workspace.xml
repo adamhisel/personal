@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a6a8f8ef-e900-4894-8056-a876964d6716" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/hellopeople/src/main/java/coms309/people/players.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hellopeople/src/main/java/coms309/people/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/hellopeople/src/main/java/coms309/people/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hellopeople/src/main/java/coms309/people/PlayerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/hellopeople/src/main/java/coms309/people/PlayerController.java" afterDir="false" />
-    </list>
+    <list default="true" id="a6a8f8ef-e900-4894-8056-a876964d6716" name="Changes" comment="Working on JSON inputs and Postman" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,6 +56,19 @@
       <option name="presentableId" value="Default" />
       <updated>1694105594669</updated>
     </task>
+    <task id="LOCAL-00001" summary="Working on JSON inputs and Postman">
+      <option name="closed" value="true" />
+      <created>1694190066589</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1694190066589</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Working on JSON inputs and Postman" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on JSON inputs and Postman" />
   </component>
 </project>

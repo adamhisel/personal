@@ -9,11 +9,11 @@ package coms309.people;
 
 public class Player {
 
-    private String firstName= "Jay";
+    private String firstName;
 
-    private String lastName = "Patel";
+    private String lastName;
 
-    private String position= "center";
+    private String position;
 
 
     public Player(){
