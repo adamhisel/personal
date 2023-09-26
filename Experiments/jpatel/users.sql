@@ -14,14 +14,29 @@ CREATE TABLE Users (
     CanCreateAndModifyTeamRosters BOOLEAN,
     CanSetAndModifyLineups BOOLEAN,
     CanDrawVisualsAndPlays BOOLEAN
-    FOREIGN KEY (PlayerID) REFERENCES (UserID),
     
 );
 
-Create TABLE GAME(
+create table Team(
+teamName varchar(20),
+teamID int Primary Key not null,
+teamAdmin varchar(20) not null
+);
+
+
+
+create table shot(
+ShotZone int null,
+shotID int PRIMARY KEY,
+shotPoints int null,
+shotUser varchar (20) Not null
+);
+
+Create TABLE Game(
 ShotID int PRIMARY KEY,
 ShotBy VARCHAR(255) NOT NULL,
 shotZone int  null,
-
+shotBy varchar (20)  not null
+)
 
 
