@@ -55,6 +55,7 @@ public class StringRequestActivity extends Activity {
             pDialog.hide();
     }
 
+
     /**
      * Making json object request
      * */
