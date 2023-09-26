@@ -3,6 +3,7 @@ package com.example.volley_json_request;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -29,19 +30,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTextViewResult = findViewById(R.id.textViewResult);
-        Button buttonParse = findViewById(R.id.buttonParse);
+        Button buttonParseArray = findViewById(R.id.buttonParseArray);
+        Button buttonParseObject = findViewById(R.id.buttonParseObject);
+        Button buttonClear = findViewById(R.id.buttonClear);
 
         mQueue = Volley.newRequestQueue(this);
 
-        buttonParse.setOnClickListener(new View.OnClickListener() {
+        buttonParseArray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                jsonParse();
+                jsonParseArray();
+            }
+        });
+
+        buttonParseObject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                jsonParseObject();
+            }
+        });
+
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTextViewResult.setText("");
             }
         });
     }
 
-    private void jsonParse() {
+    private void jsonParseArray() {
         String url = "https://jsonplaceholder.typicode.com/users";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -72,5 +89,34 @@ public class MainActivity extends AppCompatActivity {
 
         mQueue.add(request);
     }
+
+    private void jsonParseObject() {
+        String url = "http://ip.jsontest.com/";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("JSON_RESPONSE", response.toString());
+                        try {
+                            String ip = response.getString("ip");
+
+                            mTextViewResult.append(ip + "\n\n");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
 
 }
