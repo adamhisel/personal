@@ -1,7 +1,0 @@
-
-
-
-@SpringBootApplication
-class main{
-
-}

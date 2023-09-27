@@ -17,7 +17,6 @@ import onetoone.Users.UserRepository;
  */ 
 
 @SpringBootApplication
-//@EnableJpaRepositories
 class Main {
 
     public static void main(String[] args) {

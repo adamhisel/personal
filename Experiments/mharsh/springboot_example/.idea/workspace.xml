@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4d8cad91-4aca-4ca8-807c-3969c6d62d3d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Players/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Players/PlayerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Players/PlayerRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Teams/Team.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Teams/TeamController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/java/onetoone/Teams/TeamRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/Backend.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Backend/springboot_example/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/src/main/java/Players/PlayerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/src/main/java/Players/Players.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/src/main/java/Teams/Team.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Backend/src/main/main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../jpatel/springboot_example/src/main/java/onetoone/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../jpatel/springboot_example/src/main/java/onetoone/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/onetoone/Laptops/LaptopController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/onetoone/Laptops/LaptopController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/onetoone/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/onetoone/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/onetoone/Users/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/onetoone/Users/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/onetoone/Users/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/onetoone/Users/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Laptops/Laptop.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Laptops/LaptopController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Laptops/LaptopRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Users/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Users/UserController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/onetoone/Users/UserRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tutorials" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="2VwjTCCFJ6KDz7TRPYbtkpoaDAH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/Users/masonharsh/jk_224/Experiments/mharsh/springboot_example",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4d8cad91-4aca-4ca8-807c-3969c6d62d3d" name="Changes" comment="" />
+      <created>1695754047991</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1695754047991</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

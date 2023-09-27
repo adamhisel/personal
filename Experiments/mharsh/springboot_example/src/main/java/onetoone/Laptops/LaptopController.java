@@ -44,7 +44,7 @@ public class LaptopController {
     }
 
     @PostMapping(path = "/laptops")
-    String createLaptop(@RequestBody Laptop Laptop){
+    String createLaptop(Laptop Laptop){
         if (Laptop == null)
             return failure;
         laptopRepository.save(Laptop);

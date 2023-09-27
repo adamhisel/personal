@@ -5,10 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import onetoone.Laptops.Laptop;
-import onetoone.Laptops.LaptopRepository;
-import onetoone.Users.User;
-import onetoone.Users.UserRepository;
+import onetoone.Players.Player;
+import onetoone.Players.PlayerRepository;
+import onetoone.Teams.Team;
+import onetoone.Teams.TeamRepository;
 
 /**
  * 
@@ -33,20 +33,20 @@ class Main {
      * As mentioned in Team.java just associating the Laptop object with the User will save it into the database because of the CascadeType
      */
     @Bean
-    CommandLineRunner initUser(UserRepository userRepository, LaptopRepository laptopRepository) {
+    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository) {
         return args -> {
-            User user1 = new User("John", "john@somemail.com");
-            User user2 = new User("Jane", "jane@somemail.com");
-            User user3 = new User("Justin", "justin@somemail.com");
-            Laptop laptop1 = new Laptop( 2.5, 4, 8, "Lenovo", 300);
-            Laptop laptop2 = new Laptop( 4.1, 8, 16, "Hp", 800);
-            Laptop laptop3 = new Laptop( 3.5, 32, 32, "Dell", 2300);  
-            user1.setLaptop(laptop1);
-            user2.setLaptop(laptop2);
-            user3.setLaptop(laptop3);            
-            userRepository.save(user1);
-            userRepository.save(user2);
-            userRepository.save(user3);
+            Team team1 = new Team("John");
+            Team team2 = new Team("Jane");
+            Team team3 = new Tema("Justin");
+            Player player1 = new Player("jeff", 87, "C");
+            Player player2 = new Player("chris", 90, "F");
+            Laptop player3 = new Player("jake", 3, "PF");
+            team1.setPlayer(player1);
+            team2.setPlayer(player2);
+            team3.setPlayer(player3);
+            teamRepository.save(team1);
+            teamRepository.save(team2);
+            teamRepository.save(team3);
 
         };
     }
