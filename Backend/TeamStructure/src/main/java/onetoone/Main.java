@@ -36,20 +36,25 @@ class Main {
     @Bean
     CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository) {
         return args -> {
-            Team user1 = new Team("John", "john@somemail.com");
-            Team user2 = new Team("Jane", "jane@somemail.com");
-            Team user3 = new Team("Justin", "justin@somemail.com");
-            Player laptop1 = new Player( "jake", 4, "C");
-            Player laptop2 = new Player( "geoff", 71, "F");
-            Player laptop3 = new Player( "jack", 99, "PG");
-            user1.setLaptop(laptop1);
-            user2.setLaptop(laptop2);
-            user3.setLaptop(laptop3);            
-            teamRepository.save(user1);
-            teamRepository.save(user2);
-            teamRepository.save(user3);
+            Team team1 = new Team("John");
+            Team team2 = new Team("Jane");
+            Team team3 = new Team("Justin");
+            Player player1 = new Player( "jake", 4, "C");
+            Player player2 = new Player( "geoff", 71, "F");
+            Player player3 = new Player( "jack", 99, "PG");
+            team1.setPlayer(player1);
+            team2.setPlayer(player2);
+            team3.setPlayer(player3);
+            player1.setTeam(team1);
+            player2.setTeam(team2);
+            player3.setTeam(team3);
+            teamRepository.save(team1);
+            teamRepository.save(team2);
+            teamRepository.save(team3);
 
         };
     }
+    // last edited was team controller. i think that changeing the mapping things from users to teams brakes the code
+    // need to test it
 
 }

@@ -32,47 +32,47 @@ public class TeamController {
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
-    @GetMapping(path = "/users")
-    List<Team> getAllUsers(){
+    @GetMapping(path = "/teams")
+    List<Team> getAllTeams(){
         return teamRepository.findAll();
     }
 
-    @GetMapping(path = "/users/{id}")
-    Team getUserById( @PathVariable int id){
+    @GetMapping(path = "/teams/{id}")
+    Team getTeamById( @PathVariable int id){
         return teamRepository.findById(id);
     }
 
-    @PostMapping(path = "/users")
-    String createUser(Team user){
-        if (user == null)
+    @PostMapping(path = "/teams")
+    String createTeam(Team team){
+        if (team == null)
             return failure;
-        teamRepository.save(user);
+        teamRepository.save(team);
         return success;
     }
 
-    @PutMapping("/users/{id}")
-    Team updateUser(@PathVariable int id, @RequestBody Team request){
-        Team user = teamRepository.findById(id);
-        if(user == null)
+    @PutMapping("/teams/{id}")
+    Team updateTeam(@PathVariable int id, @RequestBody Team request){
+        Team team = teamRepository.findById(id);
+        if(team == null)
             return null;
         teamRepository.save(request);
         return teamRepository.findById(id);
     }   
     
-    @PutMapping("/users/{userId}/laptops/{laptopId}")
-    String assignLaptopToUser(@PathVariable int userId,@PathVariable int laptopId){
-        Team user = teamRepository.findById(userId);
-        Player laptop = playerRepository.findById(laptopId);
-        if(user == null || laptop == null)
+    @PutMapping("/teams/{teamId}/players/{playerId}")
+    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId){
+        Team team = teamRepository.findById(teamId);
+        Player laptop = playerRepository.findById(playerId);
+        if(team == null || laptop == null)
             return failure;
-        laptop.setUser(user);
-        user.setLaptop(laptop);
-        teamRepository.save(user);
+        laptop.setTeam(team);
+        team.setPlayer(laptop);
+        teamRepository.save(team);
         return success;
     }
 
-    @DeleteMapping(path = "/users/{id}")
-    String deleteUser(@PathVariable int id){
+    @DeleteMapping(path = "/teams/{id}")
+    String deleteTeam(@PathVariable int id){
         teamRepository.deleteById(id);
         return success;
     }

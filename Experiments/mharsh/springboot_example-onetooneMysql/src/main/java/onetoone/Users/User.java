@@ -1,4 +1,4 @@
-package onetoone.Teams;
+package onetoone.Users;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import onetoone.Players.Player;
+import onetoone.Laptops.Laptop;
 
 /**
  * 
@@ -17,7 +17,7 @@ import onetoone.Players.Player;
  */ 
 
 @Entity
-public class Team {
+public class User {
 
      /* 
      * The annotation @ID marks the field below as the primary key for the table created by springboot
@@ -26,9 +26,9 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private String teamName;
-
+    private String name;
+    private String emailId;
+    private boolean ifActive;
 
     /*
      * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
@@ -37,14 +37,16 @@ public class Team {
      * @JoinColumn defines the ownership of the foreign key i.e. the user table will have a field called laptop_id
      */
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_id")
-    private Player player;
+    @JoinColumn(name = "laptop_id")
+    private Laptop laptop;
 
-    public Team(String teamName) {
-        this.teamName = teamName;
+    public User(String name, String emailId) {
+        this.name = name;
+        this.emailId = emailId;
+        this.ifActive = true;
     }
 
-    public Team() {
+    public User() {
     }
 
     // =============================== Getters and Setters for each field ================================== //
@@ -57,14 +59,36 @@ public class Team {
         this.id = id;
     }
 
-    public String getTeamName() { return teamName; }
+    public String getName(){
+        return name;
+    }
 
-    public void setTeamName(String teamName) { this.teamName = teamName; }
+    public void setName(String name){
+        this.name = name;
+    }
 
-    public Player getPlayer(){ return player; }
+    public String getEmailId(){
+        return emailId;
+    }
 
-    public void setPlayer(Player player){
-        this.player = player;
+    public void setEmailId(String emailId){
+        this.emailId = emailId;
+    }
+
+    public boolean getIsActive(){
+        return ifActive;
+    }
+
+    public void setIfActive(boolean ifActive){
+        this.ifActive = ifActive;
+    }
+
+    public Laptop getLaptop(){
+        return laptop;
+    }
+
+    public void setLaptop(Laptop laptop){
+        this.laptop = laptop;
     }
     
 }

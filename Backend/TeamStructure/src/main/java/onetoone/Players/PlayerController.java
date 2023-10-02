@@ -33,17 +33,17 @@ public class PlayerController {
     private String failure = "{\"message\":\"failure\"}";
 
     @GetMapping(path = "/players")
-    List<Player> getAllLaptops(){
+    List<Player> getAllPlayers(){
         return playerRepository.findAll();
     }
 
     @GetMapping(path = "/players/{id}")
-    Player getLaptopById(@PathVariable int id){
+    Player getPlayerById(@PathVariable int id){
         return playerRepository.findById(id);
     }
 
     @PostMapping(path = "/players")
-    String createLaptop(Player player){
+    String createPlayer(Player player){
         if (player == null)
             return failure;
         playerRepository.save(player);
@@ -51,7 +51,7 @@ public class PlayerController {
     }
 
     @PutMapping(path = "/players/{id}")
-    Player updateLaptop(@PathVariable int id, @RequestBody Player request){
+    Player updatePlayer(@PathVariable int id, @RequestBody Player request){
         Player player = playerRepository.findById(id);
         if(player == null)
             return null;
@@ -60,11 +60,11 @@ public class PlayerController {
     }
 
     @DeleteMapping(path = "/players/{id}")
-    String deleteLaptop(@PathVariable int id){
+    String deletePlayer(@PathVariable int id){
 
         // Check if there is an object depending on user and then remove the dependency
-        Team user = userRepository.findByLaptop_Id(id);
-        user.setLaptop(null);
+        Team user = userRepository.findByPlayer_Id(id);
+        user.setPlayer(null);
         userRepository.save(user);
 
         // delete the laptop if the changes have not been reflected by the above statement

@@ -14,5 +14,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     void deleteById(int id);
 
-    Team findByLaptop_Id(int id);
+    Team findByPlayer_Id(int id);
 }

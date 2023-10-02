@@ -71,11 +71,11 @@ public class Player {
 
     public void setPosition(String position) { this.position = position; }
 
-    public Team getUser(){
+    public Team getTeam(){
         return team;
     }
 
-    public void setUser(Team team){
+    public void setTeam(Team team){
         this.team = team;
     }
 
