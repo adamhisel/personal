@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Project</string>
+
+    <string-array name="user_types">
+        <item>Coach</item>
+        <item>Player</item>
+        <item>Fan</item>
+    </string-array>
+
 </resources>
