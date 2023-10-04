@@ -8,8 +8,6 @@
     tools:context=".HomeFragment">
 
 
-
-
     <ImageButton
         android:id="@id/bulls"
         android:layout_width="406dp"
