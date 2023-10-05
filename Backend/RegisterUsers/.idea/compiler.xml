@@ -9,9 +9,13 @@
         <module name="onetoone" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="backend-experiment" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="backend-experiment" options="-parameters" />
       <module name="onetoone" options="-parameters" />
     </option>
   </component>
