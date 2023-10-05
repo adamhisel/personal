@@ -26,6 +26,8 @@ public class EditRosterActivity extends AppCompatActivity {
     private EditText editTextName3;
     private EditText editTextName4;
 
+    private String teamName;
+
     private Button add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -42,19 +42,15 @@ public class MainActivity extends AppCompatActivity {
                 replaceFrag(new ProfileFragment());
             }
 
-
-
             return true;
 
         });
     }
 
     private void replaceFrag(Fragment frag){
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
-
     }
 }
