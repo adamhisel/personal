@@ -1,9 +1,11 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,11 +33,21 @@ public class HomeFragment extends Fragment /*implements View.OnClickListener*/{
 
         ImageButton team_roster = (ImageButton)view.findViewById(R.id.bulls);
         ImageButton team_roster2= (ImageButton)view.findViewById(R.id.heat);
+        Button addTeam = (Button)view.findViewById(R.id.button3);
 /*
         team_roster.setOnClickListener(this);
         team_roster2.setOnClickListener(this);
 */
 
+        addTeam.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v)
+               {
+                   Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                   startActivity(intent);
+               }
+
+        });
         team_roster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
