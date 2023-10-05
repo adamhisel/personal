@@ -11,10 +11,13 @@ import android.widget.EditText;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static RequestQueue mQueue;
+    TextInputLayout tilUserName;
+    TextInputLayout tilPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +27,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
         mQueue = Volley.newRequestQueue(this);
+        tilUserName = findViewById(R.id.tilUserName);
+        tilPassword = findViewById(R.id.tilPassword);
         Button btnLogin = findViewById(R.id.btnLogin);
         Button btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        EditText etUsername = findViewById(R.id.etUsername);
+        EditText etUserName = findViewById(R.id.etUserName);
         EditText etPassword = findViewById(R.id.etPassword);
 
         // Remove
@@ -42,8 +47,15 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = etUsername.getText().toString().trim();
+                String userName = etUserName.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
+
+                boolean isValidUserName = validateUserName();
+                boolean isValidPassword = validatePassword();
+
+                if (!isValidUserName || !isValidPassword) {
+                    return;  // Stops further execution if any validation fails.
+                }
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -56,5 +68,31 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private Boolean validateUserName() {
+        String userName = tilUserName.getEditText().getText().toString().trim();
+
+        if (userName.isEmpty()) {
+            tilUserName.setError("Field cannot be empty");
+            return false;
+        } else {
+            tilUserName.setError(null);
+            tilUserName.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validatePassword() {
+        String password = tilPassword.getEditText().getText().toString().trim();
+
+        if (password.isEmpty()) {
+            tilPassword.setError("Field cannot be empty");
+            return false;
+        } else {
+            tilPassword.setError(null);
+            tilPassword.setErrorEnabled(false);
+            return true;
+        }
     }
 }

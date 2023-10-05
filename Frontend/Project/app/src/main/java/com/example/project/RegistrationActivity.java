@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +25,11 @@ import org.json.JSONObject;
 public class RegistrationActivity extends AppCompatActivity {
 
     private static RequestQueue mQueue;
+    TextInputLayout tilUserName;
+    TextInputLayout tilEmail;
+    TextInputLayout tilPhoneNumber;
+    TextInputLayout tilUserType;
+    TextInputLayout tilPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +48,20 @@ public class RegistrationActivity extends AppCompatActivity {
         AutoCompleteTextView dropdown = findViewById(R.id.tvUserType);
         dropdown.setAdapter(adapter);
 
+        tilUserName = findViewById(R.id.tilUserName);
+        tilEmail = findViewById(R.id.tilEmail);
+        tilPhoneNumber = findViewById(R.id.tilPhoneNumber);
+        tilUserType = findViewById(R.id.tilUserType);
+        tilPassword = findViewById(R.id.tilPassword);
         mQueue = Volley.newRequestQueue(this);
         Button btnSignUp = findViewById(R.id.btnSignUp);
         Button btnLogin = findViewById(R.id.btnLogin);
-        EditText etUsername = findViewById(R.id.etUsername);
+        EditText etUserName = findViewById(R.id.etUserName);
         EditText etEmail = findViewById(R.id.etEmail);
         EditText etPhoneNumber = findViewById(R.id.etPhoneNumber);
         AutoCompleteTextView tvUserType = findViewById(R.id.tvUserType);
         EditText etPassword = findViewById(R.id.etPassword);
+
 
         // Remove
         Button btnTest = findViewById(R.id.btnTest);
@@ -61,19 +73,28 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = etUsername.getText().toString().trim();
+                String userName = etUserName.getText().toString().trim();
                 String email = etEmail.getText().toString().trim();
                 String phoneNumber = etPhoneNumber.getText().toString().trim();
                 String userType = tvUserType.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
 
+                boolean isValidUserName = validateUserName();
+                boolean isValidEmail = validateEmail();
+                boolean isValidPhoneNumber = validatePhoneNumber();
+                boolean isValidUserType = validateUserType();
+                boolean isValidPassword = validatePassword();
+
+                if (!isValidUserName || !isValidEmail || !isValidPhoneNumber || !isValidUserType || !isValidPassword) {
+                    return;  // Stops further execution if any validation fails.
+                }
+
                 JSONObject postData = new JSONObject();
                 try {
-                    postData.put("username", username);
+                    postData.put("userName", userName);
                     postData.put("email", email);
                     postData.put("phoneNumber", phoneNumber);
                     postData.put("userType", userType);
@@ -83,7 +104,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
 
                 // URL of server's API endpoint
-                String postUrl = "";
+                String postUrl = "http://10.0.2.2:8080/users";
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, postUrl, postData,
                         new Response.Listener<JSONObject>() {
@@ -118,4 +139,74 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     }
+
+    private Boolean validateUserName() {
+        String userName = tilUserName.getEditText().getText().toString().trim();
+
+        if (userName.isEmpty()) {
+            tilUserName.setError("Field cannot be empty");
+            return false;
+        } else {
+            tilUserName.setError(null);
+            tilUserName.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validateEmail() {
+        String email = tilEmail.getEditText().getText().toString().trim();
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
+        if (email.isEmpty()) {
+            tilEmail.setError("Field cannot be empty");
+            return false;
+        } else if (!email.matches(emailPattern)) {
+            tilEmail.setError("Invalid email address");
+            return false;
+        } else {
+            tilEmail.setError(null);
+            tilEmail.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validatePhoneNumber() {
+        String phoneNumber = tilPhoneNumber.getEditText().getText().toString().trim();
+
+        if (phoneNumber.isEmpty()) {
+            tilPhoneNumber.setError("Field cannot be empty");
+            return false;
+        } else {
+            tilPhoneNumber.setError(null);
+            tilPhoneNumber.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validateUserType() {
+        String userType = tilUserType.getEditText().getText().toString().trim();
+
+        if (userType.isEmpty()) {
+            tilUserType.setError("Field cannot be empty");
+            return false;
+        } else {
+            tilUserName.setError(null);
+            tilUserName.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validatePassword() {
+        String password = tilPassword.getEditText().getText().toString().trim();
+
+        if (password.isEmpty()) {
+            tilPassword.setError("Field cannot be empty");
+            return false;
+        } else {
+            tilPassword.setError(null);
+            tilPassword.setErrorEnabled(false);
+            return true;
+        }
+    }
+
 }

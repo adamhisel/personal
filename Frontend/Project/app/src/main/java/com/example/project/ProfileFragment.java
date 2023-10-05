@@ -12,8 +12,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class ProfileFragment extends Fragment {
@@ -23,6 +30,7 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -33,21 +41,56 @@ public class ProfileFragment extends Fragment {
         TextView tvPhoneNumber = rootView.findViewById(R.id.tvPhoneNumber);
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
 
+        String userId = SharedPrefsUtil.getUserId(getActivity());
+        getProfile(userId, tvUsername, tvEmail, tvPhoneNumber);
+
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle logout logic here.
-                // For example, clear any saved user data redirect to LoginActivity.
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                handleLogout();
             }
         });
-
 
         return rootView;
     }
 
+    private void getProfile(String userId, TextView tvUsername, TextView tvEmail, TextView tvPhoneNumber) {
+        String getUrl = "http://10.0.2.2:8080/users/" + userId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String username = response.getString("userName");
+                            String email = response.getString("email");
+                            String phoneNumber = response.getString("phoneNumber");
+
+                            tvUsername.setText(username);
+                            tvEmail.setText(email);
+                            tvPhoneNumber.setText(phoneNumber);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void handleLogout() {
+        SharedPrefsUtil.clearUserData(getActivity()); // Clear user data using SharedPreferences utility.
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
 }
 
 
