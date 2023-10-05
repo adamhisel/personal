@@ -49,9 +49,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         jsonParseArray();
 
-        for(int i = 0; i < dynamicButtons.size(); i++){
+        /*
+        for(int i = 0; i < dynamicButtons.size(); i++) {
             dynamicButtons.get(i).setOnClickListener(this);
         }
+        */
+
 
         addTeam.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -100,9 +103,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 error.printStackTrace();
             }
         });
-
         mQueue.add(request);
     }
+
 
 
     @Override
