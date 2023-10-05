@@ -1,6 +1,7 @@
 package onetoone;
 
 import onetoone.Players.PlayerService;
+import onetoone.Teams.TeamService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,7 +36,7 @@ class Main {
      * As mentioned in User.java just associating the Laptop object with the User will save it into the database because of the CascadeType
      */
     @Bean
-    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository, PlayerService playerService) {
+    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository, PlayerService playerService, TeamService teamService) {
         return args -> {
             Team team1 = new Team("John");
             Team team2 = new Team("Jane");
@@ -54,13 +55,14 @@ class Main {
             teamRepository.save(team3);
 
 
-            playerService.updatePlayer(1, "dsgas", "P", 5);
+//          Player p = new Player("jay", 80, "PG");
+//          playerService.createPlayer(p);
 
-            playerService.getPlayer(1);
+//          playerService.updatePlayer(1, "jose", 8, "PF");
+
+
 
         };
     }
-    // last edited was team controller. i think that changeing the mapping things from users to teams brakes the code
-    // need to test it
 
 }

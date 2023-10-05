@@ -23,6 +23,7 @@ import onetoone.Players.PlayerRepository;
 @RestController
 public class TeamController {
 
+    private TeamService teamService;
     @Autowired
     TeamRepository teamRepository;
 
@@ -50,15 +51,13 @@ public class TeamController {
         return success;
     }
 
-    @PutMapping("/teams/{id}")
-    Team updateTeam(@PathVariable int id, @RequestBody Team request){
-        Team team = teamRepository.findById(id);
-        if(team == null)
-            return null;
-        teamRepository.save(request);
-        return teamRepository.findById(id);
-    }   
-    
+    @PostMapping("/updateTeam/{id}")
+    public void updateTeam(@PathVariable int id, @RequestBody TeamUpdateRequest request) {
+        teamService.updateTeam(id,
+                request.getTeamName());
+    }
+
+
     @PutMapping("/teams/{teamId}/players/{playerId}")
     String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId){
         Team team = teamRepository.findById(teamId);

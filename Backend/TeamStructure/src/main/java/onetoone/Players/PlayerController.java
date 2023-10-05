@@ -41,7 +41,7 @@ public class PlayerController {
 
     @GetMapping(path = "/player/{id}")
     Player getPlayerById(@PathVariable int id){
-        return playerService.(id);
+        return playerRepository.findById(id);
     }
 
 
@@ -49,11 +49,7 @@ public class PlayerController {
     List<Player> getAllPlayers(){
         return playerRepository.findAll();
     }
-
-//    @GetMapping(path = "/players/{id}")
-//    Player getPlayerById(@PathVariable int id){
-//        return playerRepository.findById(id);
-//    }
+    
 
     @PostMapping(path = "/players")
     String createPlayer(Player player){
@@ -64,7 +60,11 @@ public class PlayerController {
     }
 
     @PostMapping("/updatePlayer/{id}")
-    public void updatePlayer(@PathVariable int id, @RequestBody PlayerUpdateRequest playerUpdateRequest) {
+    public void updatePlayer(@PathVariable int id, @RequestBody PlayerUpdateRequest request) {
+        playerService.updatePlayer(id,
+                request.getPlayerName(),
+                request.getPlayerNumber(),
+                request.getPlayerPosition());
 
     }
 

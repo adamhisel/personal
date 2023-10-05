@@ -24,7 +24,7 @@ public class PlayerService {
 
 
     @Transactional
-    public void createUser(Player player) {
+    public void createPlayer(Player player) {
         playerRepository.save(player);
     }
 
