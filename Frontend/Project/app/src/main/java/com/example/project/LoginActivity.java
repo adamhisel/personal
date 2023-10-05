@@ -29,6 +29,16 @@ public class LoginActivity extends AppCompatActivity {
         EditText etUsername = findViewById(R.id.etUsername);
         EditText etPassword = findViewById(R.id.etPassword);
 
+        // Remove
+        Button btnTest = findViewById(R.id.btnTest);
+        btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

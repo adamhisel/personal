@@ -82,4 +82,10 @@
         android:text="Create Account"
         android:textColor="#000" />
 
+    <Button
+        android:id="@+id/btnTest"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="Go"/>
+
 </LinearLayout>
