@@ -1,10 +1,8 @@
 package onetoone.Players;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -16,6 +14,7 @@ import onetoone.Teams.Team;
  */ 
 
 @Entity
+@Table(name = "player")
 public class Player {
     
     /* 

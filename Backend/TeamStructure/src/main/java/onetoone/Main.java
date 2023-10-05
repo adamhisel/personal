@@ -1,5 +1,6 @@
 package onetoone;
 
+import onetoone.Players.PlayerService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,7 +35,7 @@ class Main {
      * As mentioned in User.java just associating the Laptop object with the User will save it into the database because of the CascadeType
      */
     @Bean
-    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository) {
+    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository, PlayerService playerService) {
         return args -> {
             Team team1 = new Team("John");
             Team team2 = new Team("Jane");
@@ -51,6 +52,11 @@ class Main {
             teamRepository.save(team1);
             teamRepository.save(team2);
             teamRepository.save(team3);
+
+
+            playerService.updatePlayer(1, "dsgas", "P", 5);
+
+            playerService.getPlayer(1);
 
         };
     }

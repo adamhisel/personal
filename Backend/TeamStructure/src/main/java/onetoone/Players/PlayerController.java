@@ -23,6 +23,7 @@ import onetoone.Teams.TeamRepository;
 @RestController
 public class PlayerController {
 
+    private PlayerService playerService;
     @Autowired
     PlayerRepository playerRepository;
 
@@ -32,15 +33,27 @@ public class PlayerController {
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
+
+    public PlayerController(PlayerService playerService){
+        this.playerService = playerService;
+    }
+
+
+    @GetMapping(path = "/player/{id}")
+    Player getPlayerById(@PathVariable int id){
+        return playerService.(id);
+    }
+
+
     @GetMapping(path = "/players")
     List<Player> getAllPlayers(){
         return playerRepository.findAll();
     }
 
-    @GetMapping(path = "/players/{id}")
-    Player getPlayerById(@PathVariable int id){
-        return playerRepository.findById(id);
-    }
+//    @GetMapping(path = "/players/{id}")
+//    Player getPlayerById(@PathVariable int id){
+//        return playerRepository.findById(id);
+//    }
 
     @PostMapping(path = "/players")
     String createPlayer(Player player){
@@ -49,6 +62,12 @@ public class PlayerController {
         playerRepository.save(player);
         return success;
     }
+
+    @PostMapping("/updatePlayer/{id}")
+    public void updatePlayer(@PathVariable int id, @RequestBody PlayerUpdateRequest playerUpdateRequest) {
+
+    }
+
 
     @PutMapping(path = "/players/{id}")
     Player updatePlayer(@PathVariable int id, @RequestBody Player request){
@@ -71,4 +90,7 @@ public class PlayerController {
         playerRepository.deleteById(id);
         return success;
     }
+
+
+
 }
