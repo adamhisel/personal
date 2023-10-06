@@ -58,8 +58,8 @@ public class UserController {
     }
 
     @GetMapping("loginUser/{userName}/{password}")
-    User loginUser(@PathVariable String userName, String password){
-        return userRepository.findByUserNameAndPassword(userName,password);
+    User loginUser(@PathVariable String userName, @PathVariable String password){
+        return userRepository.findByuserNameAndPassword(userName,password);
     }
 
     }

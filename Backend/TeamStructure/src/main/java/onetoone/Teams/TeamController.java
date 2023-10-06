@@ -44,7 +44,7 @@ public class TeamController {
     }
 
     @PostMapping(path = "/teams")
-    String createTeam(Team team){
+    String createTeam(@RequestBody Team team){
         if (team == null)
             return failure;
         teamRepository.save(team);

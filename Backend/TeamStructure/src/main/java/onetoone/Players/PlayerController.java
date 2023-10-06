@@ -52,7 +52,7 @@ public class PlayerController {
     
 
     @PostMapping(path = "/players")
-    String createPlayer(Player player){
+    String createPlayer(@RequestBody Player player){
         if (player == null)
             return failure;
         playerRepository.save(player);
