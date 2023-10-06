@@ -1,70 +1,143 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityMainBinding;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment /*implements View.OnClickListener*/{
+public class HomeFragment extends Fragment {
 
     ActivityMainBinding binding;
 
-    private TextView msg;
+    ArrayList<Button> dynamicButtons;
+
+    private RequestQueue mQueue;
+    LinearLayout ll;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        ImageButton team_roster = (ImageButton)view.findViewById(R.id.bulls);
-        ImageButton team_roster2= (ImageButton)view.findViewById(R.id.heat);
-/*
-        team_roster.setOnClickListener(this);
-        team_roster2.setOnClickListener(this);
-*/
+        mQueue = Volley.newRequestQueue(requireContext());
 
-        team_roster.setOnClickListener(new View.OnClickListener() {
+        ll = view.findViewById(R.id.linearLayout);
+
+        Button addTeam = (Button)view.findViewById(R.id.addTeam);
+
+        Button findTeam = (Button)view.findViewById(R.id.findTeam);
+
+        addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fr = fragmentManager.beginTransaction();
-                fr.replace(R.id.frame_layout, new TeamRosterSubFragmentBulls());
-                fr.commit();
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                startActivity(intent);
             }
         });
 
+        findTeam.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(getActivity(), TeamRoster.class);
+                startActivity(intent);
+            }
+
+        });
+
+        //jsonParseArray();
+
         return view;
+/*
+        for(int i = 0; i < dynamicButtons.size(); i++) {
+
+            dynamicButtons.get(i).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fr = fragmentManager.beginTransaction();
+
+                TeamRosterSubFragment fragment = new TeamRosterSubFragment();
+
+                Button clickedButton = (Button) view;
+
+                Bundle bundle = new Bundle();
+                bundle.putString("teamName", (String) clickedButton.getText());
+
+                fragment.setArguments(bundle);
+
+                fr.replace(R.id.frame_layout, fragment);
+                fr.commit();
+            }
+            });
+
+            addTeam.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                    startActivity(intent);
+                }
+
+            });*/
     }
 
-    /*
-    @Override
-    public void onClick(View view) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fr = fragmentManager.beginTransaction();
-        switch (view.getId()){
-            case R.id.bulls:
-                fr.replace(R.id.frame_layout, new TeamRosterSubFragmentBulls());
-                break;
-            case R.id.heat:
-                fr.replace(R.id.frame_layout, new TeamRosterSubFragmentHeat());
-                break;
-        }
-        fr.replace(R.id.frame_layout, new TeamRosterSubFragmentBulls());
-        fr.commit();
+    public void jsonParseArray() {
+        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/teams/";
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    dynamicButtons = new ArrayList<>();
+                    for (int i = 0; i < response.length(); i++) {
+                        JSONObject team = response.getJSONObject(i);
+
+                        Button button = new Button(requireContext());
+
+                        String teamName = team.getString("teamName");
+
+                        button.setText(teamName);
+                        button.setTextSize(25);
+
+                        ll.addView(button, ll.getChildCount() - 1);
+
+                        dynamicButtons.add(button);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        mQueue.add(request);
     }
-*/
+
 }

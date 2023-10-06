@@ -2,19 +2,15 @@ package com.example.project;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -24,7 +20,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -32,18 +27,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class TeamRosterSubFragmentBulls extends Fragment {
+public class TeamRosterSubFragment extends Fragment {
 
     TableLayout tl;
     private RequestQueue mQueue;
 
-
+    private String teamName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_team_roster_sub, container, false);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            teamName = args.getString("teamName");
+        }
 
         tl =  view.findViewById(R.id.tableLayout);
 
@@ -65,9 +65,10 @@ public class TeamRosterSubFragmentBulls extends Fragment {
     }
 
     public void jsonParseArray() {
+
+        //with the teamName i need to access the team roster somehow in SQL
         String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/roster/";
 
-        // "https://jsonplaceholder.typicode.com/users";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {

@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true">
 
         <activity
+            android:name=".TeamRoster"
+            android:exported="false" />
+        <activity
+            android:name=".AddTeamActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditRosterActivity"
             android:exported="false" />
         <activity
