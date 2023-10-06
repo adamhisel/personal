@@ -64,12 +64,13 @@ public class AddTeamActivity extends AppCompatActivity {
     }
 
     private void postTeam() {
-        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/team";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JSONObject postData = new JSONObject();
+        teamName.getText().toString();
         try {
             postData.put("teamName", teamName.getText().toString());
-            //player_id
+
 
         } catch (JSONException e) {
             e.printStackTrace();

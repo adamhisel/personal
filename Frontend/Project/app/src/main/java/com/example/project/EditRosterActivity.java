@@ -105,7 +105,7 @@ public class EditRosterActivity extends AppCompatActivity {
 
     private void postUser() {
         //change this to address
-        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/PostPlayer/";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
 
         JSONObject postData = new JSONObject();
         try {
