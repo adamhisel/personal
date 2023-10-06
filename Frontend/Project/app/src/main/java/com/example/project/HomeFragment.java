@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements View.OnClickListener{
+public class HomeFragment extends Fragment {
 
     ActivityMainBinding binding;
 
@@ -47,26 +47,61 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         Button addTeam = (Button)view.findViewById(R.id.addTeam);
 
-        jsonParseArray();
-
-        /*
-        for(int i = 0; i < dynamicButtons.size(); i++) {
-            dynamicButtons.get(i).setOnClickListener(this);
-        }
-        */
-
+        Button findTeam = (Button)view.findViewById(R.id.findTeam);
 
         addTeam.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v)
-               {
-                   Intent intent = new Intent(getActivity(), AddTeamActivity.class);
-                   startActivity(intent);
-               }
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        findTeam.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(getActivity(), TeamRoster.class);
+                startActivity(intent);
+            }
 
         });
 
+        //jsonParseArray();
+
         return view;
+/*
+        for(int i = 0; i < dynamicButtons.size(); i++) {
+
+            dynamicButtons.get(i).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fr = fragmentManager.beginTransaction();
+
+                TeamRosterSubFragment fragment = new TeamRosterSubFragment();
+
+                Button clickedButton = (Button) view;
+
+                Bundle bundle = new Bundle();
+                bundle.putString("teamName", (String) clickedButton.getText());
+
+                fragment.setArguments(bundle);
+
+                fr.replace(R.id.frame_layout, fragment);
+                fr.commit();
+            }
+            });
+
+            addTeam.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                    startActivity(intent);
+                }
+
+            });*/
     }
 
     public void jsonParseArray() {
@@ -95,7 +130,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -104,26 +138,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             }
         });
         mQueue.add(request);
-    }
-
-
-
-    @Override
-    public void onClick(View view) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fr = fragmentManager.beginTransaction();
-
-        TeamRosterSubFragment fragment = new TeamRosterSubFragment();
-
-        Button clickedButton = (Button) view;
-
-        Bundle bundle = new Bundle();
-        bundle.putString("teamName", (String) clickedButton.getText());
-
-        fragment.setArguments(bundle);
-
-        fr.replace(R.id.frame_layout, fragment);
-        fr.commit();
     }
 
 }

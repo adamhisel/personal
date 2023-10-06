@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,14 +24,22 @@ import org.json.JSONObject;
 
 public class EditRosterActivity extends AppCompatActivity {
     private RequestQueue mQueue;
-    private EditText editTextName;
-    private EditText editTextName2;
-    private EditText editTextName3;
-    private EditText editTextName4;
+    private EditText name;
+    private EditText number;
+
+    private EditText position;
+/*
+    private String[] item = {"PG", "SG", "PF", "SF", "C"};
+
+    AutoCompleteTextView position;
+
+    ArrayAdapter<String> adaptorItems;
+
+    private String itemSelected;*/
 
     private String teamName;
 
-    private Button add;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,22 +47,37 @@ public class EditRosterActivity extends AppCompatActivity {
 
         mQueue = Volley.newRequestQueue(this);
 
-        add = findViewById(R.id.button2);
+        Button add = findViewById(R.id.addPlayer);
 
-        editTextName = findViewById(R.id.editTextName);
-        editTextName2 = findViewById(R.id.editTextName2);
-        editTextName3 = findViewById(R.id.editTextName3);
-        editTextName4 = findViewById(R.id.editTextName4);
+
+
+        name = findViewById(R.id.etName);
+        number = findViewById(R.id.etNumber);
+        position = findViewById(R.id.etPosition);
+
+        /*adaptorItems = new ArrayAdapter<String>(this, R.layout.activity_edit_roster, item);
+
+        position.setAdapter(adaptorItems);
+
+        position.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                itemSelected = adapterView.getItemAtPosition(i).toString();
+            }
+        });
+*/
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postUser();
+                Intent intent = new Intent(EditRosterActivity.this, TeamRoster.class);
+                startActivity(intent);
             }
         });
     }
 
-    private void deleteUser() {
+   /* private void deleteUser() {
 
         String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/roster/1";
 
@@ -75,18 +101,19 @@ public class EditRosterActivity extends AppCompatActivity {
                 });
 
         mQueue.add(jsonObjectRequest);
-    }
+    }*/
 
     private void postUser() {
+        //change this to address
         String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/PostPlayer/";
 
         JSONObject postData = new JSONObject();
         try {
-            postData.put("name", editTextName.getText().toString());
-            postData.put("number", editTextName2.getText().toString());
-            postData.put("position", editTextName3.getText().toString());
-            postData.put("height", editTextName4.getText().toString());
+            postData.put("playerName", name.getText().toString());
+            postData.put("number", number.getText().toString());
+            postData.put("position", position.getText().toString());
 
+            //team_id to get what team they on
 
         } catch (JSONException e) {
             e.printStackTrace();

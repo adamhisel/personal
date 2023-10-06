@@ -42,8 +42,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#000"
-            android:text="FINISH"
+            android:textSize="25dp"
+            android:text="ADD TEAM"
             android:textColor="#FFFFFF" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#000"
+            android:text="BACK TO HOME"
+            android:textColor="#FFFFFF" />
+
 
     </LinearLayout>
 </FrameLayout>

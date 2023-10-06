@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Project"
         tools:targetApi="31">
         <activity
+            android:name=".TeamRoster"
+            android:exported="false" />
+        <activity
             android:name=".AddTeamActivity"
             android:exported="false" />
         <activity

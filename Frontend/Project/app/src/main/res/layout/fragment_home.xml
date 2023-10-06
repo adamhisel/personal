@@ -39,17 +39,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-    <!--
-    <ImageButton
-        android:id="@+id/team"
-        android:layout_width="406dp"
-        android:layout_height="66dp"
-        android:layout_marginTop="1dp"
-        android:contentDescription="bulls_logo"
-        android:scaleType="centerInside"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/findTeam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#000"
+        android:text="FIND TEAM"
+        android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addTeam"
@@ -58,6 +54,7 @@
         android:backgroundTint="#000"
         android:text="ADD TEAM"
         android:textColor="#FFFFFF" />
+
 
 
     </LinearLayout>

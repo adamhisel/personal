@@ -38,6 +38,7 @@ public class AddTeamActivity extends AppCompatActivity {
         mQueue = Volley.newRequestQueue(this);
 
         Button finish = (Button)findViewById(R.id.finish);
+        Button back = findViewById(R.id.backButton);
 
         teamName = findViewById(R.id.etTeamname);
 
@@ -45,9 +46,19 @@ public class AddTeamActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 postTeam();
-                replaceFrag(new HomeFragment());
+                Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
+                startActivity(intent);
+                //replaceFrag(new HomeFragment());
             }
 
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
         });
 
     }
@@ -58,7 +69,7 @@ public class AddTeamActivity extends AppCompatActivity {
         JSONObject postData = new JSONObject();
         try {
             postData.put("teamName", teamName.getText().toString());
-
+            //player_id
 
         } catch (JSONException e) {
             e.printStackTrace();
