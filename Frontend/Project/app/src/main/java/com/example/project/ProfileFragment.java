@@ -36,13 +36,14 @@ public class ProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         mQueue = Volley.newRequestQueue(getActivity());
-        TextView tvUsername = rootView.findViewById(R.id.tvUsername);
+        TextView tvUserName = rootView.findViewById(R.id.tvUserName);
         TextView tvEmail = rootView.findViewById(R.id.tvEmail);
         TextView tvPhoneNumber = rootView.findViewById(R.id.tvPhoneNumber);
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
 
-        String userId = SharedPrefsUtil.getUserId(getActivity());
-        getProfile(userId, tvUsername, tvEmail, tvPhoneNumber);
+
+        String userName = SharedPrefsUtil.getUserName(getActivity());
+        getProfile(userName, tvEmail, tvPhoneNumber);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,19 +56,19 @@ public class ProfileFragment extends Fragment {
         return rootView;
     }
 
-    private void getProfile(String userId, TextView tvUsername, TextView tvEmail, TextView tvPhoneNumber) {
-        String getUrl = "http://10.0.2.2:8080/users/" + userId;
+    private void getProfile(String userName, TextView tvEmail, TextView tvPhoneNumber) {
+        String getUrl = "http://10.0.2.2:8080/users/username" + userName;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            String username = response.getString("userName");
+                            //String username = response.getString("userName");
                             String email = response.getString("email");
                             String phoneNumber = response.getString("phoneNumber");
 
-                            tvUsername.setText(username);
+                            //tvUsername.setText(username);
                             tvEmail.setText(email);
                             tvPhoneNumber.setText(phoneNumber);
                         } catch (JSONException e) {

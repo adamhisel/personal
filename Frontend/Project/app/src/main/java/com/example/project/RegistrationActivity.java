@@ -110,6 +110,14 @@ public class RegistrationActivity extends AppCompatActivity {
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
+                                SharedPrefsUtil.saveUserData(
+                                        RegistrationActivity.this,
+                                        userName,
+                                        email,
+                                        phoneNumber,
+                                        userType,
+                                        "DEFAULT_USER_ID"
+                                );
                                 // Handle the response
                                 Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
                                 startActivity(intent);
