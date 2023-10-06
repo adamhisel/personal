@@ -57,10 +57,10 @@ public class UserController {
         return success;
     }
 
-//    @GetMapping("loginUser/{userName}/{password}")
-//    User loginUser(@PathVariable String userName, String password){
-//        return userRepository.findLogin(userName,password);
-//    }
+    @GetMapping("loginUser/{userName}/{password}")
+    User loginUser(@PathVariable String userName, String password){
+        return userRepository.findByUserNameAndPassword(userName,password);
+    }
 
     }
 
