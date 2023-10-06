@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -70,7 +72,6 @@ public class TeamRoster extends AppCompatActivity {
         findTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeHeader();
                 findTeam();
             }
         });
@@ -87,6 +88,7 @@ public class TeamRoster extends AppCompatActivity {
 
 
     public void findTeam() {
+        makeHeader();
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -101,9 +103,10 @@ public class TeamRoster extends AppCompatActivity {
                             int id = team.getInt("id");
                             addPlayerDisplay(id);
                         }
-                        if(exists == false){
-                            throw new CustomException();
-                        }
+
+                    }
+                    if(exists == false){
+                        throw new CustomException();
                     }
 
                 } catch (JSONException e) {
@@ -147,56 +150,63 @@ public class TeamRoster extends AppCompatActivity {
 
     public void addPlayerDisplay(int id) {
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + id;
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url + id, null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 try {
 
 
-                    JSONObject team = response.getJSONObject(id - 1);
+                    JSONObject players = response.getJSONObject("player"); // Assuming players is an array
+
+                    if (players.length() > 0) {
 
 
-                        int id = team.getJSONObject("player").getInt("id");
-                        String name = team.getJSONObject("player").getString("playerName");
-                        String number = "#" + team.getJSONObject("player").getString("number");
-                        String position = team.getJSONObject("player").getString("position");
-
-                        android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-
-                        TableRow tableRow = new TableRow(TeamRoster.this);
-
-                        Resources resources = getResources();
-                        Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
-
-                        TextView textView = new TextView(TeamRoster.this);
-                        textView.setPadding(10, 10, 10, 10);
-                        textView.setLayoutParams(trparams);
-                        textView.setTextSize(25);
-                        textView.setBackground(drawable);
-                        textView.setText(number);
-                        tableRow.addView(textView);
+                            int playerId = players.getInt("id");
+                            String name = players.getString("playerName");
+                            String number = "#" + players.getString("number");
+                            String position = players.getString("position");
 
 
-                        TextView textView2 = new TextView(TeamRoster.this);
-                        textView2.setPadding(10, 10, 10, 10);
-                        textView2.setLayoutParams(trparams);
-                        textView2.setTextSize(25);
-                        textView2.setBackground(drawable);
-                        textView2.setText(name);
-                        tableRow.addView(textView2);
-
-                        TextView textView3 = new TextView(TeamRoster.this);
-                        textView3.setPadding(10, 10, 10, 10);
-                        textView3.setLayoutParams(trparams);
-                        textView3.setTextSize(25);
-                        textView3.setBackground(drawable);
-                        textView3.setText(position);
-                        tableRow.addView(textView3);
+                            Log.d("TeamRoster", "Info" + name);
 
 
-                        tl.addView(tableRow);
+                            android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+
+                            TableRow tableRow = new TableRow(TeamRoster.this);
+
+                            Resources resources = getResources();
+                            Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
+
+                            TextView textView = new TextView(TeamRoster.this);
+                            textView.setPadding(10, 10, 10, 10);
+                            textView.setLayoutParams(trparams);
+                            textView.setTextSize(25);
+                            textView.setBackground(drawable);
+                            textView.setText(number);
+                            tableRow.addView(textView);
+
+
+                            TextView textView2 = new TextView(TeamRoster.this);
+                            textView2.setPadding(10, 10, 10, 10);
+                            textView2.setLayoutParams(trparams);
+                            textView2.setTextSize(25);
+                            textView2.setBackground(drawable);
+                            textView2.setText(name);
+                            tableRow.addView(textView2);
+
+                            TextView textView3 = new TextView(TeamRoster.this);
+                            textView3.setPadding(10, 10, 10, 10);
+                            textView3.setLayoutParams(trparams);
+                            textView3.setTextSize(25);
+                            textView3.setBackground(drawable);
+                            textView3.setText(position);
+                            tableRow.addView(textView3);
+
+
+                            tl.addView(tableRow);
+                        }
 
                 } catch (JSONException e) {
 
@@ -217,8 +227,6 @@ public class TeamRoster extends AppCompatActivity {
                     tableRow.addView(textView);
 
                     tl.addView(tableRow);
-
-                   // e.printStackTrace();
 
 
                 }
