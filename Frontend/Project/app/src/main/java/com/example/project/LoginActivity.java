@@ -71,28 +71,26 @@ public class LoginActivity extends AppCompatActivity {
                 boolean isValidPassword = validatePassword();
 
                 if (!isValidUserName || !isValidPassword) {
-                    return;  // Stops further execution if any validation fails.
+                    return;  // Stops further execution if any validation fails
                 }
 
-                // URL of server's GET API endpoint
-                String getUrl = "http://10.0.2.2:8080/users/username/" + userName;
 
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl, null,
+                // URL of server's GET API endpoint to loginUser
+                String loginUrl = "http://coms-309-018.class.las.iastate.edu:8080/loginUser/" + userName + "/" + password;
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, loginUrl, null,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    // Assuming the server returns a user object with userName and password fields
                                     String retrievedUserName = response.getString("userName");
                                     String retrievedPassword = response.getString("password");
 
-                                    Log.d("LoginActivity", "Retrieved Username: " + retrievedUserName);
-                                    Log.d("LoginActivity", "Retrieved Password: " + retrievedPassword);
+                                    Log.d("LoginActivity", "Retrieved Username from server: " + retrievedUserName); // Added log
+                                    Log.d("LoginActivity", "Retrieved Password from server: " + retrievedPassword); // Added log
 
-                                    // Now, compare the passwords
-                                    if (password.equals(retrievedPassword)) {
-                                        // Successful login.
-                                        // Save the user data
+                                    if (userName.equals(retrievedUserName) && password.equals(retrievedPassword)) {
+                                        // Successful login
                                         SharedPrefsUtil.saveUserData(
                                                 LoginActivity.this,
                                                 retrievedUserName,
@@ -105,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(intent);
                                     } else {
-                                        // Wrong password
+                                        // Wrong credentials
                                         Toast.makeText(LoginActivity.this, "Invalid credentials!", Toast.LENGTH_SHORT).show();
                                     }
                                 } catch (JSONException e) {
@@ -116,8 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                // Handle the error.
-                                // This could also mean the user doesn't exist.
+                                // Handle the error. This could also mean the user doesn't exist.
                                 Toast.makeText(LoginActivity.this, "User does not exist or other error!", Toast.LENGTH_SHORT).show();
                             }
                         });

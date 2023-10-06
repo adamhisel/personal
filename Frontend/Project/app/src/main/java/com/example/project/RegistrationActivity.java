@@ -5,11 +5,13 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -104,23 +106,35 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
 
                 // URL of server's API endpoint
-                String postUrl = "http://10.0.2.2:8080/users";
+                String postUrl = "http://coms-309-018.class.las.iastate.edu:8080/users";
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, postUrl, postData,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                SharedPrefsUtil.saveUserData(
-                                        RegistrationActivity.this,
-                                        userName,
-                                        email,
-                                        phoneNumber,
-                                        userType,
-                                        "DEFAULT_USER_ID"
-                                );
-                                // Handle the response
-                                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                                startActivity(intent);
+                                try {
+                                    String message = response.getString("message");
+
+                                    if ("success".equals(message)) {
+                                        // Assuming you have local values of userName, email, phoneNumber, userType, userId
+                                        SharedPrefsUtil.saveUserData(
+                                                RegistrationActivity.this,
+                                                userName,
+                                                email,
+                                                phoneNumber,
+                                                userType,
+                                                "DEFAULT_ID"
+                                        );
+                                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        // Show a relevant error message to the user
+                                        Toast.makeText(RegistrationActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(RegistrationActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }, new Response.ErrorListener() {
                     @Override

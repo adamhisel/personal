@@ -42,8 +42,8 @@ public class ProfileFragment extends Fragment {
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
 
 
-        String userName = SharedPrefsUtil.getUserName(getActivity());
-        getProfile(userName, tvEmail, tvPhoneNumber);
+        String userId = SharedPrefsUtil.getUserId(getActivity()); // Get userId from SharedPreferences
+        getProfile(userId, tvUserName, tvEmail, tvPhoneNumber);
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,19 +56,19 @@ public class ProfileFragment extends Fragment {
         return rootView;
     }
 
-    private void getProfile(String userName, TextView tvEmail, TextView tvPhoneNumber) {
-        String getUrl = "http://10.0.2.2:8080/users/username" + userName;
+    private void getProfile(String userId, TextView tvUserName, TextView tvEmail, TextView tvPhoneNumber) {
+        String getUrl = "http://coms-309-018.class.las.iastate.edu:8080/users/" + userId; // Fetch user info based on userId
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            //String username = response.getString("userName");
+                            String username = response.getString("userName");
                             String email = response.getString("email");
                             String phoneNumber = response.getString("phoneNumber");
 
-                            //tvUsername.setText(username);
+                            tvUserName.setText(username); // Set the retrieved userName to TextView
                             tvEmail.setText(email);
                             tvPhoneNumber.setText(phoneNumber);
                         } catch (JSONException e) {
