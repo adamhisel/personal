@@ -17,17 +17,23 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EditRosterActivity extends AppCompatActivity {
     private RequestQueue mQueue;
-    private EditText name;
-    private EditText number;
+    private TextInputLayout name;
+    private TextInputLayout number;
 
-    private EditText position;
+    private TextInputLayout position;
+
+    private int teamId;
+
+    private int playerId;
 /*
     private String[] item = {"PG", "SG", "PF", "SF", "C"};
 
@@ -50,31 +56,93 @@ public class EditRosterActivity extends AppCompatActivity {
         Button add = findViewById(R.id.addPlayer);
 
 
+        name = findViewById(R.id.name);
+        number = findViewById(R.id.number);
+        position = findViewById(R.id.position);
 
-        name = findViewById(R.id.etName);
-        number = findViewById(R.id.etNumber);
-        position = findViewById(R.id.etPosition);
-
-        /*adaptorItems = new ArrayAdapter<String>(this, R.layout.activity_edit_roster, item);
-
-        position.setAdapter(adaptorItems);
-
-        position.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                itemSelected = adapterView.getItemAtPosition(i).toString();
-            }
-        });
-*/
+        Intent intent = getIntent();
+        if (intent != null) {
+            String teamName = intent.getStringExtra("key_string");
+        }
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 postUser();
+
+                boolean isValidName = validateName();
+                boolean isValidNumber = validateNumber();
+                boolean isValidPosition = validatePosition();
+
+                if (!isValidName || !isValidNumber || !isValidPosition) {
+                    return;
+                }
+
+                postTeam();
+                linkUsertoTeam();
                 Intent intent = new Intent(EditRosterActivity.this, TeamRoster.class);
                 startActivity(intent);
             }
         });
+    }
+
+    private void postTeam() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("teamName", teamName);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject team = response.getJSONObject(String.valueOf(response.length()));
+
+                            teamId = team.getInt("id");
+
+                            Log.d("PostTeam", "Response received: " + response.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("PostTeam", "Error in request: " + error.getMessage());
+            }
+        });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    public void linkUsertoTeam() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/players/" + playerId;
+
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                response -> {
+                    if ("success".equals(response)) {
+
+                    } else if ("failure".equals(response)) {
+                        // Team or player not found, or other failure
+                    }
+                },
+                error -> {
+
+                    if (error.networkResponse != null) {
+                        String errorMessage = new String(error.networkResponse.data);
+                        Log.e("LinkTeam", "Error in request: " + errorMessage);
+                    }
+                }
+        );
+
+
+        mQueue.add(putRequest);
     }
 
    /* private void deleteUser() {
@@ -109,9 +177,9 @@ public class EditRosterActivity extends AppCompatActivity {
 
         JSONObject postData = new JSONObject();
         try {
-            postData.put("playerName", name.getText().toString());
-            postData.put("number", number.getText().toString());
-            postData.put("position", position.getText().toString());
+            postData.put("playerName", name.getEditText().getText().toString());
+            postData.put("number", number.getEditText().getText().toString());
+            postData.put("position", position.getEditText().getText().toString());
 
             //team_id to get what team they on
 
@@ -123,9 +191,15 @@ public class EditRosterActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Handle the response, e.g., display a success message
+                        try {
+                            JSONObject player = response.getJSONObject(String.valueOf(response.length()));
 
-                        Log.d("PostUser", "Response received: " + response.toString());
+                            playerId = player.getInt("id");
+
+                            Log.d("PostUser", "Response received: " + response.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -136,5 +210,69 @@ public class EditRosterActivity extends AppCompatActivity {
         });
 
         mQueue.add(jsonObjectRequest);
+    }
+
+    private Boolean validateName() {
+        String tilName = name.getEditText().getText().toString().trim();
+
+        if (tilName.isEmpty()) {
+            name.setError("Field cannot be empty");
+            return false;
+        } else {
+            name.setError(null);
+            name.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validateNumber() {
+        String tilNumber = number.getEditText().getText().toString().trim();
+
+
+        if (tilNumber.isEmpty()) {
+            number.setError("Field cannot be empty");
+            return false;
+        }
+        if (!isInteger(tilNumber)){
+            number.setError("Field has to be a number");
+            return false;
+        }
+        else{
+            number.setError(null);
+            number.setErrorEnabled(false);
+            return true;
+        }
+
+    }
+
+    private Boolean validatePosition() {
+        String tilPosition = position.getEditText().getText().toString().trim();
+
+
+        if (tilPosition.isEmpty()) {
+            position.setError("Field cannot be empty");
+            return false;
+        }
+        if (!tilPosition.equals("PG") && !tilPosition.equals("SG") && !tilPosition.equals("PF") && !tilPosition.equals("SF") && !tilPosition.equals("C")){
+            position.setError("Field has to be either a PG, SG, PF, SF, C");
+            return false;
+        }
+        else{
+            position.setError(null);
+            position.setErrorEnabled(false);
+            return true;
+        }
+
+    }
+
+    public static boolean isInteger (String str){
+        try {
+            // Attempt to parse the string as an integer
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            // If an exception is thrown, the string is not an integer
+            return false;
+        }
     }
 }

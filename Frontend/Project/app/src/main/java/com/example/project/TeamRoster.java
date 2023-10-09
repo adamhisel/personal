@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +37,7 @@ public class TeamRoster extends AppCompatActivity {
     TableLayout tl;
     private RequestQueue mQueue;
 
-    private EditText teamName;
+    private TextInputLayout teamName;
 
     boolean exists = false;
 
@@ -56,9 +57,9 @@ public class TeamRoster extends AppCompatActivity {
         Button findTeam = findViewById(R.id.findTeam);
         Button back = findViewById(R.id.backButton);
 
-        teamName = findViewById(R.id.etTeamname);
+        teamName = findViewById(R.id.teamname);
 
-
+        makeHeader();
 
         mQueue = Volley.newRequestQueue(this);
 
@@ -72,7 +73,14 @@ public class TeamRoster extends AppCompatActivity {
         findTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isValidTeamName = validateTeamName();
+
+                if (!isValidTeamName) {
+                    return;
+                }
+
                 findTeam();
+
             }
         });
 
@@ -85,10 +93,15 @@ public class TeamRoster extends AppCompatActivity {
         });
     }
 
+    public void addNewPlayer(){
+        Intent intent = new Intent(TeamRoster.this, EditRosterActivity.class);
+        intent.putExtra("key_string", teamName.getEditText().getText().toString());
+        startActivity(intent);
+    }
+
 
 
     public void findTeam() {
-        makeHeader();
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -98,7 +111,7 @@ public class TeamRoster extends AppCompatActivity {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject team = response.getJSONObject(i);
                         String name = team.getString("teamName");
-                        if(name.equals(teamName.getText().toString())){
+                        if(name.equals(teamName.getEditText().getText().toString())){
                             exists = true;
                             int id = team.getInt("id");
                             addPlayerDisplay(id);
@@ -112,23 +125,7 @@ public class TeamRoster extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (CustomException e) {
-                    android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-
-                    TableRow tableRow = new TableRow(TeamRoster.this);
-
-                    Resources resources = getResources();
-                    Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
-
-                    TextView textView = new TextView(TeamRoster.this);
-                    textView.setPadding(10, 10, 10, 10);
-                    textView.setLayoutParams(trparams);
-                    textView.setTextSize(25);
-                    textView.setTypeface(null, android.graphics.Typeface.BOLD);
-                    textView.setBackground(drawable);
-                    textView.setText("This Team Does Not Exist");
-                    tableRow.addView(textView);
-
-                    tl.addView(tableRow);
+                    teamName.setError("No team exists with this team name");
                 }
 
             }
@@ -279,6 +276,19 @@ public class TeamRoster extends AppCompatActivity {
         tableRow.addView(textView3);
 
         tl.addView(tableRow);
+    }
+
+    private Boolean validateTeamName() {
+        String tilTeamName = teamName.getEditText().getText().toString().trim();
+
+        if (tilTeamName.isEmpty()) {
+            teamName.setError("Field cannot be empty");
+            return false;
+        } else {
+            teamName.setError(null);
+            teamName.setErrorEnabled(false);
+            return true;
+        }
     }
 
 }
