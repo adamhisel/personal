@@ -9,9 +9,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.databinding.FragmentProfileBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +24,8 @@ import org.json.JSONObject;
 
 public class ProfileFragment extends Fragment {
 
-    private static RequestQueue mQueue;
+    private RequestQueue mQueue;
+    private FragmentProfileBinding binding;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -34,40 +33,39 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        binding = FragmentProfileBinding.inflate(inflater, container, false);
 
-        mQueue = Volley.newRequestQueue(getActivity());
-        TextView tvUserName = rootView.findViewById(R.id.tvUserName);
-        TextView tvEmail = rootView.findViewById(R.id.tvEmail);
-        TextView tvPhoneNumber = rootView.findViewById(R.id.tvPhoneNumber);
-        ImageButton btnEditProfile = rootView.findViewById(R.id.btnEditProfile);
-        Button btnLogout = rootView.findViewById(R.id.btnLogout);
+        mQueue = Volley.newRequestQueue(requireActivity());
 
+        String userId = SharedPrefsUtil.getUserId(requireActivity());
+        getProfile(userId);
+        setupButtonListeners();
 
-        String userId = SharedPrefsUtil.getUserId(getActivity()); // Get userId from SharedPreferences
-        getProfile(userId, tvUserName, tvEmail, tvPhoneNumber);
+        return binding.getRoot();
+    }
 
-        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+    private void setupButtonListeners() {
+
+        binding.btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                Intent intent = new Intent(requireActivity(), EditProfileActivity.class);
                 startActivity(intent);
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle logout logic here.
                 handleLogout();
             }
         });
 
-        return rootView;
+
     }
 
-    private void getProfile(String userId, TextView tvUserName, TextView tvEmail, TextView tvPhoneNumber) {
-        String getUrl = "http://coms-309-018.class.las.iastate.edu:8080/users/" + userId; // Fetch user info based on userId
+    private void getProfile(String userId) {
+        String getUrl = "http://coms-309-018.class.las.iastate.edu:8080/users/" + userId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl, null,
                 new Response.Listener<JSONObject>() {
@@ -78,9 +76,9 @@ public class ProfileFragment extends Fragment {
                             String email = response.getString("email");
                             String phoneNumber = response.getString("phoneNumber");
 
-                            tvUserName.setText(username); // Set the retrieved userName to TextView
-                            tvEmail.setText(email);
-                            tvPhoneNumber.setText(phoneNumber);
+                            binding.etUserName.setText(username);
+                            binding.etEmail.setText(email);
+                            binding.etPhoneNumber.setText(phoneNumber);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -97,9 +95,15 @@ public class ProfileFragment extends Fragment {
     }
 
     private void handleLogout() {
-        SharedPrefsUtil.clearUserData(getActivity()); // Clear user data using SharedPreferences utility.
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        SharedPrefsUtil.clearUserData(requireActivity());
+        Intent intent = new Intent(requireActivity(), LoginActivity.class);
         startActivity(intent);
-        getActivity().finish();
+        requireActivity().finish();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

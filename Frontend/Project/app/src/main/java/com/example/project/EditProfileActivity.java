@@ -24,6 +24,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Set up listeners
         setupButtonListeners();
+
     }
 
     private void setupButtonListeners() {
