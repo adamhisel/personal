@@ -69,4 +69,23 @@
         android:textSize="25dp"
         android:text="ADD PLAYER"
         android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:id = "@+id/fillText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif"
+        android:text=""
+        android:textColor="#00FF00"
+        android:textSize="20sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/backButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#000"
+        android:text="BACK TO ROSTER"
+        android:textColor="#FFFFFF" />
+
 </LinearLayout>

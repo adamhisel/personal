@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,11 +56,14 @@ public class EditRosterActivity extends AppCompatActivity {
         mQueue = Volley.newRequestQueue(this);
 
         Button add = findViewById(R.id.addPlayer);
+        Button back = findViewById(R.id.backButton);
+        TextView success = findViewById(R.id.fillText);
 
 
         name = findViewById(R.id.name);
         number = findViewById(R.id.number);
         position = findViewById(R.id.position);
+
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -80,6 +85,18 @@ public class EditRosterActivity extends AppCompatActivity {
 
                 postTeam();
                 linkUsertoTeam();
+
+                success.setText("Successfully added " + name.getEditText().getText());
+                name.getEditText().getText().clear();
+                number.getEditText().getText().clear();
+                position.getEditText().getText().clear();
+
+
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Intent intent = new Intent(EditRosterActivity.this, TeamRoster.class);
                 startActivity(intent);
             }
