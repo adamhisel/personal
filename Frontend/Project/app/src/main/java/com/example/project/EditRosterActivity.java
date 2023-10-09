@@ -18,11 +18,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,13 +69,14 @@ public class EditRosterActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            String teamName = intent.getStringExtra("key_string");
+           teamName = intent.getStringExtra("key_string");
+           String tempId =  intent.getStringExtra("id");
+           teamId = Integer.parseInt(tempId);
         }
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                postUser();
 
                 boolean isValidName = validateName();
                 boolean isValidNumber = validateNumber();
@@ -83,8 +86,9 @@ public class EditRosterActivity extends AppCompatActivity {
                     return;
                 }
 
-                postTeam();
-                linkUsertoTeam();
+                postUser();
+                findPlayer();
+                linkUserToTeam();
 
                 success.setText("Successfully added " + name.getEditText().getText());
                 name.getEditText().getText().clear();
@@ -103,7 +107,7 @@ public class EditRosterActivity extends AppCompatActivity {
         });
     }
 
-    private void postTeam() {
+    /*private void postTeam() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JSONObject postData = new JSONObject();
@@ -136,9 +140,10 @@ public class EditRosterActivity extends AppCompatActivity {
         });
 
         mQueue.add(jsonObjectRequest);
-    }
+    }*/
 
-    public void linkUsertoTeam() {
+    public void linkUserToTeam() {
+
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/players/" + playerId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
@@ -188,6 +193,8 @@ public class EditRosterActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }*/
 
+
+
     private void postUser() {
         //change this to address
         String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
@@ -198,7 +205,6 @@ public class EditRosterActivity extends AppCompatActivity {
             postData.put("number", number.getEditText().getText().toString());
             postData.put("position", position.getEditText().getText().toString());
 
-            //team_id to get what team they on
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -208,15 +214,8 @@ public class EditRosterActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject player = response.getJSONObject(String.valueOf(response.length()));
-
-                            playerId = player.getInt("id");
-
                             Log.d("PostUser", "Response received: " + response.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -227,6 +226,37 @@ public class EditRosterActivity extends AppCompatActivity {
         });
 
         mQueue.add(jsonObjectRequest);
+    }
+
+    public void findPlayer() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try {
+                    for (int i = 0; i < response.length(); i++) {
+                        JSONObject player = response.getJSONObject(i);
+                        String playerName = player.getString("playerName");
+                        if (playerName.equals(name.getEditText().getText().toString())) {
+                            playerId = player.getInt("id");
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
     }
 
     private Boolean validateName() {

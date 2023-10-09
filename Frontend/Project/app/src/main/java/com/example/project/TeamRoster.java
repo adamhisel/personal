@@ -41,6 +41,8 @@ public class TeamRoster extends AppCompatActivity {
 
     boolean exists = false;
 
+    private int teamId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +69,8 @@ public class TeamRoster extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TeamRoster.this, EditRosterActivity.class);
+                intent.putExtra("id", String.valueOf(teamId));
+                intent.putExtra("key_string", teamName.getEditText().getText().toString());
                 startActivity(intent);
             }
         });
@@ -93,14 +97,6 @@ public class TeamRoster extends AppCompatActivity {
         });
     }
 
-    public void addNewPlayer(){
-        Intent intent = new Intent(TeamRoster.this, EditRosterActivity.class);
-        intent.putExtra("key_string", teamName.getEditText().getText().toString());
-        startActivity(intent);
-    }
-
-
-
     public void findTeam() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
@@ -112,9 +108,9 @@ public class TeamRoster extends AppCompatActivity {
                         JSONObject team = response.getJSONObject(i);
                         String name = team.getString("teamName");
                         if(name.equals(teamName.getEditText().getText().toString())){
+                            teamId = team.getInt("id");
                             exists = true;
-                            int id = team.getInt("id");
-                            addPlayerDisplay(id);
+                            addPlayerDisplay(teamId);
                         }
 
                     }

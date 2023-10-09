@@ -8,8 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 
 
-import com.example.project.R;
-
 import com.example.project.databinding.ActivityMainBinding;
 
 
@@ -22,12 +20,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFrag(new HomeFragment());
+        replaceFrag(new HomeFragmentCoach());
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                replaceFrag(new HomeFragment());
+                replaceFrag(new HomeFragmentCoach());
             }
             else if(item.getItemId() == R.id.workout) {
                 replaceFrag(new WorkoutFragment());

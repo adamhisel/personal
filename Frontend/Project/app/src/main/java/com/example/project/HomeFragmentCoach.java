@@ -9,14 +9,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityMainBinding;
 
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragmentCoach extends Fragment {
 
     ActivityMainBinding binding;
 
@@ -49,6 +48,7 @@ public class HomeFragment extends Fragment {
 
         Button findTeam = (Button)view.findViewById(R.id.findTeam);
 
+        //jsonParseArray();
         addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,8 +66,6 @@ public class HomeFragment extends Fragment {
             }
 
         });
-
-        //jsonParseArray();
 
         return view;
 /*
@@ -93,25 +91,17 @@ public class HomeFragment extends Fragment {
             }
             });
 
-            addTeam.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    Intent intent = new Intent(getActivity(), AddTeamActivity.class);
-                    startActivity(intent);
-                }
-
-            });*/
+         */
     }
 
     public void jsonParseArray() {
-        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/teams/";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
-                    dynamicButtons = new ArrayList<>();
+                    //dynamicButtons = new ArrayList<>();
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject team = response.getJSONObject(i);
 
@@ -124,7 +114,7 @@ public class HomeFragment extends Fragment {
 
                         ll.addView(button, ll.getChildCount() - 1);
 
-                        dynamicButtons.add(button);
+                        //dynamicButtons.add(button);
                     }
 
                 } catch (JSONException e) {

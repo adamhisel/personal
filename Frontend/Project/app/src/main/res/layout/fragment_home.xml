@@ -12,7 +12,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id = "@+id/linearLayout"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragmentCoach">
 
     <TextView
         android:id="@+id/header"
