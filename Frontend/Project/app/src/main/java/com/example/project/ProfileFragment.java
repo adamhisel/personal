@@ -39,11 +39,20 @@ public class ProfileFragment extends Fragment {
         TextView tvUserName = rootView.findViewById(R.id.tvUserName);
         TextView tvEmail = rootView.findViewById(R.id.tvEmail);
         TextView tvPhoneNumber = rootView.findViewById(R.id.tvPhoneNumber);
+        Button btnEditProfile = rootView.findViewById(R.id.btnEditProfile);
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
 
 
         String userId = SharedPrefsUtil.getUserId(getActivity()); // Get userId from SharedPreferences
         getProfile(userId, tvUserName, tvEmail, tvPhoneNumber);
+
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +102,3 @@ public class ProfileFragment extends Fragment {
         getActivity().finish();
     }
 }
-
-
-
