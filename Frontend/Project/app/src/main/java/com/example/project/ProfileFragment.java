@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -39,7 +40,7 @@ public class ProfileFragment extends Fragment {
         TextView tvUserName = rootView.findViewById(R.id.tvUserName);
         TextView tvEmail = rootView.findViewById(R.id.tvEmail);
         TextView tvPhoneNumber = rootView.findViewById(R.id.tvPhoneNumber);
-        Button btnEditProfile = rootView.findViewById(R.id.btnEditProfile);
+        ImageButton btnEditProfile = rootView.findViewById(R.id.btnEditProfile);
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
 
 
