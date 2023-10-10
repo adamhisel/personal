@@ -2,9 +2,9 @@
     <string name="app_name">Project</string>
 
     <string-array name="user_types">
-        <item>Coach</item>
-        <item>Player</item>
-        <item>Fan</item>
+        <item>coach</item>
+        <item>player</item>
+        <item>fan</item>
     </string-array>
 
     <string-array name="player_positions">

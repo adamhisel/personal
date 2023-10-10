@@ -25,6 +25,7 @@ import org.json.JSONObject;
 public class RegistrationActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private ActivityRegistrationBinding binding;
     private static RequestQueue mQueue;
 
@@ -101,10 +102,14 @@ public class RegistrationActivity extends AppCompatActivity {
         }
 
         String url = BASE_URL + "users";
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+        String testUrl = LOCAL_URL + "users";
+
+        Log.d("PostData", postData.toString());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
                         handleSignUpResponse(response);
                     }
                 },
@@ -121,16 +126,15 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void handleSignUpResponse(JSONObject response) {
         try {
-            String message = response.getString("message");
-
-            if ("success".equals(message)) {
+            // Check if the response has a userName, indicating successful user creation
+            if (response.has("userName")) {
                 SharedPrefsUtil.saveUserData(
                         RegistrationActivity.this,
                         response.getString("userName"),
                         response.getString("email"),
                         response.getString("phoneNumber"),
                         response.getString("userType"),
-                        response.getString("userID")
+                        response.getString("userID")  // Temporary placeholder for userID
                 );
                 String userType = response.getString("userType");
                 Intent intent;

@@ -23,6 +23,7 @@ import org.json.JSONObject;
 public class PlayerRegistrationActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private ActivityPlayerRegistrationBinding binding;
     private static RequestQueue mQueue;
 
@@ -38,11 +39,13 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
         setupButtonListeners();
 
     }
+
     private void setupDropdownPlayerPositions() {
         String[] playerPositions = getResources().getStringArray(R.array.player_positions);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, playerPositions);
         binding.tvPosition.setAdapter(adapter);
     }
+
     private void setupButtonListeners() {
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +72,9 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
         }
 
         String url = BASE_URL + "players/" + userId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, postData,
+        String testUrl = LOCAL_URL + "players/" + 5;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, testUrl, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -90,9 +95,18 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
 
     private void handleUpdateResponse(JSONObject response) {
         try {
-            String message = response.getString("message");
+            // Check if the response has a userName, indicating successful user update
+            if (response.has("userName")) {
+                // Assuming you'd want to update the SharedPrefs with the new user data as well
+                SharedPrefsUtil.saveUserData(
+                        PlayerRegistrationActivity.this,
+                        response.getString("userName"),
+                        response.getString("email"),
+                        response.getString("phoneNumber"),
+                        response.getString("userType"),
+                        response.getString("userID")  // If your server response includes a userID
+                );
 
-            if ("success".equals(message)) {
                 Intent intent = new Intent(PlayerRegistrationActivity.this, MainActivity.class);
                 startActivity(intent);
             } else {
@@ -102,5 +116,6 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(PlayerRegistrationActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
         }
+
     }
 }
