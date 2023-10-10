@@ -7,10 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragmentPlayer extends Fragment {
 
     ActivityMainBinding binding;
 
@@ -39,35 +38,29 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_player, container, false);
 
         mQueue = Volley.newRequestQueue(requireContext());
 
         ll = view.findViewById(R.id.linearLayout);
 
-        Button addTeam = (Button)view.findViewById(R.id.addTeam);
 
         Button findTeam = (Button)view.findViewById(R.id.findTeam);
 
-        addTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddTeamActivity.class);
-                startActivity(intent);
-            }
-        });
+        TextView header = (TextView)view.findViewById(R.id.header);
 
+        header.setText("Hello, " + SharedPrefsUtil.getUserName(requireContext()));
+
+        //jsonParseArray();
         findTeam.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(getActivity(), TeamRoster.class);
+                Intent intent = new Intent(getActivity(), TeamRosterPlayer.class);
                 startActivity(intent);
             }
 
         });
-
-        //jsonParseArray();
 
         return view;
 /*
@@ -93,25 +86,17 @@ public class HomeFragment extends Fragment {
             }
             });
 
-            addTeam.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    Intent intent = new Intent(getActivity(), AddTeamActivity.class);
-                    startActivity(intent);
-                }
-
-            });*/
+         */
     }
 
     public void jsonParseArray() {
-        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/teams/";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
-                    dynamicButtons = new ArrayList<>();
+                    //dynamicButtons = new ArrayList<>();
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject team = response.getJSONObject(i);
 
@@ -124,7 +109,7 @@ public class HomeFragment extends Fragment {
 
                         ll.addView(button, ll.getChildCount() - 1);
 
-                        dynamicButtons.add(button);
+                        //dynamicButtons.add(button);
                     }
 
                 } catch (JSONException e) {

@@ -8,7 +8,7 @@
     android:backgroundTint="#C62C2C"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".TeamRoster">
+    tools:context=".TeamRosterCoach">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/teamname"
@@ -50,15 +50,6 @@
             app:layout_constraintVertical_bias="1.0">
 
         </TableLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#000"
-            android:textSize="25dp"
-            android:text="ADD PLAYER"
-            android:textColor="#FFFFFF" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backButton"
