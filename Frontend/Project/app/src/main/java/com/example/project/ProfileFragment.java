@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,12 +25,9 @@ import org.json.JSONObject;
 
 public class ProfileFragment extends Fragment {
 
-    private RequestQueue mQueue;
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private FragmentProfileBinding binding;
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
+    private static RequestQueue mQueue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,9 +63,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getProfile(String userId) {
-        String getUrl = "http://coms-309-018.class.las.iastate.edu:8080/users/" + userId;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getUrl, null,
+        String url = BASE_URL + userId;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -87,6 +84,7 @@ public class ProfileFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(requireActivity(), "Failed to fetch profile details!", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 });

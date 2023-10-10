@@ -6,6 +6,15 @@
         <item>Player</item>
         <item>Fan</item>
     </string-array>
+
+    <string-array name="player_positions">
+        <item>C</item>
+        <item>PG</item>
+        <item>SG</item>
+        <item>PF</item>
+        <item>SF</item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

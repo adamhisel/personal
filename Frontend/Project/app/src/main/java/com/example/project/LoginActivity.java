@@ -16,20 +16,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityLoginBinding;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static RequestQueue mQueue;
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private ActivityLoginBinding binding;
+    private static RequestQueue mQueue;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         mQueue = Volley.newRequestQueue(this);
@@ -68,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            String loginUrl = "http://coms-309-018.class.las.iastate.edu:8080/loginUser/" + userName + "/" + password;
+            String loginUrl = "BASE_URL" + userName + "/" + password;
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, loginUrl, null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -110,28 +113,36 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-    private Boolean validateUserName() {
-        String userName = binding.etUserName.getText().toString().trim();
+    private boolean isEmpty(String text) {
+        return text == null || text.trim().isEmpty();
+    }
 
-        if (userName.isEmpty()) {
-            binding.tilUserName.setError("Username cannot be empty");
-            return false;
+    private boolean setFieldError(TextInputLayout field, String errorText) {
+        field.setError(errorText);
+        return false;
+    }
+
+    private void clearFieldError(TextInputLayout field) {
+        field.setError(null);
+        field.setErrorEnabled(false);
+    }
+
+    private boolean validateUserName() {
+        String userName = binding.etUserName.getText().toString().trim();
+        if (isEmpty(userName)) {
+            return setFieldError(binding.tilUserName, "Field cannot be empty");
         } else {
-            binding.tilUserName.setError(null);
-            binding.tilUserName.setErrorEnabled(false);
+            clearFieldError(binding.tilUserName);
             return true;
         }
     }
 
-    private Boolean validatePassword() {
+    private boolean validatePassword() {
         String password = binding.etPassword.getText().toString().trim();
-
-        if (password.isEmpty()) {
-            binding.tilPassword.setError("Password cannot be empty");
-            return false;
+        if (isEmpty(password)) {
+            return setFieldError(binding.tilPassword, "Field cannot be empty");
         } else {
-            binding.tilPassword.setError(null);
-            binding.tilPassword.setErrorEnabled(false);
+            clearFieldError(binding.tilPassword);
             return true;
         }
     }
