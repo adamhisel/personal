@@ -59,6 +59,7 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
         String name = binding.etName.getText().toString().trim();
         String number = binding.etNumber.getText().toString().trim();
         String position = binding.tvPosition.getText().toString().trim();
+        String userType = SharedPrefsUtil.getUserType(this);
 
         String userId = SharedPrefsUtil.getUserId(this);
 
@@ -67,12 +68,13 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
             postData.put("playerName", name);
             postData.put("number", number);
             postData.put("position", position);
+            postData.put("userType", userType);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         String url = BASE_URL + "players/" + userId;
-        String testUrl = LOCAL_URL + "players/" + 5;
+        String testUrl = LOCAL_URL + "players/" + userId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, testUrl, postData,
                 new Response.Listener<JSONObject>() {
