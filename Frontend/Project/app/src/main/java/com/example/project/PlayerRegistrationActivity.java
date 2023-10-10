@@ -53,21 +53,22 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
     }
 
     private void handlePlayerInfoUpdate() {
+        String name = binding.etName.getText().toString().trim();
         String number = binding.etNumber.getText().toString().trim();
         String position = binding.tvPosition.getText().toString().trim();
 
-        // assuming userID is passed from the previous activity
-        String userID = getIntent().getStringExtra("userID");
+        String userId = SharedPrefsUtil.getUserId(this);
 
         JSONObject postData = new JSONObject();
         try {
+            postData.put("playerName", name);
             postData.put("number", number);
             postData.put("position", position);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        String url = BASE_URL + "users/" + userID;
+        String url = BASE_URL + "players/" + userId;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, postData,
                 new Response.Listener<JSONObject>() {
                     @Override

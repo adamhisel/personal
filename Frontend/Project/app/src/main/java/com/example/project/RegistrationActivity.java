@@ -135,10 +135,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 String userType = response.getString("userType");
                 Intent intent;
                 if ("player".equals(userType)) {
-                    // Redirect to the PlayerRegistrationActivity if the user is a player
                     intent = new Intent(RegistrationActivity.this, PlayerRegistrationActivity.class);
                 } else {
-                    // Otherwise, redirect to the MainActivity
                     intent = new Intent(RegistrationActivity.this, MainActivity.class);
                 }
                 startActivity(intent);
