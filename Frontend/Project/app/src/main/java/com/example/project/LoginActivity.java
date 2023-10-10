@@ -24,6 +24,7 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private ActivityLoginBinding binding;
     private static RequestQueue mQueue;
 
@@ -71,11 +72,14 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            String loginUrl = "BASE_URL" + userName + "/" + password;
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, loginUrl, null,
+            String loginUrl = BASE_URL + "loginUser/" + userName + "/" + password;
+            String testUrl = LOCAL_URL + "loginUser/" + userName + "/" + password;
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            Log.d("Response", response.toString());
                             handleLoginResponse(response, userName, password);
                         }
                     },

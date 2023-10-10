@@ -11,6 +11,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityEditProfileBinding;
 
 import org.json.JSONException;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 public class EditProfileActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private ActivityEditProfileBinding binding;
     private static RequestQueue mQueue;
 
@@ -29,6 +31,7 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setupButtonListeners();
+        mQueue = Volley.newRequestQueue(this);
     }
 
     private void setupButtonListeners() {
@@ -48,7 +51,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void handleSave() {
-        // Get the updated values
+        String userId = SharedPrefsUtil.getUserId(this);
+        // Updated values
         String updatedUserName = binding.etUserName.getText().toString().trim();
         String updatedEmail = binding.etEmail.getText().toString().trim();
         String updatedPhoneNumber = binding.etPhoneNumber.getText().toString().trim();
@@ -65,22 +69,29 @@ public class EditProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Create the PUT request
-        String url = BASE_URL + "";
+        String url = BASE_URL + "updateUser/" + userId;
+        String testUrl = LOCAL_URL + "updateUser/" + userId;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, postData,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Handle successful response
-                        Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-                        finish();
+                        try {
+                            String status = response.getString("message");
+                            if ("success".equals(status)) {
+                                Toast.makeText(EditProfileActivity.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                Toast.makeText(EditProfileActivity.this, "Error updating profile!", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(EditProfileActivity.this, "Error parsing response!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle error response
                         Toast.makeText(EditProfileActivity.this, "Error updating profile!", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }

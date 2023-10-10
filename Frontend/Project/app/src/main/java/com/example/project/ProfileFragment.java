@@ -26,6 +26,7 @@ import org.json.JSONObject;
 public class ProfileFragment extends Fragment {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private FragmentProfileBinding binding;
     private static RequestQueue mQueue;
 
@@ -40,6 +41,13 @@ public class ProfileFragment extends Fragment {
         setupButtonListeners();
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String userId = SharedPrefsUtil.getUserId(requireActivity());
+        getProfile(userId); // Fetches the profile data again after returning from EditProfileActivity
     }
 
     private void setupButtonListeners() {
@@ -63,8 +71,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getProfile(String userId) {
-        String url = BASE_URL + userId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        String url = BASE_URL + "users/" + userId;
+        String testUrl = LOCAL_URL + "users/" + userId;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

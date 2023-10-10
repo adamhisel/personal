@@ -20,17 +20,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        //if (SharedPrefsUtil.getUserType(this) == "Coach"){
+        if (SharedPrefsUtil.getUserType(this).equals("coach")){
             replaceFrag(new HomeFragmentCoach());
-        //}
-        //else{
-            //replaceFrag(new HomeFragmentPlayer());
-       // }
+        }
+        else{
+            replaceFrag(new HomeFragmentPlayer());
+       }
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                if (SharedPrefsUtil.getUserType(this) == "Coach"){
+                if (SharedPrefsUtil.getUserType(this).equals("coach")){
                     replaceFrag(new HomeFragmentCoach());
                 }
                 else{
