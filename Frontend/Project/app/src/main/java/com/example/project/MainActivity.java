@@ -20,12 +20,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFrag(new HomeFragmentCoach());
+        //if (SharedPrefsUtil.getUserType(this) == "Coach"){
+            replaceFrag(new HomeFragmentCoach());
+        //}
+        //else{
+            //replaceFrag(new HomeFragmentPlayer());
+       // }
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                replaceFrag(new HomeFragmentCoach());
+                if (SharedPrefsUtil.getUserType(this) == "Coach"){
+                    replaceFrag(new HomeFragmentCoach());
+                }
+                else{
+                    replaceFrag(new HomeFragmentPlayer());
+                }
             }
             else if(item.getItemId() == R.id.workout) {
                 replaceFrag(new WorkoutFragment());

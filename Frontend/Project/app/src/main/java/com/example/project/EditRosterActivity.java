@@ -6,13 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -101,7 +96,7 @@ public class EditRosterActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EditRosterActivity.this, TeamRoster.class);
+                Intent intent = new Intent(EditRosterActivity.this, TeamRosterCoach.class);
                 startActivity(intent);
             }
         });
@@ -240,6 +235,9 @@ public class EditRosterActivity extends AppCompatActivity {
                         String playerName = player.getString("playerName");
                         if (playerName.equals(name.getEditText().getText().toString())) {
                             playerId = player.getInt("id");
+                        }
+                        else{
+                            playerId = response.length()+1;
                         }
 
                     }

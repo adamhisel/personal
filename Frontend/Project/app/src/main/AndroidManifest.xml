@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".TeamRoster"
+            android:name=".TeamRosterCoach"
             android:exported="false" />
         <activity
             android:name=".AddTeamActivity"
@@ -28,6 +28,9 @@
             android:exported="false" />
         <activity
             android:name=".RegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TeamRosterPlayer"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

@@ -7,14 +7,9 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,7 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TeamRoster extends AppCompatActivity {
+public class TeamRosterCoach extends AppCompatActivity {
 
     TableLayout tl;
     private RequestQueue mQueue;
@@ -46,7 +41,7 @@ public class TeamRoster extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_team_roster);
+        setContentView(R.layout.activity_team_roster_coach);
 
         /*Bundle args = getArguments();
         if (args != null) {
@@ -68,7 +63,7 @@ public class TeamRoster extends AppCompatActivity {
         addPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TeamRoster.this, EditRosterActivity.class);
+                Intent intent = new Intent(TeamRosterCoach.this, EditRosterActivity.class);
                 intent.putExtra("id", String.valueOf(teamId));
                 intent.putExtra("key_string", teamName.getEditText().getText().toString());
                 startActivity(intent);
@@ -91,7 +86,7 @@ public class TeamRoster extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TeamRoster.this, MainActivity.class);
+                Intent intent = new Intent(TeamRosterCoach.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -167,12 +162,12 @@ public class TeamRoster extends AppCompatActivity {
 
                             android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
-                            TableRow tableRow = new TableRow(TeamRoster.this);
+                            TableRow tableRow = new TableRow(TeamRosterCoach.this);
 
                             Resources resources = getResources();
                             Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
 
-                            TextView textView = new TextView(TeamRoster.this);
+                            TextView textView = new TextView(TeamRosterCoach.this);
                             textView.setPadding(10, 10, 10, 10);
                             textView.setLayoutParams(trparams);
                             textView.setTextSize(25);
@@ -181,7 +176,7 @@ public class TeamRoster extends AppCompatActivity {
                             tableRow.addView(textView);
 
 
-                            TextView textView2 = new TextView(TeamRoster.this);
+                            TextView textView2 = new TextView(TeamRosterCoach.this);
                             textView2.setPadding(10, 10, 10, 10);
                             textView2.setLayoutParams(trparams);
                             textView2.setTextSize(25);
@@ -189,7 +184,7 @@ public class TeamRoster extends AppCompatActivity {
                             textView2.setText(name);
                             tableRow.addView(textView2);
 
-                            TextView textView3 = new TextView(TeamRoster.this);
+                            TextView textView3 = new TextView(TeamRosterCoach.this);
                             textView3.setPadding(10, 10, 10, 10);
                             textView3.setLayoutParams(trparams);
                             textView3.setTextSize(25);
@@ -205,12 +200,12 @@ public class TeamRoster extends AppCompatActivity {
 
                     android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
-                    TableRow tableRow = new TableRow(TeamRoster.this);
+                    TableRow tableRow = new TableRow(TeamRosterCoach.this);
 
                     Resources resources = getResources();
                     Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
 
-                    TextView textView = new TextView(TeamRoster.this);
+                    TextView textView = new TextView(TeamRosterCoach.this);
                     textView.setPadding(10, 10, 10, 10);
                     textView.setLayoutParams(trparams);
                     textView.setTextSize(25);
@@ -238,12 +233,12 @@ public class TeamRoster extends AppCompatActivity {
     public void makeHeader(){
         android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
-        TableRow tableRow = new TableRow(TeamRoster.this);
+        TableRow tableRow = new TableRow(TeamRosterCoach.this);
 
         Resources resources = getResources();
         Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
 
-        TextView textView = new TextView(TeamRoster.this);
+        TextView textView = new TextView(TeamRosterCoach.this);
         textView.setPadding(10, 10, 10, 10);
         textView.setLayoutParams(trparams);
         textView.setTextSize(25);
@@ -253,7 +248,7 @@ public class TeamRoster extends AppCompatActivity {
         tableRow.addView(textView);
 
 
-        TextView textView2 = new TextView(TeamRoster.this);
+        TextView textView2 = new TextView(TeamRosterCoach.this);
         textView2.setPadding(10, 10, 10, 10);
         textView2.setLayoutParams(trparams);
         textView2.setTextSize(25);
@@ -262,7 +257,7 @@ public class TeamRoster extends AppCompatActivity {
         textView2.setText("Name");
         tableRow.addView(textView2);
 
-        TextView textView3 = new TextView(TeamRoster.this);
+        TextView textView3 = new TextView(TeamRosterCoach.this);
         textView3.setPadding(10, 10, 10, 10);
         textView3.setLayoutParams(trparams);
         textView3.setTextSize(25);

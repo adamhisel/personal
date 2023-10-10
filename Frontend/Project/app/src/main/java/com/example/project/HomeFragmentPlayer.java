@@ -25,7 +25,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeFragmentCoach extends Fragment {
+public class HomeFragmentPlayer extends Fragment {
 
     ActivityMainBinding binding;
 
@@ -38,13 +38,12 @@ public class HomeFragmentCoach extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.fragment_home_coach, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_player, container, false);
 
         mQueue = Volley.newRequestQueue(requireContext());
 
         ll = view.findViewById(R.id.linearLayout);
 
-        Button addTeam = (Button)view.findViewById(R.id.addTeam);
 
         Button findTeam = (Button)view.findViewById(R.id.findTeam);
 
@@ -53,19 +52,11 @@ public class HomeFragmentCoach extends Fragment {
         header.setText("Hello, " + SharedPrefsUtil.getUserName(requireContext()));
 
         //jsonParseArray();
-        addTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddTeamActivity.class);
-                startActivity(intent);
-            }
-        });
-
         findTeam.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
+                Intent intent = new Intent(getActivity(), TeamRosterPlayer.class);
                 startActivity(intent);
             }
 
