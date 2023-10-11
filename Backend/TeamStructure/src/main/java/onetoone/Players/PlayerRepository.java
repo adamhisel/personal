@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
  * 
  */ 
 
-public interface PlayerRepository extends JpaRepository<Player, Long> {
+public interface PlayerRepository extends JpaRepository<Player, Long>  {
     Player findById(int id);
 
     @Transactional

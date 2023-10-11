@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    public int id;
     private String userName;
     private String userType;
     private String email;

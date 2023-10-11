@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import onetoone.Players.Player;
+import onetoone.Players.PlayerRepository;
 
 import java.util.List;
 
@@ -14,6 +16,9 @@ public class UserController {
     private final UserService userService;
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PlayerRepository playerRepository;
 
 
 
@@ -35,12 +40,36 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user){
-        if (user == null)
-            return failure;
-        userRepository.save(user);
-        return success;
+    void createUser(@RequestBody User user) {
+        if (user == null) {
+            throw new RuntimeException();
+        }
+
+        switch (user.getUserType()) {
+            case "player":
+                Player player = new Player(
+                        user.getUserName(),
+                        user.getUserType(),
+                        user.getEmail(),
+                        user.getPassword(),
+                        user.getPhoneNumber(),
+                        "", // Provide an empty string or default value for playerName
+                        "", // Provide an empty string or default value for position
+                        0    // Provide a default value for number
+                );
+                playerRepository.save(player);
+                break;
+
+            case "user":
+                userRepository.save(user);
+                break;
+
+            default:
+                // Handle the case where userType is not recognized
+                break;
+        }
     }
+
     @PostMapping("/updateUser/{id}")
     public void updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) {
         userService.updateUser(id,

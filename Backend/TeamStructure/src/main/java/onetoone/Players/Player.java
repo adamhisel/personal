@@ -7,6 +7,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import onetoone.Teams.Team;
+import onetoone.users.User;
 
 /**
  * 
@@ -15,15 +16,13 @@ import onetoone.Teams.Team;
 
 @Entity
 @Table(name = "player")
-public class Player {
+public class Player extends User {
     
     /* 
      * The annotation @ID marks the field below as the primary key for the table created by springboot
      * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+
 
     private String playerName;
 
@@ -45,8 +44,20 @@ public class Player {
         this.position = position;
     }
 
-    public Player() {
+    public Player(String userName, String userType, String email, String password, String phoneNumber, int number,  String position) {
+        super(userName, userType, email, password, phoneNumber);
+        this.number = number;
+        this.position = position;
     }
+
+    public Player(String userName, String userType, String email, String password, String phoneNumber, String playerName, String position, int number) {
+        super(userName, userType, email, password, phoneNumber);
+        this.number = number;
+        this.position = position;
+        this.playerName=playerName;
+    }
+
+
 
     // =============================== Getters and Setters for each field ================================== //
 
