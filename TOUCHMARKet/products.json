@@ -1,0 +1,224 @@
+{
+    "products":[
+        {
+            "productId": "1",
+            "name": "iPhone 14",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2022",
+            "price": "$699",
+            "storage": "128GB",
+            "size": "6.1 in",
+            "battery": "3,279 mAh"
+        },
+        {
+            "productId": "2",
+            "name": "iPhone 14 Plus",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2022",
+            "price": "$799",
+            "storage": "128GB",
+            "size": "6.7 in",
+            "battery": "4,325 mAh"
+        },
+        {
+            "productId": "3",
+            "name": "iPhone 15",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2023",
+            "price": "$799",
+            "storage": "128GB",
+            "size": "6.1 in",
+            "battery": "3,349 mAh"
+        }, 
+        {
+            "productId": "4",
+            "name": "iPhone 15 Plus",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2023",
+            "price": "$899",
+            "storage": "128GB",
+            "size": "6.7 in",
+            "battery": "4,383 mAh"
+        },
+        {
+            "productId": "5",
+            "name": "iPhone 13",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2021",
+            "price": "$599",
+            "storage": "128GB",
+            "size": "6.1 in",
+            "battery": "3,227 mAh"
+        },
+        {
+            "productId": "6",
+            "name": "iPhone 13 mini",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2021",
+            "price": "$610",
+            "storage": "128GB",
+            "size": "6.1 in",
+            "battery": "2,406 mAh"
+        },
+        {
+            "productId": "7",
+            "name": "Galaxy Z Flip5",
+            "type": "Smartphone",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$999",
+            "storage": "256GB",
+            "size": "6.7 in",
+            "battery": "3,700 mAh"
+        },
+        {
+            "productId": "8",
+            "name": "Galaxy Z Fold5",
+            "type": "Smartphone",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$1799",
+            "storage": "256GB",
+            "size": "7.6 in",
+            "battery": "4,400 mAh"
+        },
+        {
+            "productId": "9",
+            "name": "Galaxy S23 Ultra",
+            "type": "Smartphone",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$1199",
+            "storage": "256GB",
+            "size": "6.8 in",
+            "battery": "5,000 mAh"
+        },
+        {
+            "productId": "10",
+            "name": "Galaxy A54 5G",
+            "type": "Smartphone",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$399",
+            "storage": "128GB",
+            "size": "6.4 in",
+            "battery": "5,000 mAh"
+        },
+        {
+            "productId": "11",
+            "name": "Apple Watch Series 9",
+            "type": "Smartwatch",
+            "brand": "Apple",
+            "year": "2023",
+            "price": "$399",
+            "storage": "64GB",
+            "size": "41 mm",
+            "battery": "282 mAh"
+        },
+        {
+            "productId": "12",
+            "name": "Apple Watch Ultra 2",
+            "type": "Smartwatch",
+            "brand": "Apple",
+            "year": "2023",
+            "price": "$799",
+            "storage": "64GB",
+            "size": "49 mm",
+            "battery": "564 mAh"
+        },
+        {
+            "productId": "13",
+            "name": "Apple Watch Hermès",
+            "type": "Smartwatch",
+            "brand": "Apple",
+            "year": "2023",
+            "price": "$1249",
+            "storage": "64GB",
+            "size": "41 mm",
+            "battery": "246 mAh"
+        },
+        {
+            "productId": "14",
+            "name": "Galaxy Watch6",
+            "type": "Smartwatch",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$269",
+            "storage": "16GB",
+            "size": "40 mm",
+            "battery": "300 mAh"
+        },
+        {
+            "productId": "15",
+            "name": "Galaxy Watch5",
+            "type": "Smartwatch",
+            "brand": "Samsung",
+            "year": "2022",
+            "price": "$197",
+            "storage": "16GB",
+            "size": "40 mm",
+            "battery": "284 mAh"
+        },
+        {
+            "productId": "16",
+            "name": "Galaxy Watch5 Pro",
+            "type": "Smartwatch",
+            "brand": "Samsung",
+            "year": "2022",
+            "price": "$399",
+            "storage": "16GB",
+            "size": "45 mm",
+            "battery": "590 mAh"
+        },
+        {
+            "productId": "17",
+            "name": "Venu 3S",
+            "type": "Smartwatch",
+            "brand": "Garmin",
+            "year": "2023",
+            "price": "$449",
+            "storage": "8GB",
+            "size": "41 mm",
+            "battery": "Up to 14 days"
+        },
+        {
+            "productId": "18",
+            "name": "vívoactive 5",
+            "type": "Smartwatch",
+            "brand": "Garmin",
+            "year": "2023",
+            "price": "$299",
+            "storage": "8GB",
+            "size": "42 mm",
+            "battery": "Up to 11 days"
+        },
+        {
+            "productId": "19",
+            "name": "AirPods (2nd generation)",
+            "type": "Wirless Headphones",
+            "brand": "Apple",
+            "year": "2019",
+            "price": "$129",
+            "storage": "",
+            "size": "42 mm",
+            "battery": "Up to 11 days"
+        },
+        
+        
+
+
+
+
+
+
+
+
+    ]
+    
+}
