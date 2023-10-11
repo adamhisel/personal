@@ -185,7 +185,7 @@
             "price": "$449",
             "storage": "8GB",
             "size": "41 mm",
-            "battery": "Up to 14 days"
+            "battery": "480 mAh"
         },
         {
             "productId": "18",
@@ -196,28 +196,184 @@
             "price": "$299",
             "storage": "8GB",
             "size": "42 mm",
-            "battery": "Up to 11 days"
+            "battery": "500 mAh"
         },
         {
             "productId": "19",
             "name": "AirPods (2nd generation)",
-            "type": "Wirless Headphones",
+            "type": "Wireless Headphones",
             "brand": "Apple",
             "year": "2019",
             "price": "$129",
             "storage": "",
-            "size": "42 mm",
-            "battery": "Up to 11 days"
+            "size": "",
+            "battery": "43.4 mAh"
         },
-        
-        
-
-
-
-
-
-
-
+        {
+            "productId": "20",
+            "name": "AirPods (3rd generation)",
+            "type": "Wireless Headphones",
+            "brand": "Apple",
+            "year": "2021",
+            "price": "$169",
+            "storage": "",
+            "size": "",
+            "battery": "43.4 mAh"
+        },
+        {
+            "productId": "21",
+            "name": "AirPods Pro (2nd Generation)",
+            "type": "Wireless Headphones",
+            "brand": "Apple",
+            "year": "2022",
+            "price": "$249",
+            "storage": "",
+            "size": "",
+            "battery": "49.7 mAh"
+        },
+        {
+            "productId": "22",
+            "name": "Galaxy Buds2 Pro",
+            "type": "Wireless Headphones",
+            "brand": "Samsung",
+            "year": "2022",
+            "price": "$230",
+            "storage": "",
+            "size": "",
+            "battery": "61 mAh"
+        },
+        {
+            "productId": "23",
+            "name": "Galaxy Buds Live",
+            "type": "Wireless Headphones",
+            "brand": "Samsung",
+            "year": "2020",
+            "price": "$79",
+            "storage": "",
+            "size": "",
+            "battery": "59 mAh"
+        },
+        {
+            "productId": "24",
+            "name": "Beats Studio Pro",
+            "type": "Wireless Headphones",
+            "brand": "Beats By Dre",
+            "year": "2023",
+            "price": "$349",
+            "storage": "",
+            "size": "",
+            "battery": "250 mAh"
+        }, 
+        {
+            "productId": "25",
+            "name": "Beats Fit Pro",
+            "type": "Wireless Headphones",
+            "brand": "Beats By Dre",
+            "year": "2021",
+            "price": "$199",
+            "storage": "",
+            "size": "",
+            "battery": "85 mAh"
+        },
+        {
+            "productId": "26",
+            "name": "iPad Pro",
+            "type": "Tablet",
+            "brand": "Apple",
+            "year": "2022",
+            "price": "$799",
+            "storage": "128GB",
+            "size": "12.9 in",
+            "battery": "10,758 mAh"
+        },
+        {
+            "productId": "27",
+            "name": "iPad mini",
+            "type": "Tablet",
+            "brand": "Apple",
+            "year": "2022",
+            "price": "$499",
+            "storage": "64GB",
+            "size": "8.3 in",
+            "battery": "5,124 mAh"
+        },
+        {
+            "productId": "28",
+            "name": "iPad Air",
+            "type": "Tablet",
+            "brand": "Apple",
+            "year": "2022",
+            "price": "$599",
+            "storage": "64GB",
+            "size": "10.9 in",
+            "battery": "8,600 mAh"
+        },
+        {
+            "productId": "29",
+            "name": "Galaxy Tab S9 Ultra",
+            "type": "Tablet",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$1199",
+            "storage": "512GB",
+            "size": "14.6 in",
+            "battery": "11,200 mAh"
+        },
+        {
+            "productId": "30",
+            "name": "Galaxy Tab S9",
+            "type": "Tablet",
+            "brand": "Samsung",
+            "year": "2023",
+            "price": "$799",
+            "storage": "256GB",
+            "size": "11 in",
+            "battery": "8,400 mAh"
+        },
+        {
+            "productId": "31",
+            "name": "Pixel Tablet",
+            "type": "Tablet",
+            "brand": "Google",
+            "year": "2023",
+            "price": "$419",
+            "storage": "128GB",
+            "size": "10.95 in",
+            "battery": "7,020 mAh"
+        },
+        {
+            "productId": "32",
+            "name": "Pixel 7",
+            "type": "Smartphone",
+            "brand": "Google",
+            "year": "2022",
+            "price": "$599",
+            "storage": "128GB",
+            "size": "6.3 in",
+            "battery": "4,355 mAh"
+        },
+        {
+            "productId": "33",
+            "name": "Pixel Buds Pro",
+            "type": "Wireless Headphones",
+            "brand": "Google",
+            "year": "2022",
+            "price": "$199",
+            "storage": "",
+            "size": "",
+            "battery": "59 mAh"
+        },
+        {
+            "productId": "34",
+            "name": "Pixel Watch",
+            "type": "Smartwatch",
+            "brand": "Google",
+            "year": "2022",
+            "price": "$279",
+            "storage": "32GB",
+            "size": "41 mm",
+            "battery": "300 mAh"
+        }
 
     ]
     
