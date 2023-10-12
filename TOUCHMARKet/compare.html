@@ -17,6 +17,8 @@
 
 <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
+
+
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -98,7 +100,7 @@
 
     
     <!-- Custom styles for this template -->
-    <link href="product.css" rel="stylesheet">
+    <link href="compare.css" rel="stylesheet">
   
 
     
@@ -149,7 +151,7 @@
 </nav>
 
 <main>
-
+    <script src="./compare.js"></script>
 
   <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
     <div class="text-bg-dark me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
@@ -157,11 +159,16 @@
         <h2 class="display-5">Choose Product</h2>
         <p class="lead"></p>
       </div>
-      <div class="bg-body-tertiary shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+      <div class="bg-body-tertiary shadow-sm mx-auto" style="width: 80%; height: 500px; border-radius: 21px 21px 0 0;">
         <div class="col-lg-6 col-xxl-4 my-5 mx-auto">
             <div class="d-grid gap-2">
-                <input type="text" id="search-box" placeholder="Search for items">
-                <input type="button" class = "btn btn-primary" value="Search">
+                <form action="/search" method="get" id="search-form1">
+                    <input type="text" id = "search-input1" placeholder="Search...">
+                    <input type="button" id = "button1"class = "btn btn-primary" value="Search">
+                </form>
+                <div id="results1">
+                    <img id="image1" src=""  width = "" height = "">
+                </div>
             </div>
           </div>
     </div>
@@ -171,11 +178,16 @@
         <h2 class="display-5">Choose Product</h2>
         <p class="lead"></p>
       </div>
-      <div class="bg-body-tertiary shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;">
+      <div class="bg-body-tertiary shadow-sm mx-auto" style="width: 80%; height: 500px; border-radius: 21px 21px 0 0;">
         <div class="col-lg-6 col-xxl-4 my-5 mx-auto">
             <div class="d-grid gap-2">
-                <input type="text" id="search-box" placeholder="Search for items">
-                <input type="button" class = "btn btn-primary" value="Search">
+                <form action="/search" method="get" id="search-form2">
+                    <input type="text" id = "search-input2" placeholder="Search...">
+                    <input type="button" id = "button2" class = "btn btn-primary" value="Search">
+                </form>
+                <div id="results2">
+                    <img id="image2" src="" >
+                </div>
             </div>
           </div>
         </div>
@@ -183,20 +195,28 @@
   </div>
 
   <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
-    <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-      <div class="my-3 p-3">
-        <h2 class="display-5">Product Information</h2>
-        <p class="lead"></p>
+    <div class="bg-body-tertiary me-md-1 pt-1 px-1 pt-md-1 px-md-1 text-center overflow-hidden">
+      <div>
+        <h2>Product Information</h2>
+        <h3 id="productName1"></h3>
+        <p class="lead" id="info1">
+
+        </p>
       </div>
     </div>
-    <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-      <div class="my-3 py-3">
-        <h2 class="display-5">Product Information</h2>
-        <p class="lead"></p>
+    <div class="bg-body-tertiary me-md-1 pt-1 px-1 pt-md-1 px-md-1 text-center overflow-hidden">
+      <div>
+        <h2>Product Information</h2>
+        <h3 id="productName2"></h3>
+        <p class="lead" id="info2">
+
+        </p>
       </div>
     </div>
   </div>
 </main>
+
+
 
 <footer class="container py-2">
   <div class="row">
