@@ -1,17 +1,18 @@
 .container {
-  max-width: 960px;
+  max-width: 900px;
+}
+.containerImage{
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  width: 100vw;
+  height: 100vh;
 }
 
-
-
-.icon-link > .bi {
-  width: .75em;
-  height: .75em;
+img {
+  max-width: 90%; 
+  max-height: 90%; 
 }
-
-/*
- * Custom translucent site header
- */
 
 .site-header {
   background-color: rgba(0, 0, 0, .85);
@@ -27,44 +28,6 @@
   text-decoration: none;
 }
 
-/*
- * Dummy devices (replace them with your own or something else entirely!)
- */
-
-.product-device {
-  position: absolute;
-  right: 10%;
-  bottom: -30%;
-  width: 300px;
-  height: 540px;
-  background-color: #333;
-  border-radius: 21px;
-  transform: rotate(30deg);
-}
-
-.product-device::before {
-  position: absolute;
-  top: 10%;
-  right: 10px;
-  bottom: 10%;
-  left: 10px;
-  content: "";
-  background-color: rgba(255, 255, 255, .1);
-  border-radius: 5px;
-}
-
-.product-device-2 {
-  top: -25%;
-  right: auto;
-  bottom: 0;
-  left: 5%;
-  background-color: #e5e5e5;
-}
-
-
-/*
- * Extra utilities
- */
 
 .flex-equal > * {
   flex: 1;
@@ -73,4 +36,55 @@
   .flex-md-equal > * {
     flex: 1;
   }
+}
+
+.searchForm {
+  display: flex; 
+  align-items: center; 
+}
+
+.searchInput {
+  flex: 1; 
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submitButton {
+  margin-left: 10px; 
+  padding: 10px;
+  background-color: #0073e6; 
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+#suggestionList {
+  position: absolute;
+  width: 100%;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  display: none;
+  height: 200px;
+  overflow: auto;
+}
+
+.li {
+  cursor: pointer;
+  background-color: #8e8e8e;
+}
+
+li:hover {
+  background-color: #e06666;
+  border-radius: 50%;
+}
+
+footer .list-unstyled li {
+  background-color: transparent;
+  border-radius: 0;
 }
