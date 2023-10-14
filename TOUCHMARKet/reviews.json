@@ -1,0 +1,86 @@
+{
+    "reviews":[
+        {
+            "device": "iPhone 13 mini",
+            "nameOfUser": "Jennifer N.",
+            "stars": "images/rating3star.png",
+            "description": "The phone came within two days of me placing the order and it looked brand new, literally no signs of wear. I tried four times to transfer my data from another iPhone to this new iPhone. I tried using my computer, the and previous iPhone for the transfer. The phone would not move past the iOS 17 update, I left it overnight in hopes 3 hours simply wasn't enough time."
+        },
+        {
+            "device": "Galaxy Z Fold5",
+            "nameOfUser": "Tyler Nguyen",
+            "stars": "images/rating5star.png",
+            "description": "good phone , its not the greatest but its alright you get what you pay for."
+        }
+        ,
+        {
+            "device": "Galaxy A54 5G",
+            "nameOfUser": "Anita H.",
+            "stars": "images/rating4star.png",
+            "description": "It was time my husband and I changed wireless carriers in order to save some money each month. I needed unlocked phones and selected this make and model due to the reviews and the fact that it was a well-known brand. It's taking a bit of getting used to since our previous phones were another brand- and very old (for a cell phone). We have had no issues with the setup."
+        }
+        ,
+        {
+            "device": "Apple Watch Series 9",
+            "nameOfUser": "Rhea",
+            "stars": "images/rating5star.png",
+            "description": "I got my Apple Watch 9 41mm directly from Apple on preorder, and I’m thrilled with it. I got the Starlight case with the sport band. I also bought a Starlight Nike sport loop as well."
+        }
+        ,
+        {
+            "device": "Galaxy Watch6",
+            "nameOfUser": "Corey Thomas",
+            "stars": "images/rating5star.png",
+            "description": "I upgraded from my Galaxy watch 4 classic. This new one has a way better battery life, better screen, and better health stuff. I have all the health features turned on and only use about 50% of the battery life each day. I even have the screen set to always on."
+        }
+        ,
+        {
+            "device": "Galaxy Watch5 Pro",
+            "nameOfUser": "Victor Espinal",
+            "stars": "images/rating3star.png",
+            "description": "This watch is everything I was looking for other than battery (Have yet to optimize all battery saving options via YouTube help). I charged it from dead in the box and once it hit 50% it heated up and turned bluish red on the screen and quit working (dark screen and dead)."
+        }
+        ,
+        {
+            "device": "AirPods (2nd generation)",
+            "nameOfUser": "James M.",
+            "stars": "images/rating4star.png",
+            "description": "Taking the Apple AirPods at face value, they're a solid headset for the money! If you already have the original, first generation AirPods and just want to upgrade, not a bad option either. The 2nd generation AirPods feature an improved software chip & runs off of BlueTooth 5.0 vs 4.1 (Gen 1). "
+        }
+        ,
+        {
+            "device": "AirPods Pro (2nd Generation)",
+            "nameOfUser": "Akram",
+            "stars": "images/rating5star.png",
+            "description": "Everything works perfectly, the lightning cable is in the box but there is no ear tips so I can’t change one and an AirPod falls off"
+        }
+        ,
+        {
+            "device": "Beats Studio Pro",
+            "nameOfUser": "Karen O.",
+            "stars": "images/rating1star.png",
+            "description": "These do not go over the ears as described which is the main reason for buying these but one look and I didn’t approve. I prefer over the ears which is why I returned them but I wanted to give these a try so I listened to the quality of the sounds of my music as well as the volume."
+        }
+        ,
+        {
+            "device": "iPad Pro",
+            "nameOfUser": "Marshall Mathers",
+            "stars": "images/rating2star.png",
+            "description": "Constantly freezes. Constantly lags. Has way more glitches than can be mentioned. Absolute dumpster fire."
+        }
+        ,
+        {
+            "device": "iPad Air",
+            "nameOfUser": "Liz",
+            "stars": "images/rating5star.png",
+            "description": "I have had a couple other iPad and Android tablets that did not have the specs and quality that this one does. The size is perfect and the display color and clarity is stunning. Due to its battery size it takes over 2 hours to charge."
+        }
+        ,
+        {
+            "device": "Pixel Tablet",
+            "nameOfUser": "Hannah C",
+            "stars": "images/rating4star.png",
+            "description": "Pretty cool. Very long battery life. The magnet on the dock is really strong, can't really take it off the dock with one hand."
+        }
+    ]
+}

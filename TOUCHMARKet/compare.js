@@ -8,16 +8,16 @@ fetch('products.json')
 
 function compareProducts(myProducts){
     
-    const form1 = document.getElementById('form1');
-    const form2 = document.getElementById('form2');
-    const button1 = document.getElementById('button1');
-    const searchInput1 = document.getElementById('search-input1');
+    const form1 = document.getElementById("form1");
+    const form2 = document.getElementById("form2");
+    const button1 = document.getElementById("button1");
+    const searchInput1 = document.getElementById("search-input1");
 
     const suggestions1 = document.getElementById("suggestions1");
     const suggestions2 = document.getElementById("suggestions2");
    
-    const button2 = document.getElementById('button2');
-    const searchInput2 = document.getElementById('search-input2');
+    const button2 = document.getElementById("button2");
+    const searchInput2 = document.getElementById("search-input2");
 
     const nameArr = [];
 
@@ -43,6 +43,7 @@ function compareProducts(myProducts){
           suggestions2.style.display = "none";
         }
     });
+
 
     button1.addEventListener('click', function (e) {
 

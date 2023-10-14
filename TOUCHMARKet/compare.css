@@ -10,8 +10,8 @@
 }
 
 img {
-  max-width: 90%; 
-  max-height: 90%; 
+  max-width: 100%; 
+  max-height: 100%; 
 }
 
 .site-header {
@@ -81,7 +81,7 @@ img {
 
 li:hover {
   background-color: #e06666;
-  border-radius: 50%;
+  border-radius: 10px;
 }
 
 footer .list-unstyled li {
