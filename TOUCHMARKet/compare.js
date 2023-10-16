@@ -73,38 +73,6 @@ function compareProducts(myProducts){
         findProductInfo(myProducts, searchVal, "info2", "productName2");
     });
 
-    /*form1.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            var searchVal = searchInput1.value.toLowerCase();
-            if(searchVal == ""){
-                return;
-            }
-            var productImage = findProductImage(myProducts, searchVal); 
-    
-            displayImage(productImage, "image1");
-            findProductInfo(myProducts, searchVal, "info1", "productName1");
-        }
-        else{
-            return;
-        }
-      });
-
-      form2.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            var searchVal = searchInput2.value.toLowerCase();
-            if(searchVal == ""){
-                return;
-            }
-            var productImage = findProductImage(myProducts, searchVal); 
-
-            displayImage(productImage, "image2");
-            findProductInfo(myProducts, searchVal, "info2", "productName2");
-        }
-        else{
-            return;
-        }
-      });*/
-
 }
 
 function makeNameArray(myProducts, nameArr){
