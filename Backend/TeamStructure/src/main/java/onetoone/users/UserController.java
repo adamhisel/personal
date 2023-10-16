@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import onetoone.Players.Player;
+import onetoone.Players.PlayerRepository;
 
 import java.util.List;
 
@@ -14,6 +16,9 @@ public class UserController {
     private final UserService userService;
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PlayerRepository playerRepository;
 
 
 
@@ -35,17 +40,18 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user){
-        if (user == null)
-            return failure;
-        userRepository.save(user);
-        return success;
+    void createUser(@RequestBody User user) {
+        if (user == null) {
+            throw new RuntimeException();
+        }
+
+
     }
+
     @PostMapping("/updateUser/{id}")
     public void updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) {
         userService.updateUser(id,
                 request.getUserName(),
-                request.getUserType(),
                 request.getEmail(),
                 request.getPassword(),
                 request.getPhoneNumber());
@@ -62,5 +68,5 @@ public class UserController {
         return userRepository.findByuserNameAndPassword(userName,password);
     }
 
-    }
+}
 

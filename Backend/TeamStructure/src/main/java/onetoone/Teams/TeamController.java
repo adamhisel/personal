@@ -15,10 +15,10 @@ import onetoone.Players.Player;
 import onetoone.Players.PlayerRepository;
 
 /**
- * 
+ *
  * @author Vivek Bengre
- * 
- */ 
+ *
+ */
 
 @RestController
 public class TeamController {
@@ -65,7 +65,7 @@ public class TeamController {
         if(team == null || laptop == null)
             return failure;
         laptop.setTeam(team);
-        team.setPlayer(laptop);
+        team.addPlayer(laptop);
         teamRepository.save(team);
         return success;
     }
