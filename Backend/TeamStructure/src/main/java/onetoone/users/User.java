@@ -11,10 +11,10 @@ public class User{
     @GeneratedValue(strategy = GenerationType.AUTO)
     public int id;
     private String userName;
-    private String userType;
     private String email;
     private String password;
     private String phoneNumber;
+
 
 
     @JsonIgnore
@@ -24,9 +24,8 @@ public class User{
         // You can initialize any default values here if needed.
     }
 
-    public User(String userName, String userType, String email,String password, String phoneNumber){
+    public User(String userName, String email,String password, String phoneNumber){
         this.userName = userName;
-        this.userType = userType;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
@@ -48,14 +47,6 @@ public class User{
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
     }
 
     public String getEmail() {

@@ -6,9 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 import onetoone.Players.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -36,15 +39,16 @@ public class Team {
      * in the database (more info : https://www.baeldung.com/jpa-cascade-types)
      * @JoinColumn defines the ownership of the foreign key i.e. the user table will have a field called laptop_id
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_id")
-    private Player player;
+    @OneToMany
+    private List<Player> players;
 
     public Team(String teamName) {
         this.teamName = teamName;
+        players = new ArrayList<>();
     }
 
     public Team() {
+        players = new ArrayList<>();
     }
 
     // =============================== Getters and Setters for each field ================================== //
@@ -61,10 +65,14 @@ public class Team {
 
     public void setTeamName(String teamName) { this.teamName = teamName; }
 
-    public Player getPlayer(){ return player; }
+    public List getPlayers(){ return players; }
 
-    public void setPlayer(Player player){
-        this.player = player;
+    public void setPlayers(List<Player> players){
+        this.players = players;
+    }
+
+    public void addPlayer(Player player){
+        this.players.add(player);
     }
     
 }

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import onetoone.Teams.Team;
-import onetoone.users.User;
+
 
 /**
  * 
@@ -15,14 +15,15 @@ import onetoone.users.User;
  */ 
 
 @Entity
-@Table(name = "player")
-public class Player extends User {
+public class Player {
     
     /* 
      * The annotation @ID marks the field below as the primary key for the table created by springboot
      * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
      */
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    int id;
 
     private String playerName;
 
@@ -34,7 +35,8 @@ public class Player extends User {
      * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
      * @JsonIgnore is to assure that there is no infinite loop while returning either user/laptop objects (laptop->user->laptop->...)
      */
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "team_id")
     @JsonIgnore
     private Team team;
 
@@ -44,19 +46,9 @@ public class Player extends User {
         this.position = position;
     }
 
-    public Player(String userName, String userType, String email, String password, String phoneNumber, int number,  String position) {
-        super(userName, userType, email, password, phoneNumber);
-        this.number = number;
-        this.position = position;
-    }
+    public Player(){
 
-    public Player(String userName, String userType, String email, String password, String phoneNumber, String playerName, String position, int number) {
-        super(userName, userType, email, password, phoneNumber);
-        this.number = number;
-        this.position = position;
-        this.playerName=playerName;
     }
-
 
 
     // =============================== Getters and Setters for each field ================================== //

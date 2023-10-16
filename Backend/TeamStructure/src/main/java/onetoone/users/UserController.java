@@ -45,36 +45,13 @@ public class UserController {
             throw new RuntimeException();
         }
 
-        switch (user.getUserType()) {
-            case "player":
-                Player player = new Player(
-                        user.getUserName(),
-                        user.getUserType(),
-                        user.getEmail(),
-                        user.getPassword(),
-                        user.getPhoneNumber(),
-                        "", // Provide an empty string or default value for playerName
-                        "", // Provide an empty string or default value for position
-                        0    // Provide a default value for number
-                );
-                playerRepository.save(player);
-                break;
 
-            case "user":
-                userRepository.save(user);
-                break;
-
-            default:
-                // Handle the case where userType is not recognized
-                break;
-        }
     }
 
     @PostMapping("/updateUser/{id}")
     public void updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) {
         userService.updateUser(id,
                 request.getUserName(),
-                request.getUserType(),
                 request.getEmail(),
                 request.getPassword(),
                 request.getPhoneNumber());
