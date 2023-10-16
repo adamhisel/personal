@@ -1,0 +1,14 @@
+.container {
+  display: flex; /* Use flexbox to create a horizontal layout */
+  align-items: center; /* Vertically center the content */
+}
+
+.picture {
+  width: 50px; /* Adjust the width of your thumbnail as needed */
+  height: auto; /* Maintain the aspect ratio */
+  margin-right: 20px; /* Add some space between the image and text */
+}
+
+.product-des {
+  flex: 1; /* Allow the text block to take up remaining space */
+}

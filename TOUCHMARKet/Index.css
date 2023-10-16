@@ -1,0 +1,27 @@
+.title {
+    display: flex;
+    align-items: center;
+}
+.subtitle {
+    display: flex;
+    align-items: center;
+}
+.left-pic {
+    width: 300px; /* Adjust the width of your thumbnail as needed */
+    height: auto; /* Maintain the aspect ratio */
+    margin-left: 20px;
+
+}
+.right-pic {
+    width: 300px; /* Adjust the width of your thumbnail as needed */
+    height: auto; /* Maintain the aspect ratio */
+    margin-right: 80px;
+}
+.lead {
+    width:auto;
+}
+.samsung-pic {
+    width: auto;
+    align-items: center;
+}
+
