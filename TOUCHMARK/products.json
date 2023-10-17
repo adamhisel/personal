@@ -10,7 +10,7 @@
             "storage": "128GB",
             "size": "6.1 in",
             "battery": "3,279 mAh",
-            "url": "https://m.media-amazon.com/images/I/61bK6PMOC3L._AC_SX679_.jpg"
+            "url": "https://th.bing.com/th/id/OIP.3NKSMbPh1WiuinUPXg7jIwAAAA?pid=ImgDet&rs=1"
         },
         {
             "productId": "2",
@@ -121,6 +121,30 @@
             "url": "https://m.media-amazon.com/images/I/61A+wkddftL._AC_SX679_.jpg"
         },
         {
+            "productId": "31",
+            "name": "Pixel 7",
+            "type": "Smartphone",
+            "brand": "Google",
+            "year": "2022",
+            "price": "$599",
+            "storage": "128GB",
+            "size": "6.3 in",
+            "battery": "4,355 mAh",
+            "url": "https://ss7.vzw.com/is/image/VerizonWireless/google-pixel7a-snow-ga04263-us?wid=930&hei=930&fmt=webp"
+        },
+        {
+            "productId": "36",
+            "name": "iPhone 12",
+            "type": "Smartphone",
+            "brand": "Apple",
+            "year": "2020",
+            "price": "$599",
+            "storage": "128GB",
+            "size": "6.1 in",
+            "battery": "2,815 mAh",
+            "url": "https://th.bing.com/th/id/R.7b402f9edf054c72906ae6bacb8f04d8?rik=deZDuFgdr2eOJQ&pid=ImgRaw&r=0"
+        },
+        {
             "productId": "11",
             "name": "Apple Watch Series 9",
             "type": "Smartwatch",
@@ -206,7 +230,7 @@
         },
         {
             "productId": "18",
-            "name": "vívoactive 5",
+            "name": "vivoactive 5",
             "type": "Smartwatch",
             "brand": "Garmin",
             "year": "2023",
@@ -214,7 +238,19 @@
             "storage": "8GB",
             "size": "42 mm",
             "battery": "500 mAh",
-            "url": "https://th.bing.com/th/id/OIF.eIuNTC43P9MJyHJSoi0kdA?pid=ImgDet&rs=1"
+            "url": "https://www.91-img.com/pictures/wearables/garmin/garmin-vivoactive-5-159106-large-3.jpg"
+        },
+        {
+            "productId": "33",
+            "name": "Pixel Watch",
+            "type": "Smartwatch",
+            "brand": "Google",
+            "year": "2022",
+            "price": "$279",
+            "storage": "32GB",
+            "size": "41 mm",
+            "battery": "300 mAh",
+            "url": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6521/6521697_sd.jpg;maxHeight=640;maxWidth=550"
         },
         {
             "productId": "19",
@@ -286,7 +322,7 @@
             "storage": "",
             "size": "",
             "battery": "250 mAh",
-            "url": "https://th.bing.com/th?id=OIF.wEcglr8bcWXbbrjdZ%2bErAA&pid=ImgDet&rs=1"
+            "url": "https://th.bing.com/th/id/OIF.LIptC6x4NNIGvPYfRTblmw?pid=ImgDet&rs=1"
         }, 
         {
             "productId": "25",
@@ -299,6 +335,30 @@
             "size": "",
             "battery": "85 mAh",
             "url": "https://www.bhphotovideo.com/images/images2500x2500/beats_by_dr_dre_mk2g3ll_a_beats_fit_pro_true_1668455.jpg"
+        },
+        {
+            "productId": "32",
+            "name": "Pixel Buds Pro",
+            "type": "Wireless Headphones",
+            "brand": "Google",
+            "year": "2022",
+            "price": "$199",
+            "storage": "",
+            "size": "",
+            "battery": "59 mAh",
+            "url": "https://th.bing.com/th/id/OIP.Y3mTr4DV6IHQ_9CYZKcQUAAAAA?pid=ImgDet&rs=1"
+        },
+        {
+            "productId": "34",
+            "name": "JBL Tune 130NC TWS",
+            "type": "Wireless Headphones",
+            "brand": "JBL",
+            "year": "2022",
+            "price": "$99",
+            "storage": "",
+            "size": "",
+            "battery": "45 mAh",
+            "url": "https://th.bing.com/th/id/R.dd2debe215ac3c9e394f610d7d6246ab?rik=4Ze9NqSKfevKfw&pid=ImgRaw&r=0"
         },
         {
             "productId": "26",
@@ -361,40 +421,16 @@
             "url": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6543/6543743cv17d.jpg;maxHeight=640;maxWidth=550"
         },
         {
-            "productId": "31",
-            "name": "Pixel 7",
-            "type": "Smartphone",
-            "brand": "Google",
+            "productId": "35",
+            "name": "Tab M10 Plus (Gen 3)",
+            "type": "Tablet",
+            "brand": "Lenovo",
             "year": "2022",
-            "price": "$599",
-            "storage": "128GB",
-            "size": "6.3 in",
-            "battery": "4,355 mAh",
-            "url": "https://ss7.vzw.com/is/image/VerizonWireless/google-pixel7a-snow-ga04263-us?wid=930&hei=930&fmt=webp"
-        },
-        {
-            "productId": "32",
-            "name": "Pixel Buds Pro",
-            "type": "Wireless Headphones",
-            "brand": "Google",
-            "year": "2022",
-            "price": "$199",
-            "storage": "",
-            "size": "",
-            "battery": "59 mAh",
-            "url": "https://th.bing.com/th/id/OIP.Y3mTr4DV6IHQ_9CYZKcQUAAAAA?pid=ImgDet&rs=1"
-        },
-        {
-            "productId": "33",
-            "name": "Pixel Watch",
-            "type": "Smartwatch",
-            "brand": "Google",
-            "year": "2022",
-            "price": "$279",
-            "storage": "32GB",
-            "size": "41 mm",
-            "battery": "300 mAh",
-            "url": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6521/6521697_sd.jpg;maxHeight=640;maxWidth=550"
+            "price": "$229",
+            "storage": "64GB",
+            "size": "10.6 in",
+            "battery": "7,700 mAh",
+            "url": "https://www.gadgetmaya.com/wp-content/uploads/2022/11/Lenovo-Tab-M10-3rd-Gen.jpg"
         }
 
     ]

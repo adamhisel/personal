@@ -1,16 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 
 <head>
-  <script src="../assets/js/color-modes.js"></script>
-  <link rel="stylesheet" href="product.css">
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
-  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-  <meta name="generator" content="Hugo 0.115.4">
-  <title>TOUCHMARKet</title>
+  <meta name="author" content="Adolmale Kiobel">
+  <title>TouchMark-Products</title>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/product/">
 
@@ -22,124 +19,31 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-  <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" href="./images/touchmarkicon.jpg" sizes="32x32" type="image/jpg">
 
-  <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
-
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
-
-    .b-example-divider {
-      width: 100%;
-      height: 3rem;
-      background-color: rgba(0, 0, 0, .1);
-      border: solid rgba(0, 0, 0, .15);
-      border-width: 1px 0;
-      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-    }
-
-    .b-example-vr {
-      flex-shrink: 0;
-      width: 1.5rem;
-      height: 100vh;
-    }
-
-    .bi {
-      vertical-align: -.125em;
-      fill: currentColor;
-    }
-
-    .nav-scroller {
-      position: relative;
-      z-index: 2;
-      height: 2.75rem;
-      overflow-y: hidden;
-    }
-
-    .nav-scroller .nav {
-      display: flex;
-      flex-wrap: nowrap;
-      padding-bottom: 1rem;
-      margin-top: -1px;
-      overflow-x: auto;
-      text-align: center;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .btn-bd-primary {
-      --bd-violet-bg: #712cf9;
-      --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-
-      --bs-btn-font-weight: 600;
-      --bs-btn-color: var(--bs-white);
-      --bs-btn-bg: var(--bd-violet-bg);
-      --bs-btn-border-color: var(--bd-violet-bg);
-      --bs-btn-hover-color: var(--bs-white);
-      --bs-btn-hover-bg: #6528e0;
-      --bs-btn-hover-border-color: #6528e0;
-      --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-      --bs-btn-active-color: var(--bs-btn-hover-color);
-      --bs-btn-active-bg: #5a23c8;
-      --bs-btn-active-border-color: #5a23c8;
-    }
-
-    .bd-mode-toggle {
-      z-index: 1500;
-    }
-  </style>
-
-
-  <!-- Custom styles for this template -->
   <link href="product.css" rel="stylesheet">
 </head>
 
 <body>
 
-  <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
-    <div class="container">
-      <a class="navbar-brand d-md-none" href="#">
-        <svg class="bi" width="24" height="24">
-          <use xlink:href="#aperture" />
-        </svg>
-        Aperture
+  <nav class="navbar navbar-expand-md containercolor sticky-top border-bottom" data-bs-theme="dark">
+    <div class="px-md-3">
+  
+      <a href="./index.html">
+        <img src="images/touchmarklogo.png" alt="Touchmark Logo" width = "175" height = "40"> 
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas"
-        aria-controls="#offcanvas" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="offcanvas offcanvas-end" tabindex="-1" id="#offcanvas" aria-labelledby="#offcanvasLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="#offcanvasLabel">Aperture</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
+    </div>
+    <div class="container">  
         <div class="offcanvas-body">
           <ul class="navbar-nav flex-grow-1 justify-content-between">
-            <li class="nav-item"><a class="nav-link" href="#">
-                <svg class="bi" width="24" height="24">
-                  <use xlink:href="#aperture" />
-                </svg>
-              </a></li>
-            <li class="nav-item"><a class="nav-link" href="./index.html" target="_self">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="./Products.html" target="_self">Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="./compare.html" target="_self">Compare Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="./reviews.html" target="_self">Reviews</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">
-                <svg class="bi" width="24" height="24">
-                  <use xlink:href="#cart" />
-                </svg>
-              </a></li>
+            <li class="nav-item"><a class="nav-link textColor" href="./index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link textColor" href="./Products.html">Products</a></li>
+            <li class="nav-item"><a class="nav-link textColor" href="./compare.html">Compare Products</a></li>
+            <li class="nav-item"><a class="nav-link textColor" href="./reviews.html">Reviews</a></li>
+            <li class="nav-item"><a class="nav-link textColor" href="./contact.html">Contact Us</a></li>
+            <li class="nav-item"></li>
+            <li class="nav-item"></li>
+            <li class="nav-item"></li>
           </ul>
         </div>
       </div>
@@ -147,184 +51,67 @@
   </nav>
 
   <main>
-    <div src="./products.js"></div>
-    <div id="3"></div>
-      <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
-        <div class="text-bg-light me-md-3 pt-3 px-3 pt-md-3 px-md-3 text-left overflow-hidden">
-          <div class="my-3 py-3">
-            <div id="3"></div>
-            <h2 class="display-2" productId="3">iPhone-15</h2>
-            <img src="./images/iPhone 15.jpg" height="200px" alt="iPhone 15">
-          </div>
-        </div>
-      </div>
 
-      <div class="album py-5 bg-body-tertiary">
-        <div class="container">
-
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            <div class="col" id="productId">
-              <div class="card shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                    dy=".3em">Thumbnail</text>
-                </svg>
-                <div class="product-des">
-                  <p class="product-specs"></p>
-                  <h4 productInfo="name">Hello</h4>
-
-                  <a href="https://www.stripe3.com/products/ adidas-dame-7-extply-basketball-shoes-red-mens">$109.99</a>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                    dy=".3em">Thumbnail</text>
-                </svg>
-                <h4>Giannis Immortality</h4>
-                <p>Color: Ashen Slate/Black/Photo Blue/White</p>
-                <img src="./Images/Giannis Immortaliy - blue.webp" alt="Immortality - blue">
-                <div class="card-body">
-                  <p class="card-text">The future of basketball is positionless, and nobody embodies this
-                    evolution like MVP Giannis Antetokounmpo. The Giannis Immortality is a game shoe for
-                    players who love Giannis' multidimensional game and want a piece of his freaky
-                    style.</p>
-                  <a
-                    href="https://www.nike.com/t/giannis-immortality-basketball-shoes-p9QlJF/CZ4099-400?nikemt=true&cp=31765401338_search_--x-20455850764---c-----9017773-13938466-00195869124247&gclid=Cj0KCQjw9rSoBhCiARIsAFOipllNmmCxd-aykQFaUtR7BH42chGuuB8jnQ4qiXHr5PKgQizKFAyLCE0aAssAEALw_wcB&gclsrc=aw.ds">$59.97</a>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                    dy=".3em">Thumbnail</text>
-                </svg>
-                <h4>Air Jordan 1 Mid</h4>
-                <p>Color: White/Black/Gym Red</p>
-                <img src="./Images/Jordan Ones.jpg" alt="MJ">
-                <div class="card-body">
-                  <p class="card-text">The Air Jordan 1 Mid is a versatile and stylish sneaker that blends
-                    heritage, fashion, and sportswear seamlessly. It's designed for both the basketball
-                    court and everyday wear, making it a timeless addition to any sneaker collection.
-                  </p>
-                  <a
-                    href="https://www.nike.com/t/air-jordan-1-mid-mens-shoes-tXSJ73/DQ8426-106?nikemt=true&cp=68540849105_search_--x-20389285806---c-----9017773-1012356730-00196608227069&gclid=Cj0KCQjw9rSoBhCiARIsAFOiplnZYDC4LUCF00P9qnQQC6HrBNX4n3tu-YpX3EUO8MNHRA5X0cTgfHcaAlivEALw_wcB&gclsrc=aw.ds">$125.00</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="col">
-              <div class="card shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                    dy=".3em">Thumbnail</text>
-                </svg>
-                <h4>Adidas D.O.N Issue #2</h4>
-                <p>Color: Green</p>
-                <img src="./Images/don issue 2.jpg" alt="Marvel x Donovan Mitchell">
-                <div class="card-body">
-                  <p class="card-text">The Marvel x D.O.N. Issue #2 GCA 'Spida Sense' is a remarkable
-                    fusion of athletic performance and superhero aesthetics. This basketball shoe is a
-                    part of the D.O.N. (Determination Over Negativity) signature line, created in
-                    collaboration with NBA star Donovan "Spida" Mitchell and the creative minds at
-                    Marvel Comics.</p>
-                  <a
-                    href="https://www.goat.com/sneakers/marvel-x-d-o-n-issue-2-gca-spidey-sense-fw9035?utm_source=google_ads&utm_medium=cpc&utm_campaign=16659884536&utm_content=&gclid=Cj0KCQjw9rSoBhCiARIsAFOiplkpguKCjns5N4r3vAdKpkC8cyUkZ2xUWCux8xWvCjFxoiu9bdnNHicaAmu-EALw_wcB">$121.00</a>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                    dy=".3em">Thumbnail</text>
-                </svg>
-                <h4>Harden Stepback 3</h4>
-                <p>Color: Black Gray Carbon</p>
-                <img src="./Images/Harden stepback - black.webp" alt="StepBack!!!">
-                <div class="card-body">
-                  <p class="card-text">The adidas Harden Stepback 3 Men's Basketball Shoes are designed to
-                    capture the essence of James Harden's game-changing style and his signature move,
-                    the Stepback 3-pointer. These shoes are engineered to provide the support, comfort,
-                    and performance you need to excel on the basketball court while channeling the
-                    spirit of one of the NBA's most dynamic players.</p>
-                  <a
-                    href="https://www.kohls.com/product/prd-5167800/adidas-harden-stepback-3-mens-basketball-shoes.jsp?skuid=49804875&CID=shopping15&utm_campaign=MENS%20ATHLETIC%20SHOES&utm_medium=CSE&utm_source=google&utm_product=49804875&utm_campaignid=20456605626&CID=shopping15&utm_campaign=SSCZombie=CSE&utm_source=google&utm_campaignid=20456605626&gclid=Cj0KCQjw9rSoBhCiARIsAFOipllJ3uTd4kFkEvsMyrVYL0j2S_i8XhAVrvgw2rJDmQVcy8P6ZDRjai4aAs30EALw_wcB&gclsrc=aw.ds">$95.00</a>
-                </div>
-              </div>
-            </div>
-            <div class="col">
-              <div class="card shadow-sm">
-                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                  xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice" focusable="false">
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                    dy=".3em">Thumbnail</text>
-                </svg>
-                <h4>Nike Precision 6</h4>
-                <p>Color: Black/Metallic Gold</p>
-                <img src="./Images/Nike Precision - Gold.jpg" alt="Precise">
-                <div class="card-body">
-                  <p class="card-text">Create space, stop on a dime, shoot off the dribble—do it all with
-                    the Nike Precision 6. It's designed to enable quick players to shift speeds and
-                    change directions while staying in control. From the plush collar and tongue to the
-                    modified herringbone traction, the agile low-top lets you make the most of your
-                    skills while pushing the tempo of the game.</p>
-                  <a
-                    href="https://www.nike.com/t/precision-6-basketball-shoes-l7zDFB/DD9535-005?nikemt=true&cp=31765401338_search_--x-20455850764---c-----9017773-14245963-00196152275783&gclid=Cj0KCQjw9rSoBhCiARIsAFOiplnedNpCgLDMcRUCmq4md4BO7Ek2G3xf_aHiMA194-AwzApG_sP7qp4aAsEoEALw_wcB&gclsrc=aw.ds">$60.97</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3 containerBod">
+      <div>
+        <h1 class = "text-center">Top Products</h1>
       </div>
     </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3 containerBod">
+      <div class="col-lg-12 px-0 sameLine">
+      
+          <div class = "container1">
+            <h1 id ="featname1"></h1>
+            <img id = "featimg1" src="" height="300px" alt="">
+          </div>
+          <div class = "container1">
+            <h2 id = "featinfo1"></h2>
+          </div>
+      </div>
+        <div class="col-lg-12 px-0 sameLine">
+          <div class = "container1">
+            <h1 id ="featname2"></h1>
+            <img id = "featimg2" src="" height="300px" alt="">
+          </div>
+          <div class = "container1">
+            <h2 id = "featinfo2"></h2>
+          </div>
+        </div>
     </div>
+
+    <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3 containerBod">
+      <div>
+        <h1 class = "text-center">All Products</h1>
+      </div>
+    </div>
+    
+
+      <div class="album py-2 bg-color2 container4" id = "imageCont">
+        
+      </div>
   </main>
 
-  <footer class="container py-5">
-    <div class="row">
+  <footer class="container py-2">
+    <div>
       <div class="col-12 col-md">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
-          stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mb-2" role="img"
-          viewBox="0 0 24 24">
-          <title>Product</title>
-          <circle cx="12" cy="12" r="10" />
-          <path
-            d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94" />
-        </svg>
-        <small class="d-block mb-3 text-body-secondary">&copy; 2017–2023</small>
+        
+        <small class="d-block mb-2 text-body-secondary">TouchMark &copy; 2023</small>
       </div>
-      <div class="col-6 col-md">
+      <div>
         <h5>Links</h5>
         <ul class="list-unstyled text-small">
           <li><a class="link-secondary text-decoration-none" href="./index.html">Home</a></li>
           <li><a class="link-secondary text-decoration-none" href="./Products.html">Products</a></li>
-          <li><a class="link-secondary text-decoration-none" href="#">Compare Products</a></li>
-          <li><a class="link-secondary text-decoration-none" href="#">Reviews</a></li>
-          <li><a class="link-secondary text-decoration-none" href="#">Contact Us</a></li>
+          <li><a class="link-secondary text-decoration-none" href="./compare.html">Compare Products</a></li>
+          <li><a class="link-secondary text-decoration-none" href="./reviews.html">Reviews</a></li>
+          <li><a class="link-secondary text-decoration-none" href="./contact.html">Contact Us</a></li>
+        </ul>
       </div>
+      
   </footer>
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./index.js"></script>
+  
+  <script src="./products.js"></script>
 
 </body>
 
