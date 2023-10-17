@@ -118,8 +118,8 @@ function findProductInfo(myProducts, value, infoId, productNameId){
 function displayImage(url, imageId){
     var image = document.getElementById(`${imageId}`);
     image.src = `${url}`;
-    image.width = 350;
-    image.height = 410;
+    image.width = 300;
+    image.height = 325;
 }
 
 
