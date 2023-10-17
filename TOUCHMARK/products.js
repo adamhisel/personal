@@ -1,22 +1,16 @@
 // Fetch the products.json file
 fetch("./products.json")
     .then(response => response.json())
-    .then(devices => {
-        // Process the retrieved data with getProducts function
-        getProducts(devices);
-        // Assuming you have a function named featProduct to process iPhone 15
-        featProduct(iPhone15);
-    })
-    .catch(error => {
-        console.error("Error fetching data", error);
-    })
+    .then(devices => getProducts(devices));
+
+
 
 function getProducts(devices) {
-    var container = document.getElementById("productId");
-    // Get every product from JSON file and store it as container
+    featProduct("Pixel Watch", devices);
+
+    /*var container = document.getElementById("productId");
     for (var i = 0; i < devices.products.length; i++) {
         var product = devices.products[i];
-        // Create an HTML element to display the product information
         var productInfo = document.createElement("div");
         productInfo.innerHTML = `
             <p>Name: ${product.name}</p>
@@ -29,28 +23,27 @@ function getProducts(devices) {
             <p>Battery: ${product.battery}</p>
             <a href ="${product.url}" target="_blank">Product link</a>
             `;
-        //Append the information to the container
         container.appendChild(product);
-    }
+    }*/
 }
 
-function featProduct(iPhone15) {
-    var feat = document.getElementById("3");
-    var show = document.createElement("col"); //create a div element
+function featProduct(feat, devices) {
+    var featname = document.getElementById("featname");
+    var featimg= document.getElementById("featimg"); 
+    var info = document.getElementById("featinfo");
+    for(var i = 0; i < devices.products.length; i++){
+        if(feat === devices.products[i].name){
+            featname.textContent = devices.products[i].name;
+            featimg.src = devices.products[i].url;
 
-    //set the content of the 'show' div using innerHTML
-    show.innerHTML = `
-    <p>${iPhone15.name}</p>
-    <p>Type: ${iPhone15.type}</p>
-    <p>Brand: ${iPhone15.brand}</p>
-    <p>Year: ${iPhone15.year}</p>
-    <p>Price: ${iPhone15.price}</p>
-    <p>Storage: ${iPhone15.storage}</p>
-    <p>Size: ${iPhone15.size}</p>
-    <p>Battery: ${iPhone15.battery}</p>
-    <a href="${iPhone15.url}" target="_blank">Product Link</a>`; 
-
-    //Append to 'show' div to the 'feat' element
-    feat.appendChild(show);
+            if(devices.products[i].storage != "" && devices.products[i].size != ""){
+                info.innerHTML = `<strong>Type:</strong> ${devices.products[i].type}<br><strong>Brand:</strong> ${devices.products[i].brand}<br><strong>Release Year:</strong> ${devices.products[i].year}<br><strong>Price:</strong> ${devices.products[i].price}<br><strong>Storage Capacity:</strong> ${devices.products[i].storage}<br><strong>Size:</strong> ${devices.products[i].size}<br><strong>Battery Capacity:</strong> ${devices.products[i].battery}`;
+            }
+            else{
+                info.innerHTML = `<strong>Type:</strong> ${devices.products[i].type}<br><strong>Brand:</strong> ${devices.products[i].brand}<br><strong>Release Year:</strong> ${devices.products[i].year}<br><strong>Price:</strong> ${devices.products[i].price}<br><strong>Battery Capacity:</strong> ${devices.products[i].battery}`;
+            }
+        }
+        
+    }
 
 }
