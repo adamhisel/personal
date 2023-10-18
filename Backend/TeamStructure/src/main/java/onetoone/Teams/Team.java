@@ -1,14 +1,9 @@
 package onetoone.Teams;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import onetoone.Players.Player;
+import onetoone.users.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +37,9 @@ public class Team {
     @OneToMany
     private List<Player> players;
 
+    @ManyToOne
+    private User user;
+
     public Team(String teamName) {
         this.teamName = teamName;
         players = new ArrayList<>();
@@ -73,6 +71,14 @@ public class Team {
 
     public void addPlayer(Player player){
         this.players.add(player);
+    }
+
+    public User getUser(){
+        return this.user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
     }
 
 }

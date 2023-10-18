@@ -13,10 +13,7 @@ import onetoone.Teams.Team;
 import onetoone.Teams.TeamRepository;
 import onetoone.users.User;
 import onetoone.users.UserRepository;
-import onetoone.users.UserService;
 
-
-import java.time.temporal.TemporalAmount;
 
 /**
  * 
@@ -50,11 +47,11 @@ class Main {
             Team team1 = new Team("John");
             teamRepository.save(team1);
 
-            Player player1 = new Player( "jake", 4, "C", user1.id);
+            Player player1 = new Player( "jake", 4, "C", user1.id, 0);
             playerRepository.save(player1);
-            Player player2 = new Player( "geoff", 71, "F", user1.id);
+            Player player2 = new Player( "geoff", 71, "F", user1.id, 0);
             playerRepository.save(player2);
-            Player player3 = new Player( "jack", 99, "PG", user1.id);
+            Player player3 = new Player( "jack", 99, "PG", user1.id, 0);
             playerRepository.save(player3);
             team1.addPlayer(playerRepository.findById(1));
             team1.addPlayer(playerRepository.findById(2));
@@ -62,6 +59,12 @@ class Main {
 
             teamRepository.save(team1);
 
+            user1.addTeam(team1);
+
+            Team team2 = new Team("bulls");
+            teamRepository.save(team2);
+            user1.addTeam(team2);
+            userRepository.save(user1);
 
         };
     }

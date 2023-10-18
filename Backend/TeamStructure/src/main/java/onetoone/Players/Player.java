@@ -33,6 +33,7 @@ public class Player {
 
     private int user_id;
 
+
     /*
      * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
      * @JsonIgnore is to assure that there is no infinite loop while returning either user/laptop objects (laptop->user->laptop->...)
@@ -42,12 +43,11 @@ public class Player {
     @JsonIgnore
     private Team team;
 
-    public Player( String playerName, int number, String position, int user_id) {
+    public Player( String playerName, int number, String position, int user_id, int team_id) {
         this.playerName = playerName;
         this.number = number;
         this.position = position;
         this.user_id = user_id;
-
     }
 
     public Player(){
