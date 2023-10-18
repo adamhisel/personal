@@ -1,4 +1,4 @@
-fetch("./products.json")
+fetch("./data.json")
     .then(Response => Response.json())
     .then(myProducts => myDevices(myProducts));
 
