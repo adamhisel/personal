@@ -1,5 +1,5 @@
 
-fetch('products.json')
+fetch('./data.json')
 .then(response => response.json())
 .then(myProducts => compareProducts(myProducts))
 .catch(error => {

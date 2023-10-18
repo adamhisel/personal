@@ -1,4 +1,4 @@
-fetch('reviews.json')
+fetch('./reviews.json')
 .then(response => response.json())
 .then(myReviews => insertReviews(myReviews))
 .catch(error => {
