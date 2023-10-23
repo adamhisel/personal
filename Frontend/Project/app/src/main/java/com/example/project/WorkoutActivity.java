@@ -27,6 +27,8 @@ public class WorkoutActivity extends AppCompatActivity {
         binding = ActivityWorkoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        imageView = binding.courtImageView;
+
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
     }
