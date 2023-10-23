@@ -37,8 +37,8 @@ public class Team {
     @OneToMany
     private List<Player> players;
 
-    @ManyToOne
-    private User user;
+//    @ManyToOne
+//    private User user;
 
     public Team(String teamName) {
         this.teamName = teamName;
@@ -73,13 +73,13 @@ public class Team {
         this.players.add(player);
     }
 
-    public User getUser(){
-        return this.user;
-    }
-
-    public void setUser(User user){
-        this.user = user;
-    }
+//    public User getUser(){
+//        return this.user;
+//    }
+//
+//    public void setUser(User user){
+//        this.user = user;
+//    }
 
 }
 
