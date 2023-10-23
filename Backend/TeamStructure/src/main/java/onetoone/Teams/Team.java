@@ -1,5 +1,8 @@
 package onetoone.Teams;
 
+<<<<<<< HEAD
+import javax.persistence.*;
+=======
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,22 +10,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+>>>>>>> main
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import onetoone.Players.Player;
+import onetoone.users.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Vivek Bengre
- * 
- */ 
+ *
+ */
 
 @Entity
 public class Team {
 
-     /* 
+    /*
      * The annotation @ID marks the field below as the primary key for the table created by springboot
      * The @GeneratedValue generates a value if not already present, The strategy in this case is to start from 1 and increment for each table
      */
@@ -41,6 +50,14 @@ public class Team {
      */
     @OneToMany
     private List<Player> players;
+<<<<<<< HEAD
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+=======
+>>>>>>> main
 
     public Team(String teamName) {
         this.teamName = teamName;
@@ -69,10 +86,26 @@ public class Team {
 
     public void setPlayers(List<Player> players){
         this.players = players;
+<<<<<<< HEAD
+=======
+    }
+
+    public void addPlayer(Player player){
+        this.players.add(player);
+>>>>>>> main
     }
 
     public void addPlayer(Player player){
         this.players.add(player);
     }
-    
+
+    public User getUser(){
+        return this.user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
 }
+

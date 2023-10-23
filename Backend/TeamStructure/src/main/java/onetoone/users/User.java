@@ -1,8 +1,13 @@
 package onetoone.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import onetoone.Players.Player;
+
+import onetoone.Teams.Team;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -16,6 +21,10 @@ public class User{
     private String phoneNumber;
 
 
+<<<<<<< HEAD
+    @OneToMany
+    private List<Team> teams;
+=======
 
     @JsonIgnore
     @OneToOne
@@ -23,13 +32,18 @@ public class User{
     public User() {
         // You can initialize any default values here if needed.
     }
+>>>>>>> main
 
     public User(String userName, String email,String password, String phoneNumber){
         this.userName = userName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+        teams = new ArrayList<>();
+    }
 
+    public User() {
+        teams = new ArrayList<>();
     }
 
 
@@ -73,4 +87,15 @@ public class User{
         this.phoneNumber = phoneNumber;
     }
 
+    public List getTeams(){ return teams; }
+
+    public void setTeams(List<Team> teams){
+        this.teams = teams;
+    }
+
+    public void addTeam(Team team){
+        this.teams.add(team);
+    }
+
 }
+

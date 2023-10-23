@@ -15,10 +15,10 @@ import onetoone.Players.Player;
 import onetoone.Players.PlayerRepository;
 
 /**
- * 
+ *
  * @author Vivek Bengre
- * 
- */ 
+ *
+ */
 
 @RestController
 public class TeamController {
@@ -60,7 +60,7 @@ public class TeamController {
 
     @PutMapping("/teams/{teamId}/players/{playerId}")
     String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId){
-        Team team = teamRepository.findById(teamId);
+        Team team = null;
         Player laptop = playerRepository.findById(playerId);
         if(team == null || laptop == null)
             return failure;

@@ -15,10 +15,10 @@ import onetoone.Teams.Team;
 import onetoone.Teams.TeamRepository;
 
 /**
- * 
+ *
  * @author Vivek Bengre
- * 
- */ 
+ *
+ */
 
 @RestController
 public class PlayerController {
@@ -29,7 +29,7 @@ public class PlayerController {
 
     @Autowired
     TeamRepository userRepository;
-    
+
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
@@ -49,7 +49,7 @@ public class PlayerController {
     List<Player> getAllPlayers(){
         return playerRepository.findAll();
     }
-    
+
 
     @PostMapping(path = "/players")
     String createPlayer(@RequestBody Player player){
@@ -78,19 +78,23 @@ public class PlayerController {
         return playerRepository.findById(id);
     }
 
-//    @DeleteMapping(path = "/players/{id}")
-//    String deletePlayer(@PathVariable int id){
-//
-//        // Check if there is an object depending on user and then remove the dependency
-//        Team user = userRepository.findByPlayer_Id(id);
-//        user.setPlayer(null);
-//        userRepository.save(user);
-//
-//        // delete the laptop if the changes have not been reflected by the above statement
-//        playerRepository.deleteById(id);
-//        return success;
-//    }
+<<<<<<< HEAD
+    @DeleteMapping(path = "/players/{id}")
+    String deletePlayer(@PathVariable int id){
+        // delete the laptop if the changes have not been reflected by the above statement
+        playerRepository.deleteById(id);
+        return success;
+    }
+=======
+    @DeleteMapping(path = "/players/{id}")
+    String deletePlayer(@PathVariable int id) {
+        // delete the laptop if the changes have not been reflected by the above statement
+        playerRepository.deleteById(id);
+        return success;
+    }
+>>>>>>> main
 
 
 
 }
+
