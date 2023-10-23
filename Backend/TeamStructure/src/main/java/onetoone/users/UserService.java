@@ -14,7 +14,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+<<<<<<< HEAD
     @Transactional
+=======
+        @Transactional
+>>>>>>> main
     public void updateUser(int id, String userName, String email, String password, String phoneNumber) {
         userRepository.updateUserById(id, userName, email, password, phoneNumber);
     }

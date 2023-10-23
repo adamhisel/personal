@@ -12,7 +12,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id = "@+id/linearLayout"
-    tools:context=".HomeFragment">
+    tools:context=".HomeFragmentCoach">
 
     <TextView
         android:id="@+id/header"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="sans-serif-black"
-        android:text="Stat Sheet Stuffer:"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="40sp" />
 

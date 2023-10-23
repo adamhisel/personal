@@ -8,9 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.databinding.ActivityRegistrationBinding;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
@@ -26,132 +24,39 @@ import org.json.JSONObject;
 
 public class RegistrationActivity extends AppCompatActivity {
 
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+    private ActivityRegistrationBinding binding;
     private static RequestQueue mQueue;
-    TextInputLayout tilUserName;
-    TextInputLayout tilEmail;
-    TextInputLayout tilPhoneNumber;
-    TextInputLayout tilUserType;
-    TextInputLayout tilPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+        binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
-
-        // Adapter and dropdown for user types
-        String[] userTypes = getResources().getStringArray(R.array.user_types);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                userTypes
-        );
-        AutoCompleteTextView dropdown = findViewById(R.id.tvUserType);
-        dropdown.setAdapter(adapter);
-
-        tilUserName = findViewById(R.id.tilUserName);
-        tilEmail = findViewById(R.id.tilEmail);
-        tilPhoneNumber = findViewById(R.id.tilPhoneNumber);
-        tilUserType = findViewById(R.id.tilUserType);
-        tilPassword = findViewById(R.id.tilPassword);
+        setupDropdownUserTypes();
         mQueue = Volley.newRequestQueue(this);
-        Button btnSignUp = findViewById(R.id.btnSignUp);
-        Button btnLogin = findViewById(R.id.btnLogin);
-        EditText etUserName = findViewById(R.id.etUserName);
-        EditText etEmail = findViewById(R.id.etEmail);
-        EditText etPhoneNumber = findViewById(R.id.etPhoneNumber);
-        AutoCompleteTextView tvUserType = findViewById(R.id.tvUserType);
-        EditText etPassword = findViewById(R.id.etPassword);
+        setupButtonListeners();
+    }
 
 
-        // Remove
-        Button btnTest = findViewById(R.id.btnTest);
-        btnTest.setOnClickListener(new View.OnClickListener() {
+    // Adapter and dropdown for user types
+    private void setupDropdownUserTypes() {
+        String[] userTypes = getResources().getStringArray(R.array.user_types);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, userTypes);
+        binding.tvUserType.setAdapter(adapter);
+    }
+
+
+    private void setupButtonListeners() {
+        binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+            public void onClick(View v) { handleSignUp(); }
         });
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userName = etUserName.getText().toString().trim();
-                String email = etEmail.getText().toString().trim();
-                String phoneNumber = etPhoneNumber.getText().toString().trim();
-                String userType = tvUserType.getText().toString().trim();
-                String password = etPassword.getText().toString().trim();
-
-                boolean isValidUserName = validateUserName();
-                boolean isValidEmail = validateEmail();
-                boolean isValidPhoneNumber = validatePhoneNumber();
-                boolean isValidUserType = validateUserType();
-                boolean isValidPassword = validatePassword();
-
-                if (!isValidUserName || !isValidEmail || !isValidPhoneNumber || !isValidUserType || !isValidPassword) {
-                    return;  // Stops further execution if any validation fails.
-                }
-
-                JSONObject postData = new JSONObject();
-                try {
-                    postData.put("userName", userName);
-                    postData.put("email", email);
-                    postData.put("phoneNumber", phoneNumber);
-                    postData.put("userType", userType);
-                    postData.put("password", password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                // URL of server's API endpoint
-                String postUrl = "http://coms-309-018.class.las.iastate.edu:8080/users";
-
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, postUrl, postData,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    String message = response.getString("message");
-
-                                    if ("success".equals(message)) {
-                                        // Assuming you have local values of userName, email, phoneNumber, userType, userId
-                                        SharedPrefsUtil.saveUserData(
-                                                RegistrationActivity.this,
-                                                userName,
-                                                email,
-                                                phoneNumber,
-                                                userType,
-                                                "DEFAULT_ID"
-                                        );
-                                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                    } else {
-                                        // Show a relevant error message to the user
-                                        Toast.makeText(RegistrationActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(RegistrationActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle the error
-                        error.printStackTrace();
-                    }
-                });
-
-                // Add the request to the RequestQueue
-                mQueue.add(jsonObjectRequest);
-
-
-            }
-        });
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
@@ -159,74 +64,160 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-
+        binding.btnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    private Boolean validateUserName() {
-        String userName = tilUserName.getEditText().getText().toString().trim();
+    private void handleSignUp() {
+        String userName = binding.etUserName.getText().toString().trim();
+        String email = binding.etEmail.getText().toString().trim();
+        String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
+        String userType = binding.tvUserType.getText().toString().trim();
+        String password = binding.etPassword.getText().toString().trim();
 
-        if (userName.isEmpty()) {
-            tilUserName.setError("Field cannot be empty");
-            return false;
+        boolean isValidUserName = validateUserName();
+        boolean isValidEmail = validateEmail();
+        boolean isValidPhoneNumber = validatePhoneNumber();
+        boolean isValidUserType = validateUserType();
+        boolean isValidPassword = validatePassword();
+
+        if (!isValidUserName || !isValidEmail || !isValidPhoneNumber || !isValidUserType || !isValidPassword) {
+            return;  // Stops further execution if any validation fails.
+        }
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("userName", userName);
+            postData.put("email", email);
+            postData.put("phoneNumber", phoneNumber);
+            postData.put("userType", userType);
+            postData.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String url = BASE_URL + "users";
+        String testUrl = LOCAL_URL + "users";
+
+        Log.d("PostData", postData.toString());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
+                        handleSignUpResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        );
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void handleSignUpResponse(JSONObject response) {
+        try {
+            // Check if the response has a userName, indicating successful user creation
+            if (response.has("userName")) {
+                SharedPrefsUtil.saveUserData(
+                        RegistrationActivity.this,
+                        response.getString("userName"),
+                        response.getString("email"),
+                        response.getString("phoneNumber"),
+                        response.getString("userType"),
+                        response.getString("userID")  // Temporary placeholder for userID
+                );
+                String userType = response.getString("userType");
+                Intent intent;
+                if ("player".equals(userType)) {
+                    intent = new Intent(RegistrationActivity.this, PlayerRegistrationActivity.class);
+                } else {
+                    intent = new Intent(RegistrationActivity.this, MainActivity.class);
+                }
+                startActivity(intent);
+            } else {
+                Toast.makeText(RegistrationActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(RegistrationActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private boolean isEmpty(String text) {
+        return text == null || text.trim().isEmpty();
+    }
+
+    private boolean setFieldError(TextInputLayout field, String errorText) {
+        field.setError(errorText);
+        return false;
+    }
+
+    private void clearFieldError(TextInputLayout field) {
+        field.setError(null);
+        field.setErrorEnabled(false);
+    }
+
+    private boolean validateUserName() {
+        String userName = binding.etUserName.getText().toString().trim();
+        if (isEmpty(userName)) {
+            return setFieldError(binding.tilUserName, "Field cannot be empty");
         } else {
-            tilUserName.setError(null);
-            tilUserName.setErrorEnabled(false);
+            clearFieldError(binding.tilUserName);
             return true;
         }
     }
 
-    private Boolean validateEmail() {
-        String email = tilEmail.getEditText().getText().toString().trim();
+    private boolean validateEmail() {
+        String email = binding.etEmail.getText().toString().trim();
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
-        if (email.isEmpty()) {
-            tilEmail.setError("Field cannot be empty");
-            return false;
+        if (isEmpty(email)) {
+            return setFieldError(binding.tilEmail, "Field cannot be empty");
         } else if (!email.matches(emailPattern)) {
-            tilEmail.setError("Invalid email address");
-            return false;
+            return setFieldError(binding.tilEmail, "Invalid email address");
         } else {
-            tilEmail.setError(null);
-            tilEmail.setErrorEnabled(false);
+            clearFieldError(binding.tilEmail);
             return true;
         }
     }
 
-    private Boolean validatePhoneNumber() {
-        String phoneNumber = tilPhoneNumber.getEditText().getText().toString().trim();
-
-        if (phoneNumber.isEmpty()) {
-            tilPhoneNumber.setError("Field cannot be empty");
-            return false;
+    private boolean validatePhoneNumber() {
+        String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
+        if (isEmpty(phoneNumber)) {
+            return setFieldError(binding.tilPhoneNumber, "Field cannot be empty");
         } else {
-            tilPhoneNumber.setError(null);
-            tilPhoneNumber.setErrorEnabled(false);
+            clearFieldError(binding.tilPhoneNumber);
             return true;
         }
     }
 
-    private Boolean validateUserType() {
-        String userType = tilUserType.getEditText().getText().toString().trim();
-
-        if (userType.isEmpty()) {
-            tilUserType.setError("Field cannot be empty");
-            return false;
+    private boolean validateUserType() {
+        String userType = binding.tvUserType.getText().toString().trim();
+        if (isEmpty(userType)) {
+            return setFieldError(binding.tilUserType, "Field cannot be empty");
         } else {
-            tilUserName.setError(null);
-            tilUserName.setErrorEnabled(false);
+            clearFieldError(binding.tilUserType);
             return true;
         }
     }
 
-    private Boolean validatePassword() {
-        String password = tilPassword.getEditText().getText().toString().trim();
-
-        if (password.isEmpty()) {
-            tilPassword.setError("Field cannot be empty");
-            return false;
+    private boolean validatePassword() {
+        String password = binding.etPassword.getText().toString().trim();
+        if (isEmpty(password)) {
+            return setFieldError(binding.tilPassword, "Field cannot be empty");
         } else {
-            tilPassword.setError(null);
-            tilPassword.setErrorEnabled(false);
+            clearFieldError(binding.tilPassword);
             return true;
         }
     }

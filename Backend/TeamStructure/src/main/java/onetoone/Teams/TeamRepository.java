@@ -16,7 +16,11 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     void deleteById(int id);
 
+<<<<<<< HEAD
 //    Team findByPlayer_Id(int id);
+=======
+//    Team findByPlayer_Id(int id);
+>>>>>>> main
 
     @Query("UPDATE Team t SET t.teamName = :teamName WHERE t.id = :id")
     void updateTeamById(@Param("id") int id, @Param("teamName") String teamName);

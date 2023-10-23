@@ -78,12 +78,21 @@ public class PlayerController {
         return playerRepository.findById(id);
     }
 
+<<<<<<< HEAD
     @DeleteMapping(path = "/players/{id}")
     String deletePlayer(@PathVariable int id){
         // delete the laptop if the changes have not been reflected by the above statement
         playerRepository.deleteById(id);
         return success;
     }
+=======
+    @DeleteMapping(path = "/players/{id}")
+    String deletePlayer(@PathVariable int id) {
+        // delete the laptop if the changes have not been reflected by the above statement
+        playerRepository.deleteById(id);
+        return success;
+    }
+>>>>>>> main
 
 
 

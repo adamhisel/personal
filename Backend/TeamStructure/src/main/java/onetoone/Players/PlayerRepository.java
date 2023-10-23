@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  */ 
 
-public interface PlayerRepository extends JpaRepository<Player, Long> {
+public interface PlayerRepository extends JpaRepository<Player, Long>  {
     Player findById(int id);
 
     @Transactional
