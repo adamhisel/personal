@@ -2,6 +2,7 @@ package onetoone.Teams;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import onetoone.Players.Player;
 import onetoone.users.User;
 
@@ -37,8 +38,10 @@ public class Team {
     @OneToMany
     private List<Player> players;
 
-//    @ManyToOne
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
 
     public Team(String teamName) {
         this.teamName = teamName;
@@ -73,13 +76,13 @@ public class Team {
         this.players.add(player);
     }
 
-//    public User getUser(){
-//        return this.user;
-//    }
-//
-//    public void setUser(User user){
-//        this.user = user;
-//    }
+    public User getUser(){
+        return this.user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
 
 }
 
