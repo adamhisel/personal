@@ -34,10 +34,12 @@ public class WorkoutActivity extends AppCompatActivity {
 
         imageView.post(() -> {
             int width = imageView.getWidth();
+            float aspectRatio = 564f / 600f;  // real court's height / width
             ViewGroup.LayoutParams params = imageView.getLayoutParams();
-            params.height = width;
+            params.height = (int) (width * aspectRatio);
             imageView.setLayoutParams(params);
         });
+
 
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
@@ -49,19 +51,39 @@ public class WorkoutActivity extends AppCompatActivity {
                     float x = event.getX();
                     float y = event.getY();
 
-                    // Transform the coordinates
-                    float transformedX = imageView.getWidth() - x;
-                    float transformedY = imageView.getHeight() - y;
+                    // Scaling factors
+                    float widthScale = 600f / imageView.getWidth();
+                    float heightScale = 564f / imageView.getHeight();
 
-                    // Display the transformed coordinates on the TextView
-                    coordinatesTextView.setText(String.format("X: %.2f, Y: %.2f", transformedX, transformedY));
+                    // Real-world coordinates of the touch point
+                    float realX = x * widthScale;
+                    float realY = y * heightScale;
+
+                    // Calculate the distance to the basket
+                    float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
+
+                    String shotType;
+
+                    // Check for the straight side zones of the 3-point line
+                    boolean isBeyondSideZoneLeft = realX <= (300f - 264f);
+                    boolean isBeyondSideZoneRight = realX >= (300f + 264f);
+
+                    if (isBeyondSideZoneLeft || isBeyondSideZoneRight || distanceToBasket >= 285) {
+                        shotType = "Three-Point Shot";
+                    } else {
+                        shotType = "Two-Point Shot";
+                    }
+
+                    // Display the shot type and transformed coordinates on the TextView
+                    coordinatesTextView.setText(String.format("Shot Type: %s, X: %.2f, Y: %.2f", shotType, realX, realY));
 
                     // Show a dialog to let the user record a make or miss
                     AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
-                    builder.setMessage("Was it a make or miss?").setPositiveButton("Make", (dialog, id) -> {
-                        setIconAndPosition(green, transformedX + imageView.getLeft(), transformedY + imageView.getTop());
+                    builder.setTitle(shotType)
+                        .setMessage("Was it a make or miss?").setPositiveButton("Make", (dialog, id) -> {
+                            setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
                     }).setNegativeButton("Miss", (dialog, id) -> {
-                        setIconAndPosition(red, transformedX + imageView.getLeft(), transformedY + imageView.getTop());
+                            setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
                     });
                     builder.create().show();
                     return true;
@@ -83,15 +105,6 @@ public class WorkoutActivity extends AppCompatActivity {
         imageView.setY(y - ICON_SIZE_PX);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
-    }
-
-    private int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
     }
 }
 
