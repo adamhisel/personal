@@ -49,7 +49,7 @@ public class TeamRosterPlayer extends AppCompatActivity {
 
         tl =  findViewById(R.id.tableLayout);
 
-
+        Button teamChat = findViewById(R.id.chatButton);
         Button findTeam = findViewById(R.id.findTeam);
         Button back = findViewById(R.id.backButton);
 
@@ -80,6 +80,15 @@ public class TeamRosterPlayer extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        teamChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TeamRosterPlayer.this, TeamChat.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     public void findTeam() {
