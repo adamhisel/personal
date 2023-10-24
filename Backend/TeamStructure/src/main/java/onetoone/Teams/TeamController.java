@@ -2,6 +2,8 @@ package onetoone.Teams;
 
 import java.util.List;
 
+import onetoone.Coaches.Coach;
+import onetoone.Coaches.CoachRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,9 @@ public class TeamController {
     TeamRepository teamRepository;
 
     @Autowired
+    CoachRepository coachRepository;
+
+    @Autowired
     PlayerRepository playerRepository;
 
     private String success = "{\"message\":\"success\"}";
@@ -51,16 +56,16 @@ public class TeamController {
         return success;
     }
 
-    @PostMapping("/updateTeam/{id}")
-    public void updateTeam(@PathVariable int id, @RequestBody TeamUpdateRequest request) {
-        teamService.updateTeam(id,
-                request.getTeamName());
-    }
+//    @PostMapping("/updateTeam/{id}")
+//    public void updateTeam(@PathVariable int id, @RequestBody TeamUpdateRequest request) {
+//        teamService.updateTeam(id,
+//                request.getTeamName());
+//    }
 
 
     @PutMapping("/teams/{teamId}/players/{playerId}")
     String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId){
-        Team team = null;
+        Team team = teamRepository.findById(teamId);
         Player laptop = playerRepository.findById(playerId);
         if(team == null || laptop == null)
             return failure;
@@ -69,6 +74,19 @@ public class TeamController {
         teamRepository.save(team);
         return success;
     }
+
+    @PutMapping("/teams/{teamId}/coaches/{coachId}")
+    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId){
+        Team team = teamRepository.findById(teamId);
+        Coach coach = coachRepository.findById(coachId);
+        if(team == null || coach == null)
+            return failure;
+        coach.setTeam(team);
+        team.addCoach(coach);
+        teamRepository.save(team);
+        return success;
+    }
+
 
     @DeleteMapping(path = "/teams/{id}")
     String deleteTeam(@PathVariable int id){
