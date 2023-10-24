@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context=".WorkoutActivity">
 
+    <!-- The court ImageView -->
     <ImageView
         android:id="@+id/courtImageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:rotation="180"
         android:scaleType="fitXY"
         android:src="@drawable/court_image" />
 
+    <!-- Empty view to occupy the bottom half -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        />
+
+    <!-- TextView to display x,y coordinates -->
+    <TextView
+        android:id="@+id/coordinatesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:padding="10dp"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+</FrameLayout>

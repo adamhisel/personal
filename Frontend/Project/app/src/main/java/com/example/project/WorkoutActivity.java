@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.project.databinding.ActivityWorkoutBinding;
 
@@ -20,6 +21,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private ActivityWorkoutBinding binding;
     private ImageView imageView;
     private Drawable green, red;
+    private TextView coordinatesTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,38 +30,47 @@ public class WorkoutActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         imageView = binding.courtImageView;
+        coordinatesTextView = findViewById(R.id.coordinatesTextView);
+
+        imageView.post(() -> {
+            int width = imageView.getWidth();
+            ViewGroup.LayoutParams params = imageView.getLayoutParams();
+            params.height = width;
+            imageView.setLayoutParams(params);
+        });
 
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
-    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        // Detect a touch down event
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            float x = event.getX();
-            float y = event.getY();
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    float x = event.getX();
+                    float y = event.getY();
 
-            // Ignore touches on the bottom half of the screen
-            if (y > binding.getRoot().getHeight() / 2) {
-                return super.onTouchEvent(event);
-            }
+                    // Transform the coordinates
+                    float transformedX = imageView.getWidth() - x;
+                    float transformedY = imageView.getHeight() - y;
 
-            // Show a dialog to let the user record a make or miss
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Was it a make or miss?")
-                    .setPositiveButton("Make", (dialog, id) -> {
-                        setIconAndPosition(green, x, y);
-                    })
-                    .setNegativeButton("Miss", (dialog, id) -> {
-                        setIconAndPosition(red, x, y);
+                    // Display the transformed coordinates on the TextView
+                    coordinatesTextView.setText(String.format("X: %.2f, Y: %.2f", transformedX, transformedY));
+
+                    // Show a dialog to let the user record a make or miss
+                    AlertDialog.Builder builder = new AlertDialog.Builder(WorkoutActivity.this);
+                    builder.setMessage("Was it a make or miss?").setPositiveButton("Make", (dialog, id) -> {
+                        setIconAndPosition(green, transformedX + imageView.getLeft(), transformedY + imageView.getTop());
+                    }).setNegativeButton("Miss", (dialog, id) -> {
+                        setIconAndPosition(red, transformedX + imageView.getLeft(), transformedY + imageView.getTop());
                     });
-            builder.create().show();
-            return true;
-        }
-        return super.onTouchEvent(event);
-    }
+                    builder.create().show();
+                    return true;
+                }
+                return false;
+            }
+        });
 
+    }
 
     //  Helper method to set the icon and position it at the specified x and y coordinates.
     private void setIconAndPosition(Drawable drawable, float x, float y) {
@@ -68,9 +79,19 @@ public class WorkoutActivity extends AppCompatActivity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - (ICON_SIZE_PX / 2));
-        imageView.setY(y - (ICON_SIZE_PX / 2));
+        imageView.setX(x - ICON_SIZE_PX);
+        imageView.setY(y - ICON_SIZE_PX);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
     }
+
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 }
+
