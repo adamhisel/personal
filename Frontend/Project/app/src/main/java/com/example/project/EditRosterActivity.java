@@ -23,6 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * @author Adam Hisel
+ * Activity
+ */
 public class EditRosterActivity extends AppCompatActivity {
     private RequestQueue mQueue;
     private TextInputLayout name;

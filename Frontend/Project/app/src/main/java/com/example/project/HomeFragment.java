@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -27,15 +26,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class HomeFragmentCoach extends Fragment {
+/**
+ * @author Adam Hisel
+ * Home fragment in the navigation bar that contains options to create a team, join a team
+ * or click into the team a user is on or follows.
+ */
+public class HomeFragment extends Fragment {
 
-    ActivityMainBinding binding;
-
-    ArrayList<Button> dynamicButtons;
 
     private RequestQueue mQueue;
 
-    LinearLayout ll;
+    private LinearLayout ll;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,7 +68,11 @@ public class HomeFragmentCoach extends Fragment {
         return view;
 
     }
-
+    /**
+     * This method is called in onCreate and creates the team buttons for the teams a
+     * user follows or is on. This method also allows users to click the buttons once
+     * they are generated so which then opens into the specific team roster.
+     */
     public void jsonParseArray() {
         String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/teams";
 

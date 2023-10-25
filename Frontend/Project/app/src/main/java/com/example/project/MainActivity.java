@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        replaceFrag(new HomeFragmentCoach());
+        replaceFrag(new HomeFragment());
         /*if (SharedPrefsUtil.getUserType(this).equals("coach")){
             replaceFrag(new HomeFragmentCoach());
         }
@@ -31,12 +31,13 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                if (SharedPrefsUtil.getUserType(this).equals("coach")){
-                    replaceFrag(new HomeFragmentCoach());
-                }
-                else{
-                    replaceFrag(new HomeFragmentPlayer());
-                }
+                replaceFrag(new HomeFragment());
+//                if (SharedPrefsUtil.getUserType(this).equals("coach")){
+//                    replaceFrag(new HomeFragmentCoach());
+//                }
+//                else{
+//                    replaceFrag(new HomeFragmentPlayer());
+//                }
             }
             else if(item.getItemId() == R.id.workout) {
                 replaceFrag(new WorkoutFragment());
