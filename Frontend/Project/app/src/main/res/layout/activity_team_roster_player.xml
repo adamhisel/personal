@@ -58,6 +58,13 @@
             android:backgroundTint="#000"
             android:text="BACK TO HOME"
             android:textColor="#FFFFFF" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/chatButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#000"
+            android:text="TEAM CHAT"
+            android:textColor="#FFFFFF" />
 
 
 </LinearLayout>
