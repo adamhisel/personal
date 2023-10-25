@@ -43,6 +43,28 @@
                 android:textStyle="bold"/>
 
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            tools:context=".HomeFragmentCoach">
+
+            <TextView
+                android:id="@+id/addTeam"
+                android:layout_marginTop="13dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Create A Team"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
             <ImageButton
                 android:id="@+id/plus"
                 android:layout_width="116dp"
@@ -58,27 +80,28 @@
                 android:src="@drawable/plusicon" />
 
             <TextView
-                android:id="@+id/addTeam"
+                android:id="@+id/joinTeam"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Add A Team"
+                android:text="Join A Team"
                 android:textAlignment="center"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            tools:context=".HomeFragmentCoach">
+            <ImageButton
+                android:id="@+id/join"
+                android:layout_width="116dp"
+                android:layout_height="106dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#FFFFFF"
+                android:paddingLeft="25dp"
+                android:paddingTop="25dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="25dp"
+                android:scaleType="centerInside"
+                android:scrollIndicators="none"
+                android:src="@drawable/join" />
 
 
         </LinearLayout>

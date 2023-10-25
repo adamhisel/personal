@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ public class HomeFragmentCoach extends Fragment {
     ArrayList<Button> dynamicButtons;
 
     private RequestQueue mQueue;
+
     LinearLayout ll;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +48,8 @@ public class HomeFragmentCoach extends Fragment {
         ll = view.findViewById(R.id.linearLayout);
 
         ImageButton addTeam = view.findViewById(R.id.plus);
+
+
 
         TextView header = view.findViewById(R.id.header);
 
@@ -61,6 +65,7 @@ public class HomeFragmentCoach extends Fragment {
         });
 
         return view;
+
     }
 
     public void jsonParseArray() {
@@ -92,7 +97,7 @@ public class HomeFragmentCoach extends Fragment {
                             }
                         });
 
-                        ll.addView(button, ll.getChildCount()-2);
+                        ll.addView(button, ll.getChildCount()-4);
 
 
                     }
@@ -107,6 +112,7 @@ public class HomeFragmentCoach extends Fragment {
                 error.printStackTrace();
             }
         });
+
         mQueue.add(request);
     }
 
