@@ -43,22 +43,18 @@ public class TeamRosterCoach extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_roster_coach);
 
-        /*Bundle args = getArguments();
-        if (args != null) {
-            teamName = args.getString("teamName");
-        }*/
-
+        mQueue = Volley.newRequestQueue(this);
         tl =  findViewById(R.id.tableLayout);
-
         Button addPlayer = findViewById(R.id.addPlayer);
-        Button findTeam = findViewById(R.id.findTeam);
         Button back = findViewById(R.id.backButton);
+        Button teamChat = findViewById(R.id.chatButton);
 
-        teamName = findViewById(R.id.teamname);
+        Intent intent = getIntent();
+        if (intent != null) {
+            teamId =  intent.getIntExtra("teamId", 0);
+        }
 
         makeHeader();
-
-        mQueue = Volley.newRequestQueue(this);
 
         addPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,24 +65,19 @@ public class TeamRosterCoach extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        findTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isValidTeamName = validateTeamName();
-
-                if (!isValidTeamName) {
-                    return;
-                }
-
-                findTeam();
-
-            }
-        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TeamRosterCoach.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        teamChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TeamRosterCoach.this, TeamChat.class);
                 startActivity(intent);
             }
         });
@@ -267,19 +258,6 @@ public class TeamRosterCoach extends AppCompatActivity {
         tableRow.addView(textView3);
 
         tl.addView(tableRow);
-    }
-
-    private Boolean validateTeamName() {
-        String tilTeamName = teamName.getEditText().getText().toString().trim();
-
-        if (tilTeamName.isEmpty()) {
-            teamName.setError("Field cannot be empty");
-            return false;
-        } else {
-            teamName.setError(null);
-            teamName.setErrorEnabled(false);
-            return true;
-        }
     }
 
 }

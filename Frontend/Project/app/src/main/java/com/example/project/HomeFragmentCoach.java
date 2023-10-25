@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,15 +45,13 @@ public class HomeFragmentCoach extends Fragment {
 
         ll = view.findViewById(R.id.linearLayout);
 
-        Button addTeam = (Button)view.findViewById(R.id.addTeam);
+        ImageButton addTeam = view.findViewById(R.id.plus);
 
-        Button findTeam = (Button)view.findViewById(R.id.findTeam);
-
-        TextView header = (TextView)view.findViewById(R.id.header);
+        TextView header = view.findViewById(R.id.header);
 
         header.setText("Hello, " + SharedPrefsUtil.getUserName(requireContext()));
 
-        //jsonParseArray();
+        jsonParseArray();
         addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,64 +60,41 @@ public class HomeFragmentCoach extends Fragment {
             }
         });
 
-        findTeam.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
-                startActivity(intent);
-            }
-
-        });
-
         return view;
-/*
-        for(int i = 0; i < dynamicButtons.size(); i++) {
-
-            dynamicButtons.get(i).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fr = fragmentManager.beginTransaction();
-
-                TeamRosterSubFragment fragment = new TeamRosterSubFragment();
-
-                Button clickedButton = (Button) view;
-
-                Bundle bundle = new Bundle();
-                bundle.putString("teamName", (String) clickedButton.getText());
-
-                fragment.setArguments(bundle);
-
-                fr.replace(R.id.frame_layout, fragment);
-                fr.commit();
-            }
-            });
-
-         */
     }
 
     public void jsonParseArray() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
+        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
-                    //dynamicButtons = new ArrayList<>();
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject team = response.getJSONObject(i);
 
                         Button button = new Button(requireContext());
 
                         String teamName = team.getString("teamName");
+                        int tag = team.getInt("id");
 
                         button.setText(teamName);
+                        button.setTag(tag);
                         button.setTextSize(25);
 
-                        ll.addView(button, ll.getChildCount() - 1);
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                int teamId = tag;
+                                Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
+                                intent.putExtra("teamId", teamId);
+                                startActivity(intent);
+                            }
+                        });
 
-                        //dynamicButtons.add(button);
+                        ll.addView(button, ll.getChildCount()-2);
+
+
                     }
 
                 } catch (JSONException e) {
