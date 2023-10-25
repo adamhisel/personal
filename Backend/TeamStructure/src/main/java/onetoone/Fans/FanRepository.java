@@ -1,14 +1,14 @@
-package onetoone.Coaches;
+package onetoone.Fans;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+public interface FanRepository extends JpaRepository<Fan, Long> {
 
-public interface CoachRepository extends JpaRepository<Coach, Long> {
-
-    Coach findById(int id);
+    Fan findById(int id);
 
     @Transactional
     void deleteById(int id);
+
 }

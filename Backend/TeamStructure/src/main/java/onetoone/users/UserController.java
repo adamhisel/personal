@@ -50,11 +50,12 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    void createUser(@RequestBody User user) {
+    String createUser(@RequestBody User user) {
         if (user == null) {
             throw new RuntimeException();
         }
-
+        userRepository.save(user);
+        return success;
 
     }
 

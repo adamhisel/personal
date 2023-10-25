@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import onetoone.Coaches.Coach;
+import onetoone.Fans.Fan;
 import onetoone.Players.Player;
 import onetoone.users.User;
 
@@ -54,6 +55,9 @@ public class Team {
     @OneToMany
     private List<Coach> coaches;
 
+    @OneToMany
+    private List<Fan> fans;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -65,11 +69,13 @@ public class Team {
         this.teamName = teamName;
         players = new ArrayList<>();
         coaches = new ArrayList<>();
+        fans = new ArrayList<>();
     }
 
     public Team() {
         players = new ArrayList<>();
         coaches = new ArrayList<>();
+        fans = new ArrayList<>();
     }
 
     // =============================== Getters and Setters for each field ================================== //
@@ -104,6 +110,16 @@ public class Team {
 
     public void addCoach(Coach coach){
         this.coaches.add(coach);
+    }
+
+    public List getFans(){ return fans; }
+
+    public void setFans(List<Fan> fans){
+        this.fans = fans;
+    }
+
+    public void addFan(Fan fan){
+        this.fans.add(fan);
     }
 
     public User getUser(){
