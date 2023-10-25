@@ -13,10 +13,6 @@ public class TeamService {
         this.teamRepository = teamRepository;
     }
 
-    @Transactional
-    public void updateTeam(int id, String teamName) {
-        teamRepository.updateTeamById(id, teamName);
-    }
 
 
 

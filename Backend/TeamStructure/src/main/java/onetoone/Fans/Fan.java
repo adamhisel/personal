@@ -1,4 +1,5 @@
-package onetoone.Coaches;
+package onetoone.Fans;
+
 import javax.persistence.*;
 
 
@@ -7,7 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import onetoone.Teams.Team;
 
 @Entity
-public class Coach {
+public class Fan {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
@@ -21,12 +23,13 @@ public class Coach {
     @JsonIgnore
     private Team team;
 
-    public Coach(String name, int user_id){
+
+    public Fan(String name, int user_id){
         this.name = name;
         this.user_id = user_id;
     }
 
-    public Coach(){
+    public Fan(){
 
     }
 
@@ -63,4 +66,3 @@ public class Coach {
     }
 
 }
-
