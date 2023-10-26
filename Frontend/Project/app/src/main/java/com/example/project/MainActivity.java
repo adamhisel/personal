@@ -10,7 +10,11 @@ import android.os.Bundle;
 
 import com.example.project.databinding.ActivityMainBinding;
 
-
+/**
+ * @author Adam Hisel
+ * Activity that manages the navigayion bar at the bottom of the fragements.
+ * Sets the default fragment to open to the home page when app is loaded.
+ */
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;

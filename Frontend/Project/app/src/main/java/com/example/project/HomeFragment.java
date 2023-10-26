@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment {
 
         ImageButton addTeam = view.findViewById(R.id.plus);
 
-
+        ImageButton joinTeam = view.findViewById(R.id.join);
 
         TextView header = view.findViewById(R.id.header);
 
@@ -58,6 +58,14 @@ public class HomeFragment extends Fragment {
 
         jsonParseArray();
         addTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        joinTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AddTeamActivity.class);

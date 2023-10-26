@@ -23,7 +23,12 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
+/**
+ * @author Adam Hisel
+ * Activity that allows a user to make a team for people to join. Will have to option
+ * make their team private or public. Private teams will have to have a password to join
+ * where public teams wont.
+ */
 public class AddTeamActivity extends AppCompatActivity {
 
     private EditText teamName;
@@ -62,7 +67,6 @@ public class AddTeamActivity extends AppCompatActivity {
         });
 
     }
-
     private void postTeam() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
