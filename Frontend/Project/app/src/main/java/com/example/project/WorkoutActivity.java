@@ -42,10 +42,14 @@ public class WorkoutActivity extends AppCompatActivity {
      */
     private Drawable green, red;
 
-    /**
-     * TextView for displaying shot information and coordinates
-     */
-    private TextView coordinatesTextView;
+    private int totalShots = 0;
+    private int threePointMakes = 0;
+    private int threePointAttempts = 0;
+    private int twoPointMakes = 0;
+    private int twoPointAttempts = 0;
+
+    private TextView shootingPercentageTextView, threePointRatioTextView, twoPointRatioTextView, totalShotsTextView, userInfoTextView;
+
 
     /**
      * Called when the activity is starting.
@@ -72,9 +76,17 @@ public class WorkoutActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         imageView = binding.courtImageView;
-        coordinatesTextView = findViewById(R.id.coordinatesTextView);
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
+
+        hideShotButtons();
+
+        binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     /**
@@ -136,27 +148,37 @@ public class WorkoutActivity extends AppCompatActivity {
             shotType = "Two-Point Shot";
         }
 
-        // Display the shot type and transformed coordinates
-        coordinatesTextView.setText(String.format("Shot Type: %s, X: %.2f, Y: %.2f", shotType, realX, realY));
+        if ("Three-Point Shot".equals(shotType)) {
+            threePointAttempts++;
+        } else {
+            twoPointAttempts++;
+        }
+
+        showShotButtons();
 
         // Show dialog to record shot as make or miss
-        showShotResultDialog(shotType, x, y);
+        recordMakeOrMiss(shotType, x, y);
     }
 
-    /**
-     * Shows a dialog to let the user record a basketball shot as a make or miss.
-     *
-     * @param shotType Type of the shot (e.g., "Two-Point Shot" or "Three-Point Shot").
-     * @param x        The x-coordinate of the touch event.
-     * @param y        The y-coordinate of the touch event.
-     */
-    private void showShotResultDialog(String shotType, float x, float y) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(shotType)
-                .setMessage("Was it a make or miss?")
-                .setPositiveButton("Make", (dialog, id) -> setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop()))
-                .setNegativeButton("Miss", (dialog, id) -> setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop()));
-        builder.create().show();
+    private void recordMakeOrMiss(String shotType, float x, float y) {
+        binding.btnMake.setOnClickListener(v -> {
+            setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
+            if ("Three-Point Shot".equals(shotType)) {
+                threePointMakes++;
+            } else {
+                twoPointMakes++;
+            }
+            totalShots++;
+            updateStats();
+            hideShotButtons();
+        });
+
+        binding.btnMiss.setOnClickListener(v -> {
+            setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
+            totalShots++;
+            updateStats();
+            hideShotButtons();
+        });
     }
 
     /**
@@ -176,6 +198,29 @@ public class WorkoutActivity extends AppCompatActivity {
         imageView.setY(y - ICON_SIZE_PX);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
+    }
+
+    private void updateStats() {
+        // Update the TextViews with the new stats
+        float shootingPercentage = 0;
+        if (totalShots > 0) {
+            shootingPercentage = (float) (threePointMakes + twoPointMakes) / totalShots * 100;
+        }
+
+        binding.shootingPercentageTextView.setText(String.format("Shooting Percentage: %.2f%%", shootingPercentage));
+        binding.threePointRatioTextView.setText(String.format("3 Point Ratio: %d/%d", threePointMakes, threePointAttempts));
+        binding.twoPointRatioTextView.setText(String.format("2 Point Ratio: %d/%d", twoPointMakes, twoPointAttempts));
+        binding.totalShotsTextView.setText(String.format("Total Shots: %d", totalShots));
+    }
+
+    private void showShotButtons() {
+        binding.btnMake.setVisibility(View.VISIBLE);
+        binding.btnMiss.setVisibility(View.VISIBLE);
+    }
+
+    private void hideShotButtons() {
+        binding.btnMake.setVisibility(View.GONE);
+        binding.btnMiss.setVisibility(View.GONE);
     }
 
 }

@@ -10,29 +10,88 @@
     <ImageView
         android:id="@+id/courtImageView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="350dp"
         android:scaleType="fitXY"
         android:src="@drawable/court_image" />
 
-    <!-- Empty view to occupy the bottom half -->
+    <!-- This LinearLayout will contain all the shooting stats -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="bottom"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="450dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp">
 
-        />
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
 
-    <!-- TextView to display x,y coordinates -->
+        <Button
+            android:id="@+id/btnMake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="make"/>
+
+        <Button
+            android:id="@+id/btnMiss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="miss"/>
+        </TableRow>
+
+        <TextView
+            android:id="@+id/shootingPercentageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Shooting Percentage: 0%"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/threePointRatioTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="3 Point Ratio: 0/0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/twoPointRatioTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="2 Point Ratio: 0/0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/totalShotsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Total Shots: 0"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <!-- User Info TextView -->
     <TextView
-        android:id="@+id/coordinatesTextView"
+        android:id="@+id/userInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:padding="30dp"
-        android:background="@android:color/darker_gray"
-        android:textColor="@android:color/white"
+        android:layout_gravity="bottom|start"
+        android:text="Username"
         android:textSize="16sp" />
+
+    <!-- End Session Button -->
+    <Button
+        android:id="@+id/btnEndSession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:text="End Session" />
 
 </FrameLayout>

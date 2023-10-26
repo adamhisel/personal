@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.RequestQueue;
-import com.example.project.databinding.FragmentProfileBinding;
 import com.example.project.databinding.FragmentWorkoutBinding;
 
 /**
@@ -62,7 +61,7 @@ public class WorkoutFragment extends Fragment {
      * Sets up the button listeners for the user interface.
      */
     private void setupButtonListeners() {
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+        binding.btnBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(requireActivity(), WorkoutActivity.class);
