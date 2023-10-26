@@ -53,24 +53,17 @@ class Main {
     CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository, PlayerService playerService, TeamService teamService,
                                UserRepository userRepository, CoachRepository coachRepository, FanRepository fanRepository) {
         return args -> {
-            Team team1 = new Team("cavs");
+            Team team1 = new Team("cavs", "password", true);
             teamRepository.save(team1);
 
             Coach coach1 = new Coach("mason",0);
             coachRepository.save(coach1);
 
-            Player player1 = new Player("mason",12, "C", 1, team1.getId());
-            playerRepository.save(player1);
-
-            Fan fan1 = new Fan("jake", 0);
-            fanRepository.save(fan1);
 
 
 
-            team1.addCoach(coach1);
-            team1.addPlayer(player1);
-            team1.addFan(fan1);
-            teamRepository.save(team1);
+
+
 
 
 

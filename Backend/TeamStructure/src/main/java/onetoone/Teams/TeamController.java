@@ -1,6 +1,7 @@
 package onetoone.Teams;
 
 import java.util.List;
+import java.util.Objects;
 
 import onetoone.Coaches.Coach;
 import onetoone.Coaches.CoachRepository;
@@ -75,16 +76,30 @@ public class TeamController {
         return success;
     }
 
-    @PutMapping("/teams/{teamId}/coaches/{coachId}")
-    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId){
+    @PutMapping("/teams/{teamId}/coaches/{coachId}/{password}")
+    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId,@PathVariable String password){
         Team team = teamRepository.findById(teamId);
         Coach coach = coachRepository.findById(coachId);
-        if(team == null || coach == null)
+        if(team == null || coach == null) {
             return failure;
-        coach.setTeam(team);
-        team.addCoach(coach);
-        teamRepository.save(team);
-        return success;
+        }
+        if(team.getTeamIsPrivate()){
+            if(Objects.equals(password, team.getPassword())){
+                coach.setTeam(team);
+                team.addCoach(coach);
+                teamRepository.save(team);
+                return success;
+            }
+            else{
+                return "wrong password";
+            }
+        }
+        else{
+            coach.setTeam(team);
+            team.addCoach(coach);
+            teamRepository.save(team);
+            return success;
+        }
     }
 
 
