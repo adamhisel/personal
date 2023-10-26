@@ -22,6 +22,10 @@ import com.example.project.databinding.ActivityWorkoutBinding;
  */
 public class WorkoutActivity extends AppCompatActivity {
 
+
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     /**
      * Size of the icons (made or missed shots) in pixels
      */

@@ -12,10 +12,7 @@ import android.view.ViewGroup;
 import com.android.volley.RequestQueue;
 import com.example.project.databinding.FragmentGameBinding;
 
-/**
- * WorkoutFragment is a Fragment class responsible for displaying the workout screen in the application.
- * It handles user interactions on the workout screen and directs the user to the WorkoutActivity when a button is clicked.
- */
+
 public class GameFragment extends Fragment {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
@@ -39,7 +36,7 @@ public class GameFragment extends Fragment {
         binding.btnBegin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(requireActivity(), WorkoutActivity.class);
+                Intent intent = new Intent(requireActivity(), GameActivity.class);
                 startActivity(intent);
             }
         });
