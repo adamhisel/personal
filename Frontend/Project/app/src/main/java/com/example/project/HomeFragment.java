@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment {
         joinTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddTeamActivity.class);
+                Intent intent = new Intent(getActivity(), JoinTeamActivity.class);
                 startActivity(intent);
             }
         });
@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     public void jsonParseArray() {
-        String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/teams";
+        String url = "https:/10.0.2.2:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
