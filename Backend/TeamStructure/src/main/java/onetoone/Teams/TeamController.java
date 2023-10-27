@@ -64,16 +64,30 @@ public class TeamController {
 //    }
 
 
-    @PutMapping("/teams/{teamId}/players/{playerId}")
-    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId){
+    @PutMapping("/teams/{teamId}/players/{playerId}/{password")
+    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId, @PathVariable String password){
         Team team = teamRepository.findById(teamId);
-        Player laptop = playerRepository.findById(playerId);
-        if(team == null || laptop == null)
+        Player player = playerRepository.findById(playerId);
+        if(team == null || player == null){
             return failure;
-        laptop.setTeam(team);
-        team.addPlayer(laptop);
-        teamRepository.save(team);
-        return success;
+        }
+        if(team.getTeamIsPrivate()){
+            if(Objects.equals(password, team.getPassword())){
+                player.setTeam(team);
+                team.addPlayer(player);
+                teamRepository.save(team);
+                return success;
+            }
+            else{
+                return "wrong password";
+            }
+        }
+        else {
+            player.setTeam(team);
+            team.addPlayer(player);
+            teamRepository.save(team);
+            return success;
+        }
     }
 
     @PutMapping("/teams/{teamId}/coaches/{coachId}/{password}")
