@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityMainBinding;
 
@@ -56,7 +57,7 @@ public class HomeFragment extends Fragment {
 
         header.setText("Hello, " + SharedPrefsUtil.getUserName(requireContext()));
 
-        jsonParseArray();
+        displayTeamButtons();
         addTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,41 +82,53 @@ public class HomeFragment extends Fragment {
      * user follows or is on. This method also allows users to click the buttons once
      * they are generated so which then opens into the specific team roster.
      */
-    public void jsonParseArray() {
-        String url = "https:/10.0.2.2:8080/teams";
+    public void displayTeamButtons() {
+        String url = "https:/10.0.2.2:8080/users/" + SharedPrefsUtil.getUserId(getContext()).toString();
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject team = response.getJSONObject(i);
 
-                        Button button = new Button(requireContext());
+                        JSONObject user = response.getJSONObject(0);
 
-                        String teamName = team.getString("teamName");
-                        int tag = team.getInt("id");
+                        JSONArray teams = user.getJSONArray("teams");
 
-                        button.setText(teamName);
-                        button.setTag(tag);
-                        button.setTextSize(25);
+                        ArrayList<String> teamList = new ArrayList<>();
+                        ArrayList<Integer> teamIds = new ArrayList<>();
 
-                        button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                int teamId = tag;
-                                Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
-                                intent.putExtra("teamId", teamId);
-                                startActivity(intent);
-                            }
-                        });
+                        for (int i = 0; i < teams.length(); i++) {
+                            JSONObject team = teams.getJSONObject(i);
+                            teamList.add(new String(team.getString("teamName")));
+                            teamIds.add(new Integer(team.getInt("id")));
+                        }
 
-                        ll.addView(button, ll.getChildCount()-4);
+                        for(int j =0; j< teamList.size(); j++) {
 
+                            Button button = new Button(requireContext());
 
-                    }
+                            String teamName = teamList.get(j);
+                            int id = teamIds.get(j);
 
-                } catch (JSONException e) {
+                            button.setText(teamName);
+                            button.setTag(id);
+                            button.setTextSize(25);
+
+                            button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    int teamId = id;
+                                    Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
+                                    intent.putExtra("teamId", teamId);
+                                    startActivity(intent);
+                                }
+                            });
+
+                            ll.addView(button, ll.getChildCount() - 4);
+
+                        }
+
+            } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
