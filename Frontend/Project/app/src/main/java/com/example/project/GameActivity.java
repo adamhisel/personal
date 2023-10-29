@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.project.databinding.ActivityGameBinding;
@@ -44,6 +46,10 @@ public class GameActivity extends AppCompatActivity {
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
 
+    private int[] playerButtonIds = new int[] {
+            R.id.imgBtnPlayer1, R.id.imgBtnPlayer2, R.id.imgBtnPlayer3, R.id.imgBtnPlayer4, R.id.imgBtnPlayer5
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +59,8 @@ public class GameActivity extends AppCompatActivity {
         initializeViews();
         setupCourtImageView();
         setupShotTypeIndicator();
+
+
     }
 
     private void initializeViews() {
@@ -61,6 +69,12 @@ public class GameActivity extends AppCompatActivity {
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
 
         hideShotButtons();
+
+        binding.imgBtnPlayer1.setOnClickListener(v -> setActivePlayer(1));
+        binding.imgBtnPlayer2.setOnClickListener(v -> setActivePlayer(2));
+        binding.imgBtnPlayer3.setOnClickListener(v -> setActivePlayer(3));
+        binding.imgBtnPlayer4.setOnClickListener(v -> setActivePlayer(4));
+        binding.imgBtnPlayer5.setOnClickListener(v -> setActivePlayer(5));
 
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +183,18 @@ public class GameActivity extends AppCompatActivity {
             shootingPercentage = (float) (threePointMakes + twoPointMakes) / totalShots * 100;
         }
 
+    }
+
+    private void setActivePlayer(int playerNumber) {
+        // Reset background color for all player buttons
+        for (int i = 0; i < playerButtonIds.length; i++) {
+            ImageButton button = findViewById(playerButtonIds[i]);
+            button.setBackgroundColor(Color.TRANSPARENT); // Or any default color
+        }
+
+        // Set background color for active player's button
+        ImageButton activePlayerButton = findViewById(playerButtonIds[playerNumber - 1]);
+        activePlayerButton.setBackgroundColor(Color.DKGRAY); // Dark color for active player
     }
 
     private void showShotButtons() {
