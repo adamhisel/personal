@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -50,6 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Initializes the activity, sets up the user interface, and handles user interactions.
+     *
      * @param savedInstanceState If the activity is being re-initialized after previously being
      *                           shut down then this Bundle contains the data it most recently
      *                           supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
@@ -61,19 +61,8 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
-        setupDropdownUserTypes();
         mQueue = Volley.newRequestQueue(this);
         setupButtonListeners();
-    }
-
-
-    /**
-     * Sets up the dropdown menu for selecting user types.
-     */
-    private void setupDropdownUserTypes() {
-        String[] userTypes = getResources().getStringArray(R.array.user_types);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, userTypes);
-        binding.tvUserType.setAdapter(adapter);
     }
 
     /**
@@ -82,7 +71,9 @@ public class RegistrationActivity extends AppCompatActivity {
     private void setupButtonListeners() {
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { handleSignUp(); }
+            public void onClick(View v) {
+                handleSignUp();
+            }
         });
 
         binding.btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -109,16 +100,14 @@ public class RegistrationActivity extends AppCompatActivity {
         String userName = binding.etUserName.getText().toString().trim();
         String email = binding.etEmail.getText().toString().trim();
         String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
-        String userType = binding.tvUserType.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
 
         boolean isValidUserName = validateUserName();
         boolean isValidEmail = validateEmail();
         boolean isValidPhoneNumber = validatePhoneNumber();
-        boolean isValidUserType = validateUserType();
         boolean isValidPassword = validatePassword();
 
-        if (!isValidUserName || !isValidEmail || !isValidPhoneNumber || !isValidUserType || !isValidPassword) {
+        if (!isValidUserName || !isValidEmail || !isValidPhoneNumber || !isValidPassword) {
             return;  // Stops further execution if any validation fails.
         }
 
@@ -127,7 +116,6 @@ public class RegistrationActivity extends AppCompatActivity {
             postData.put("userName", userName);
             postData.put("email", email);
             postData.put("phoneNumber", phoneNumber);
-            postData.put("userType", userType);
             postData.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -158,39 +146,36 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Handles the server response for the sign up request.
+     *
      * @param response The JSON response received from the server.
      */
     private void handleSignUpResponse(JSONObject response) {
         try {
-            // Check if the response has a userName, indicating successful user creation
-            if (response.has("userName")) {
-                SharedPrefsUtil.saveUserData(
-                        RegistrationActivity.this,
-                        response.getString("userName"),
-                        response.getString("email"),
-                        response.getString("phoneNumber"),
-                        response.getString("userType"),
-                        response.getString("userID")  // Temporary placeholder for userID
-                );
-                String userType = response.getString("userType");
-                Intent intent;
-                if ("player".equals(userType)) {
-                    intent = new Intent(RegistrationActivity.this, PlayerRegistrationActivity.class);
-                } else {
-                    intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                }
-                startActivity(intent);
-            } else {
-                Toast.makeText(RegistrationActivity.this, "Registration failed!", Toast.LENGTH_SHORT).show();
-            }
+            int id = response.getInt("id");
+            String userName = response.getString("userName");
+            String email = response.getString("email");
+            String phoneNumber = response.getString("phoneNumber");
+            String userType = null;
+
+            // Save user information using SharedPrefsUtil
+            SharedPrefsUtil.saveUserData(this, userName, email, phoneNumber, userType, String.valueOf(id));
+
+            Toast.makeText(RegistrationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
+
+            // Redirect to MainActivity
+            Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(RegistrationActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
         }
     }
 
+
     /**
      * Checks if a text field is empty.
+     *
      * @param text The text to be checked.
      * @return true if the text is empty, false otherwise.
      */
@@ -200,6 +185,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Sets an error message for a text input layout.
+     *
      * @param field     The text input layout to set the error on.
      * @param errorText The error message.
      * @return Always returns false.
@@ -211,6 +197,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Clears the error message on a text input layout.
+     *
      * @param field The text input layout to clear the error on.
      */
     private void clearFieldError(TextInputLayout field) {
@@ -220,6 +207,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Validates the user name input field.
+     *
      * @return true if the input is valid, false otherwise.
      */
     private boolean validateUserName() {
@@ -234,6 +222,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Validates the email input field.
+     *
      * @return true if the input is valid, false otherwise.
      */
     private boolean validateEmail() {
@@ -252,6 +241,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Validates the phone number input field.
+     *
      * @return true if the input is valid, false otherwise.
      */
     private boolean validatePhoneNumber() {
@@ -265,21 +255,8 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     /**
-     * Validates the user type input field.
-     * @return true if the input is valid, false otherwise.
-     */
-    private boolean validateUserType() {
-        String userType = binding.tvUserType.getText().toString().trim();
-        if (isEmpty(userType)) {
-            return setFieldError(binding.tilUserType, "Field cannot be empty");
-        } else {
-            clearFieldError(binding.tilUserType);
-            return true;
-        }
-    }
-
-    /**
      * Validates the password input field.
+     *
      * @return true if the input is valid, false otherwise.
      */
     private boolean validatePassword() {
