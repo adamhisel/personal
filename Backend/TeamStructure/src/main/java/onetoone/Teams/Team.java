@@ -42,6 +42,10 @@ public class Team {
 
     private String teamName;
 
+    private boolean team_is_private;
+
+    private String password;
+
 
     /*
      * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
@@ -65,8 +69,10 @@ public class Team {
     private User user;
 
 
-    public Team(String teamName) {
+    public Team(String teamName, String password, boolean team_is_private) {
         this.teamName = teamName;
+        this.password = password;
+        this.team_is_private = team_is_private;
         players = new ArrayList<>();
         coaches = new ArrayList<>();
         fans = new ArrayList<>();
@@ -128,6 +134,22 @@ public class Team {
 
     public void setUser(User user){
         this.user = user;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
+
+    public boolean getTeamIsPrivate(){
+        return team_is_private;
+    }
+
+    public void setTeamIsPrivate(boolean team_is_private){
+        this.team_is_private = team_is_private;
     }
 
 }

@@ -32,11 +32,11 @@ public class FanController {
     }
 
     @PostMapping(path = "/fans")
-    String createFan(@RequestBody Fan fan){
+    Fan createFan(@RequestBody Fan fan){
         if (fan == null)
-            return failure;
+           throw new RuntimeException();
         fanRepository.save(fan);
-        return success;
+        return fan;
     }
 
     @DeleteMapping(path = "/fans/{id}")

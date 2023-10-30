@@ -1,6 +1,7 @@
 package onetoone.Teams;
 
 import java.util.List;
+import java.util.Objects;
 
 import onetoone.Coaches.Coach;
 import onetoone.Coaches.CoachRepository;
@@ -49,11 +50,11 @@ public class TeamController {
     }
 
     @PostMapping(path = "/teams")
-    String createTeam(@RequestBody Team team){
+    Team createTeam(@RequestBody Team team){
         if (team == null)
-            return failure;
+            throw new RuntimeException();
         teamRepository.save(team);
-        return success;
+        return team;
     }
 
 //    @PostMapping("/updateTeam/{id}")
@@ -63,28 +64,56 @@ public class TeamController {
 //    }
 
 
-    @PutMapping("/teams/{teamId}/players/{playerId}")
-    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId){
+    @PutMapping("/teams/{teamId}/players/{playerId}/{password}")
+    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId, @PathVariable String password){
         Team team = teamRepository.findById(teamId);
-        Player laptop = playerRepository.findById(playerId);
-        if(team == null || laptop == null)
+        Player player = playerRepository.findById(playerId);
+        if(team == null || player == null){
             return failure;
-        laptop.setTeam(team);
-        team.addPlayer(laptop);
-        teamRepository.save(team);
-        return success;
+        }
+        if(team.getTeamIsPrivate()){
+            if(Objects.equals(password, team.getPassword())){
+                player.setTeam(team);
+                team.addPlayer(player);
+                teamRepository.save(team);
+                return success;
+            }
+            else{
+                return "wrong password";
+            }
+        }
+        else {
+            player.setTeam(team);
+            team.addPlayer(player);
+            teamRepository.save(team);
+            return success;
+        }
     }
 
-    @PutMapping("/teams/{teamId}/coaches/{coachId}")
-    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId){
+    @PutMapping("/teams/{teamId}/coaches/{coachId}/{password}")
+    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId,@PathVariable String password){
         Team team = teamRepository.findById(teamId);
         Coach coach = coachRepository.findById(coachId);
-        if(team == null || coach == null)
+        if(team == null || coach == null) {
             return failure;
-        coach.setTeam(team);
-        team.addCoach(coach);
-        teamRepository.save(team);
-        return success;
+        }
+        if(team.getTeamIsPrivate()){
+            if(Objects.equals(password, team.getPassword())){
+                coach.setTeam(team);
+                team.addCoach(coach);
+                teamRepository.save(team);
+                return success;
+            }
+            else{
+                return "wrong password";
+            }
+        }
+        else{
+            coach.setTeam(team);
+            team.addCoach(coach);
+            teamRepository.save(team);
+            return success;
+        }
     }
 
 
