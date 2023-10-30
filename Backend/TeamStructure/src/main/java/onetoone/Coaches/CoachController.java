@@ -36,11 +36,11 @@ public class CoachController {
     }
 
     @PostMapping(path = "/coaches")
-    String createCoach(@RequestBody Coach coach){
+    Coach createCoach(@RequestBody Coach coach){
         if (coach == null)
-            return failure;
+            throw new RuntimeException();
         coachRepository.save(coach);
-        return success;
+        return coach;
     }
 
     @DeleteMapping(path = "/coaches/{id}")

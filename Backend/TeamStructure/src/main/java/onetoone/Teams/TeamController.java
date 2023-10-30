@@ -50,11 +50,11 @@ public class TeamController {
     }
 
     @PostMapping(path = "/teams")
-    String createTeam(@RequestBody Team team){
+    Team createTeam(@RequestBody Team team){
         if (team == null)
-            return failure;
+            throw new RuntimeException();
         teamRepository.save(team);
-        return success;
+        return team;
     }
 
 //    @PostMapping("/updateTeam/{id}")
@@ -64,7 +64,7 @@ public class TeamController {
 //    }
 
 
-    @PutMapping("/teams/{teamId}/players/{playerId}/{password")
+    @PutMapping("/teams/{teamId}/players/{playerId}/{password}")
     String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId, @PathVariable String password){
         Team team = teamRepository.findById(teamId);
         Player player = playerRepository.findById(playerId);
