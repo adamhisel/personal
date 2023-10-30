@@ -19,8 +19,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,9 +37,20 @@ public class JoinTeamActivity extends AppCompatActivity {
 
     private ArrayList<String> idArr;
 
+    private TextInputLayout name;
+    private TextInputLayout number;
+
+    private TextInputLayout position;
+
     private int teamId;
+    private int playerId;
     private AutoCompleteTextView teamNameAutoComplete;
     private AutoCompleteTextView typeAutoComplete;
+    private AutoCompleteTextView positionAutoComplete;
+
+    private boolean isPlayer = false;
+
+    private String selectedPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +64,19 @@ public class JoinTeamActivity extends AppCompatActivity {
         teamNameAutoComplete = findViewById(R.id.tvTeamName);
 
         typeAutoComplete = findViewById(R.id.tvUserType);
+
+        positionAutoComplete = findViewById(R.id.tvPosition);
+
+        name = findViewById(R.id.name);
+        number = findViewById(R.id.number);
+        position = findViewById(R.id.position);
+
+        String[] posArr = new String[5];
+        posArr[0] = "PG";
+        posArr[1] = "SG";
+        posArr[2] = "SF";
+        posArr[3] = "PF";
+        posArr[4] = "C";
 
         String[] typeArr = new String[2];
         typeArr[0] = "Player";
@@ -88,11 +114,46 @@ public class JoinTeamActivity extends AppCompatActivity {
         typeAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
 
+            if(selected.equals("Player")){
+                isPlayer = true;
+                name.setVisibility(View.VISIBLE);
+                this.position.setVisibility(View.VISIBLE);
+                number.setVisibility(View.VISIBLE);
+            }
+            else{
+                isPlayer = false;
+            }
+        });
+
+
+
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(JoinTeamActivity.this, android.R.layout.simple_dropdown_item_1line, posArr);
+        positionAutoComplete.setAdapter(adapter3);
+
+        positionAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = (String) parent.getItemAtPosition(position);
+            selectedPos = selected;
         });
 
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                boolean isValidName = validateName();
+                boolean isValidNumber = validateNumber();
+
+                if (!isValidName || !isValidNumber) {
+                    return;
+                }
+
+                if(isPlayer == true){
+                    joinTeamUser();
+                    joinTeamPlayer();
+                }
+                else{
+                    joinTeamUser();
+                }
+
                 Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -170,7 +231,7 @@ public class JoinTeamActivity extends AppCompatActivity {
     private void joinTeamUser(){
         String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/User/" + userId + "/teams/" + teamId;
+        String url = "http://10.0.2.2:8080/User/" + userId + "/teams/" + teamId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -194,9 +255,10 @@ public class JoinTeamActivity extends AppCompatActivity {
     }
 
     private void joinTeamPlayer(){
-        String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/User/" + userId + "/teams/" + teamId;
+        postPlayer();
+
+        String url = "http://10.0.2.2:8080/User/" + teamId + "/teams/" + playerId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -215,8 +277,82 @@ public class JoinTeamActivity extends AppCompatActivity {
         );
 
         mQueue.add(putRequest);
+    }
+
+    private void postPlayer() {
+        String url = "http://10.0.2.2:8080/players";
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("playerName", name.getEditText().getText().toString());
+            postData.put("number", number.getEditText().getText().toString());
+            postData.put("position", selectedPos);
 
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("PostUser", "Response received: " + response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Handle the error, e.g., display an error message
+                Log.e("PostUser", "Error in request: " + error.getMessage());
+            }
+        });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private Boolean validateName() {
+        String tilName = name.getEditText().getText().toString().trim();
+
+        if (tilName.isEmpty()) {
+            name.setError("Field cannot be empty");
+            return false;
+        } else {
+            name.setError(null);
+            name.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+    private Boolean validateNumber() {
+        String tilNumber = number.getEditText().getText().toString().trim();
+
+
+        if (tilNumber.isEmpty()) {
+            number.setError("Field cannot be empty");
+            return false;
+        }
+        if (!isInteger(tilNumber)){
+            number.setError("Field has to be a number");
+            return false;
+        }
+        else{
+            number.setError(null);
+            number.setErrorEnabled(false);
+            return true;
+        }
+
+    }
+
+    private static boolean isInteger (String str){
+        try {
+            // Attempt to parse the string as an integer
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            // If an exception is thrown, the string is not an integer
+            return false;
+        }
     }
 
 }
