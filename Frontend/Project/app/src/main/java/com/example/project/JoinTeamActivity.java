@@ -122,6 +122,9 @@ public class JoinTeamActivity extends AppCompatActivity {
             }
             else{
                 isPlayer = false;
+                name.setVisibility(View.INVISIBLE);
+                this.position.setVisibility(View.INVISIBLE);
+                number.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -138,15 +141,14 @@ public class JoinTeamActivity extends AppCompatActivity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isPlayer == true) {
+                    boolean isValidName = validateName();
+                    boolean isValidNumber = validateNumber();
 
-                boolean isValidName = validateName();
-                boolean isValidNumber = validateNumber();
+                    if (!isValidName || !isValidNumber) {
+                        return;
+                    }
 
-                if (!isValidName || !isValidNumber) {
-                    return;
-                }
-
-                if(isPlayer == true){
                     joinTeamUser();
                     joinTeamPlayer();
                 }
