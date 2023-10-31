@@ -19,6 +19,9 @@
             android:name=".JoinTeamActivity"
             android:exported="false" />
         <activity
+            android:name=".GameActivity"
+            android:exported="false" />
+        <activity
             android:name=".TeamChat"
             android:exported="false" />
         <activity
