@@ -1,5 +1,7 @@
 package com.example.project;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -7,13 +9,26 @@ import androidx.core.content.ContextCompat;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityWorkoutBinding;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * WorkoutActivity is an activity that represents a basketball workout session.
@@ -41,6 +56,8 @@ public class WorkoutActivity extends AppCompatActivity {
      */
     private ImageView imageView;
 
+    private static RequestQueue mQueue;
+
     /**
      * Drawable for a made shot (green circle) or missed shot (red cross)
      */
@@ -51,6 +68,11 @@ public class WorkoutActivity extends AppCompatActivity {
     private int threePointAttempts = 0;
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
+
+    private List<Shots> shotsList = new ArrayList<>();
+
+    private int workoutId;
+
 
     private TextView shootingPercentageTextView, threePointRatioTextView, twoPointRatioTextView, totalShotsTextView, userInfoTextView;
 
@@ -73,6 +95,10 @@ public class WorkoutActivity extends AppCompatActivity {
         initializeViews();
         setupCourtImageView();
         setupShotTypeIndicator();
+
+        String userId = SharedPrefsUtil.getUserId(this);
+        mQueue = Volley.newRequestQueue(this);
+        createWorkout(userId);
     }
 
     /**
@@ -88,6 +114,7 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendShots(workoutId, shotsList);
                 finish();
             }
         });
@@ -166,6 +193,8 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void recordMakeOrMiss(String shotType, float x, float y) {
         binding.btnMake.setOnClickListener(v -> {
+            int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
+            shotsList.add(new Shots(true, value, (int) x, (int) y));
             setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
             if ("Three-Point Shot".equals(shotType)) {
                 threePointMakes++;
@@ -178,6 +207,8 @@ public class WorkoutActivity extends AppCompatActivity {
         });
 
         binding.btnMiss.setOnClickListener(v -> {
+            int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
+            shotsList.add(new Shots(false, value, (int) x, (int) y));
             setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
             totalShots++;
             updateStats();
@@ -215,6 +246,53 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.threePointRatioTextView.setText(String.format("3 Point Ratio: %d/%d", threePointMakes, threePointAttempts));
         binding.twoPointRatioTextView.setText(String.format("2 Point Ratio: %d/%d", twoPointMakes, twoPointAttempts));
         binding.totalShotsTextView.setText(String.format("Total Shots: %d", totalShots));
+    }
+
+    private void createWorkout(String userId) {
+        String url = LOCAL_URL + "/workouts?userId="; // Replace with your endpoint
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
+                response -> {
+                    // Handle response
+                    workoutId = response.optInt("workoutId");
+                    Log.d(TAG, "Workout created successfully. Received workoutId: " + workoutId);
+                    // Now you can send shots to this workout using workoutId
+                }, error -> {
+            Log.e(TAG, "Failed to create workout. Error: " + error.toString());
+            // Handle error
+        });
+
+        mQueue.add(request);
+    }
+
+    private void sendShots(int workoutId, List<Shots> shotsList) {
+        String url = LOCAL_URL + workoutId + "/bulk-shots"; // Replace with your endpoint
+        JSONArray shotsArray = new JSONArray();
+        for (Shots shot : shotsList) {
+            JSONObject shotObject = new JSONObject();
+            try {
+                shotObject.put("made", shot.isMade());
+                shotObject.put("value", shot.getValue());
+                shotObject.put("xCoord", shot.getxCoord());
+                shotObject.put("yCoord", shot.getyCoord());
+                // Add other shot details as needed
+                shotsArray.put(shotObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d(TAG, "Sending shots: " + shotsArray.toString());
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
+                response -> {
+                    Log.d(TAG, "Shots sent successfully");
+                    // Handle response
+                }, error -> {
+            Log.e(TAG, "Failed to send shots. Error: " + error.toString());
+            // Handle error
+        });
+
+        mQueue.add(request);
     }
 
     private void showShotButtons() {
