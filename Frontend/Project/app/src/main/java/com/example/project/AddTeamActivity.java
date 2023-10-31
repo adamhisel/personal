@@ -68,7 +68,7 @@ public class AddTeamActivity extends AppCompatActivity {
 
     }
     private void postTeam() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
+        String url = "http://10.0.2.2:8080/teams";
 
         JSONObject postData = new JSONObject();
         teamName.getText().toString();

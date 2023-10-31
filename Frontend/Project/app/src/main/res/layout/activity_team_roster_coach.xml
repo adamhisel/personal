@@ -61,15 +61,15 @@
             app:layout_constraintVertical_bias="1.0">
 
         </TableLayout>
-
+                <!--
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addPlayer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#000"
-            android:textSize="25dp"
-            android:text="ADD PLAYER"
-            android:textColor="#FFFFFF" />
+            android:text="EDIT ROSTER"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />-->
 
 
 

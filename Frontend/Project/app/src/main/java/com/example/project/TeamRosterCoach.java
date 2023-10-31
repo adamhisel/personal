@@ -40,11 +40,12 @@ public class TeamRosterCoach extends AppCompatActivity {
     private TableLayout tl;
     private RequestQueue mQueue;
 
-    private TextInputLayout teamName;
 
     private boolean exists = false;
 
     private int teamId;
+
+    private String teamName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,26 +54,27 @@ public class TeamRosterCoach extends AppCompatActivity {
 
         mQueue = Volley.newRequestQueue(this);
         tl =  findViewById(R.id.tableLayout);
-        Button addPlayer = findViewById(R.id.addPlayer);
+        //Button addPlayer = findViewById(R.id.addPlayer);
         Button back = findViewById(R.id.backButton);
         Button teamChat = findViewById(R.id.chatButton);
 
         Intent intent = getIntent();
         if (intent != null) {
             teamId =  intent.getIntExtra("teamId", 0);
+            teamName = intent.getStringExtra("teamName");
         }
 
         makeHeader();
+        addPlayerDisplay();
 
-        addPlayer.setOnClickListener(new View.OnClickListener() {
+        /*addPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TeamRosterCoach.this, EditRosterActivity.class);
                 intent.putExtra("id", String.valueOf(teamId));
-                intent.putExtra("key_string", teamName.getEditText().getText().toString());
                 startActivity(intent);
             }
-        });
+        });*/
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +88,7 @@ public class TeamRosterCoach extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TeamRosterCoach.this, TeamChat.class);
+                intent.putExtra("teamName", teamName);
                 startActivity(intent);
             }
         });
@@ -95,7 +98,7 @@ public class TeamRosterCoach extends AppCompatActivity {
      * This method finds the players on the respective team and calls addPlayerDisplay()
      * to put them in the table to be generated on screen
      */
-    public void findTeam() {
+    /*public void findTeam() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -137,17 +140,16 @@ public class TeamRosterCoach extends AppCompatActivity {
         public CustomException() {
 
         }
-    }
+    }*/
 
     /**
      * This method is called by findTeam() and is used to input players from the team data into a
      * table that shows up on the screen. Calls a JsonObjectRequest and recieves
      * a response with a list of players
-     * @param id
      */
-    public void addPlayerDisplay(int id) {
+    public void addPlayerDisplay() {
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + id;
+        String url = "http://10.0.2.2:8080/teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -155,15 +157,16 @@ public class TeamRosterCoach extends AppCompatActivity {
                 try {
 
 
-                    JSONObject players = response.getJSONObject("player"); // Assuming players is an array
+                    JSONArray players = response.getJSONArray("players");
 
                     if (players.length() > 0) {
 
-
-                            int playerId = players.getInt("id");
-                            String name = players.getString("playerName");
-                            String number = "#" + players.getString("number");
-                            String position = players.getString("position");
+                        for (int i= 0; i < players.length(); i++) {
+                            JSONObject player = players.getJSONObject(i);
+                            int playerId = player.getInt("id");
+                            String name = player.getString("playerName");
+                            String number = "#" + player.getString("number");
+                            String position = player.getString("position");
 
 
                             Log.d("TeamRoster", "Info" + name);
@@ -204,6 +207,7 @@ public class TeamRosterCoach extends AppCompatActivity {
 
                             tl.addView(tableRow);
                         }
+                    }
 
                 } catch (JSONException e) {
 

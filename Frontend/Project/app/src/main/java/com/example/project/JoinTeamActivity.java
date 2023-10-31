@@ -231,7 +231,7 @@ public class JoinTeamActivity extends AppCompatActivity {
 
 
     private void joinTeamUser(){
-        String userId = SharedPrefsUtil.getUserId(this);
+        String userId = "1"/*SharedPrefsUtil.getUserId(this)*/;
 
         String url = "http://10.0.2.2:8080/User/" + userId + "/teams/" + teamId;
 
