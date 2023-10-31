@@ -10,7 +10,11 @@ import android.os.Bundle;
 
 import com.example.project.databinding.ActivityMainBinding;
 
-
+/**
+ * @author Adam Hisel
+ * Activity that manages the navigayion bar at the bottom of the fragements.
+ * Sets the default fragment to open to the home page when app is loaded.
+ */
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
@@ -20,22 +24,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        if (SharedPrefsUtil.getUserType(this).equals("coach")){
+        replaceFrag(new HomeFragment());
+        /*if (SharedPrefsUtil.getUserType(this).equals("coach")){
             replaceFrag(new HomeFragmentCoach());
         }
         else{
             replaceFrag(new HomeFragmentPlayer());
-       }
+       }*/
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                if (SharedPrefsUtil.getUserType(this).equals("coach")){
-                    replaceFrag(new HomeFragmentCoach());
-                }
-                else{
-                    replaceFrag(new HomeFragmentPlayer());
-                }
+                replaceFrag(new HomeFragment());
+//                if (SharedPrefsUtil.getUserType(this).equals("coach")){
+//                    replaceFrag(new HomeFragmentCoach());
+//                }
+//                else{
+//                    replaceFrag(new HomeFragmentPlayer());
+//                }
             }
             else if(item.getItemId() == R.id.workout) {
                 replaceFrag(new WorkoutFragment());

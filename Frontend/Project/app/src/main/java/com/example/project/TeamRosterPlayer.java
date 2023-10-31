@@ -25,15 +25,21 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+/**
+ * @author Adam Hisel
+ * Activity that is opened when a player or fan clicks on a team they play on/follow.
+ * Displays a roster with the players, coaches and managers currently on
+ * the team.
+ *
+ */
 public class TeamRosterPlayer extends AppCompatActivity {
 
-    TableLayout tl;
+    private TableLayout tl;
     private RequestQueue mQueue;
 
     private TextInputLayout teamName;
 
-    boolean exists = false;
+    private boolean exists = false;
 
     private int teamId;
 
@@ -42,10 +48,6 @@ public class TeamRosterPlayer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_roster_player);
 
-        /*Bundle args = getArguments();
-        if (args != null) {
-            teamName = args.getString("teamName");
-        }*/
 
         tl =  findViewById(R.id.tableLayout);
 
@@ -58,20 +60,6 @@ public class TeamRosterPlayer extends AppCompatActivity {
         makeHeader();
 
         mQueue = Volley.newRequestQueue(this);
-
-        findTeam.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isValidTeamName = validateTeamName();
-
-                if (!isValidTeamName) {
-                    return;
-                }
-
-                findTeam();
-
-            }
-        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +79,10 @@ public class TeamRosterPlayer extends AppCompatActivity {
 
     }
 
+    /**
+     * This method finds the players on the respective team and calls addPlayerDisplay()
+     * to put them in the table to be generated on screen
+     */
     public void findTeam() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
@@ -134,7 +126,12 @@ public class TeamRosterPlayer extends AppCompatActivity {
 
         }
     }
-
+    /**
+     * This method is called by findTeam() and is used to input players from the team data into a
+     * table that shows up on the screen. Calls a JsonObjectRequest and recieves
+     * a response with a list of players
+     * @param id
+     */
     public void addPlayerDisplay(int id) {
 
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + id;
@@ -229,6 +226,9 @@ public class TeamRosterPlayer extends AppCompatActivity {
         mQueue.add(request);
     }
 
+    /**
+     * This method makes a table header on screen with Number, Name and Position
+     */
     public void makeHeader(){
         TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
@@ -266,19 +266,6 @@ public class TeamRosterPlayer extends AppCompatActivity {
         tableRow.addView(textView3);
 
         tl.addView(tableRow);
-    }
-
-    private Boolean validateTeamName() {
-        String tilTeamName = teamName.getEditText().getText().toString().trim();
-
-        if (tilTeamName.isEmpty()) {
-            teamName.setError("Field cannot be empty");
-            return false;
-        } else {
-            teamName.setError(null);
-            teamName.setErrorEnabled(false);
-            return true;
-        }
     }
 
 }

@@ -10,35 +10,46 @@
     android:padding="16dp"
     tools:context=".TeamRosterCoach">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/teamname"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Search Team Name:">
+            android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etTeamname"
-                    android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/backButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:backgroundTint="#000"
+                    android:text="BACK"
+                    android:textColor="#FFFFFF"
+                    app:icon="?attr/actionModeCloseDrawable" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/findTeam"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#000"
-            android:textSize="25dp"
-            android:text="FIND TEAM"
-            android:textColor="#FFFFFF" />
+                <TextView
+                    android:id="@+id/team"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="30dp">
+
+                </TextView>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/chatButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#000"
+                    android:text="CHAT"
+                    android:textColor="#FFFFFF"
+                    app:icon="@android:drawable/stat_notify_chat" />
+
+        </LinearLayout>
 
 
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="match_parent"
             android:layout_height="500dp"
-            android:background="@android:color/darker_gray"
             android:padding="16dp"
             android:stretchColumns="0,1,2,3"
             android:textStyle="bold"
@@ -60,13 +71,7 @@
             android:text="ADD PLAYER"
             android:textColor="#FFFFFF" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/backButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#000"
-            android:text="BACK TO HOME"
-            android:textColor="#FFFFFF" />
+
 
 
 </LinearLayout>
