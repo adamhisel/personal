@@ -249,7 +249,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void createWorkout(String userId) {
-        String url = LOCAL_URL + "/workouts?userId="; // Replace with your endpoint
+        String url = LOCAL_URL + "/workouts?userId=" + userId; // Replace with your endpoint
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
@@ -265,7 +265,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void sendShots(int workoutId, List<Shots> shotsList) {
-        String url = LOCAL_URL + workoutId + "/bulk-shots"; // Replace with your endpoint
+        String url = LOCAL_URL + workoutId + "/bulk-shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : shotsList) {
             JSONObject shotObject = new JSONObject();
@@ -285,12 +285,13 @@ public class WorkoutActivity extends AppCompatActivity {
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
-                    Log.d(TAG, "Shots sent successfully");
-                    // Handle response
-                }, error -> {
-            Log.e(TAG, "Failed to send shots. Error: " + error.toString());
-            // Handle error
-        });
+                    // You could still log the response if you're interested
+                    Log.d(TAG, "Response received");
+                },
+                error -> {
+                    Log.e(TAG, "Failed to send shots. Error: " + error.toString());
+                    // Handle error
+                });
 
         mQueue.add(request);
     }
