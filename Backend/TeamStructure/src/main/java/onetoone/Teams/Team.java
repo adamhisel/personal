@@ -1,8 +1,8 @@
 package onetoone.Teams;
 
-<<<<<<< HEAD
+
 import javax.persistence.*;
-=======
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,17 +10,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
->>>>>>> main
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import onetoone.Coaches.Coach;
+import onetoone.Fans.Fan;
 import onetoone.Players.Player;
 import onetoone.users.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  *
@@ -41,6 +42,10 @@ public class Team {
 
     private String teamName;
 
+    private boolean team_is_private;
+
+    private String password;
+
 
     /*
      * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
@@ -50,22 +55,33 @@ public class Team {
      */
     @OneToMany
     private List<Player> players;
-<<<<<<< HEAD
+
+    @OneToMany
+    private List<Coach> coaches;
+
+    @OneToMany
+    private List<Fan> fans;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-=======
->>>>>>> main
 
-    public Team(String teamName) {
+
+    public Team(String teamName, String password, boolean team_is_private) {
         this.teamName = teamName;
+        this.password = password;
+        this.team_is_private = team_is_private;
         players = new ArrayList<>();
+        coaches = new ArrayList<>();
+        fans = new ArrayList<>();
     }
 
     public Team() {
         players = new ArrayList<>();
+        coaches = new ArrayList<>();
+        fans = new ArrayList<>();
     }
 
     // =============================== Getters and Setters for each field ================================== //
@@ -86,17 +102,30 @@ public class Team {
 
     public void setPlayers(List<Player> players){
         this.players = players;
-<<<<<<< HEAD
-=======
     }
 
     public void addPlayer(Player player){
         this.players.add(player);
->>>>>>> main
     }
 
-    public void addPlayer(Player player){
-        this.players.add(player);
+    public List getCoaches(){ return coaches; }
+
+    public void setCoaches(List<Coach> coaches){
+        this.coaches = coaches;
+    }
+
+    public void addCoach(Coach coach){
+        this.coaches.add(coach);
+    }
+
+    public List getFans(){ return fans; }
+
+    public void setFans(List<Fan> fans){
+        this.fans = fans;
+    }
+
+    public void addFan(Fan fan){
+        this.fans.add(fan);
     }
 
     public User getUser(){
@@ -105,6 +134,22 @@ public class Team {
 
     public void setUser(User user){
         this.user = user;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
+
+    public boolean getTeamIsPrivate(){
+        return team_is_private;
+    }
+
+    public void setTeamIsPrivate(boolean team_is_private){
+        this.team_is_private = team_is_private;
     }
 
 }

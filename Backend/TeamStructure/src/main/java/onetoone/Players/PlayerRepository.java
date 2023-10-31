@@ -20,11 +20,5 @@ public interface PlayerRepository extends JpaRepository<Player, Long>  {
     @Transactional
     void deleteById(int id);
 
-    @Modifying
-    @Query("UPDATE Player p SET p.playerName = :playerName, p.number = :number, p.position = :position WHERE p.id = :id")
-    void updatePlayerById(@Param("id") int id, @Param("playerName") String userName, @Param("position") String position, @Param("number") int number);
-
-
-
 
 }

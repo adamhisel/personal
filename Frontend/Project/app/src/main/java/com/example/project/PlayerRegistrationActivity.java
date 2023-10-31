@@ -15,18 +15,44 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.project.databinding.ActivityLoginBinding;
 import com.example.project.databinding.ActivityPlayerRegistrationBinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * PlayerRegistrationActivity is responsible for handling the user interface and logic
+ * for registering or updating a player's information in the application.
+ */
 public class PlayerRegistrationActivity extends AppCompatActivity {
 
+    /**
+     * Base URL for the remote server connection
+     */
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+
+    /**
+     * Local URL for the local server connection
+     */
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
+    /**
+     * View binding for this activity
+     */
     private ActivityPlayerRegistrationBinding binding;
+
+    /**
+     * RequestQueue for handling network requests.
+     */
     private static RequestQueue mQueue;
 
+    /**
+     * Called when the activity is first created.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +66,18 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Sets up the dropdown menu for selecting player positions.
+     */
     private void setupDropdownPlayerPositions() {
         String[] playerPositions = getResources().getStringArray(R.array.player_positions);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, playerPositions);
         binding.tvPosition.setAdapter(adapter);
     }
 
+    /**
+     * Sets up the button listeners for the activity.
+     */
     private void setupButtonListeners() {
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +87,9 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the updating of player information by sending a PUT request to the server.
+     */
     private void handlePlayerInfoUpdate() {
         String name = binding.etName.getText().toString().trim();
         String number = binding.etNumber.getText().toString().trim();
@@ -95,6 +130,10 @@ public class PlayerRegistrationActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Handles the server's response after attempting to update the player's information.
+     * @param response The JSON response from the server.
+     */
     private void handleUpdateResponse(JSONObject response) {
         try {
             // Check if the response has a userName, indicating successful user update

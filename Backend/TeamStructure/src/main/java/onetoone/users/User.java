@@ -21,18 +21,16 @@ public class User{
     private String phoneNumber;
 
 
-<<<<<<< HEAD
+
     @OneToMany
     private List<Team> teams;
-=======
+
 
     @JsonIgnore
     @OneToOne
     private User user;
-    public User() {
-        // You can initialize any default values here if needed.
-    }
->>>>>>> main
+
+
 
     public User(String userName, String email,String password, String phoneNumber){
         this.userName = userName;

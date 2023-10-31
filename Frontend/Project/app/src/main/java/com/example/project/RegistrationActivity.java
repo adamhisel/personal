@@ -22,13 +22,38 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The RegistrationActivity class represents the activity in the application where
+ * users can sign up for an account.
+ */
 public class RegistrationActivity extends AppCompatActivity {
 
+    /**
+     * Base URL for the remote server connection
+     */
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+
+    /**
+     * Local URL for the local server connection
+     */
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
+    /**
+     * View binding for this activity
+     */
     private ActivityRegistrationBinding binding;
+
+    /**
+     * RequestQueue for handling network requests.
+     */
     private static RequestQueue mQueue;
 
+    /**
+     * Initializes the activity, sets up the user interface, and handles user interactions.
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     *                           shut down then this Bundle contains the data it most recently
+     *                           supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +67,18 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
-    // Adapter and dropdown for user types
+    /**
+     * Sets up the dropdown menu for selecting user types.
+     */
     private void setupDropdownUserTypes() {
         String[] userTypes = getResources().getStringArray(R.array.user_types);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, userTypes);
         binding.tvUserType.setAdapter(adapter);
     }
 
-
+    /**
+     * Sets up the click listeners for the buttons in the activity.
+     */
     private void setupButtonListeners() {
         binding.btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +102,9 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the user's sign up request.
+     */
     private void handleSignUp() {
         String userName = binding.etUserName.getText().toString().trim();
         String email = binding.etEmail.getText().toString().trim();
@@ -124,6 +156,10 @@ public class RegistrationActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Handles the server response for the sign up request.
+     * @param response The JSON response received from the server.
+     */
     private void handleSignUpResponse(JSONObject response) {
         try {
             // Check if the response has a userName, indicating successful user creation
@@ -153,21 +189,39 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Checks if a text field is empty.
+     * @param text The text to be checked.
+     * @return true if the text is empty, false otherwise.
+     */
     private boolean isEmpty(String text) {
         return text == null || text.trim().isEmpty();
     }
 
+    /**
+     * Sets an error message for a text input layout.
+     * @param field     The text input layout to set the error on.
+     * @param errorText The error message.
+     * @return Always returns false.
+     */
     private boolean setFieldError(TextInputLayout field, String errorText) {
         field.setError(errorText);
         return false;
     }
 
+    /**
+     * Clears the error message on a text input layout.
+     * @param field The text input layout to clear the error on.
+     */
     private void clearFieldError(TextInputLayout field) {
         field.setError(null);
         field.setErrorEnabled(false);
     }
 
+    /**
+     * Validates the user name input field.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validateUserName() {
         String userName = binding.etUserName.getText().toString().trim();
         if (isEmpty(userName)) {
@@ -178,6 +232,10 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates the email input field.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validateEmail() {
         String email = binding.etEmail.getText().toString().trim();
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -192,6 +250,10 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates the phone number input field.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validatePhoneNumber() {
         String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
         if (isEmpty(phoneNumber)) {
@@ -202,6 +264,10 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates the user type input field.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validateUserType() {
         String userType = binding.tvUserType.getText().toString().trim();
         if (isEmpty(userType)) {
@@ -212,6 +278,10 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Validates the password input field.
+     * @return true if the input is valid, false otherwise.
+     */
     private boolean validatePassword() {
         String password = binding.etPassword.getText().toString().trim();
         if (isEmpty(password)) {

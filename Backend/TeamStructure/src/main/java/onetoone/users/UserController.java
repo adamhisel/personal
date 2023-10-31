@@ -2,16 +2,16 @@ package onetoone.users;
 import onetoone.Teams.Team;
 import onetoone.Teams.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
+
 import org.springframework.web.bind.annotation.*;
-=======
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
->>>>>>> main
+
 import onetoone.Players.Player;
 import onetoone.Players.PlayerRepository;
 
@@ -24,11 +24,11 @@ public class UserController {
     UserRepository userRepository;
 
     @Autowired
-<<<<<<< HEAD
+
     TeamRepository teamRepository;
-=======
+
     PlayerRepository playerRepository;
->>>>>>> main
+
 
 
 
@@ -50,22 +50,23 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    void createUser(@RequestBody User user) {
+    String createUser(@RequestBody User user) {
         if (user == null) {
             throw new RuntimeException();
         }
-
+        userRepository.save(user);
+        return success;
 
     }
 
-    @PostMapping("/updateUser/{id}")
-    public void updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) {
-        userService.updateUser(id,
-                request.getUserName(),
-                request.getEmail(),
-                request.getPassword(),
-                request.getPhoneNumber());
-    }
+//    @PostMapping("/updateUser/{id}")
+//    public void updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) {
+//        userService.updateUser(id,
+//                request.getUserName(),
+//                request.getEmail(),
+//                request.getPassword(),
+//                request.getPhoneNumber());
+//    }
 
     @DeleteMapping(path = "/users/{id}")
     String deleteUser(@PathVariable int id) {
