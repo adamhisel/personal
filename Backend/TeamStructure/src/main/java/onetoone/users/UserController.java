@@ -19,7 +19,6 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    private final UserService userService;
     @Autowired
     UserRepository userRepository;
 
@@ -35,10 +34,6 @@ public class UserController {
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping(path = "/users")
     List<User> getAllUsers(){
         return userRepository.findAll();
@@ -50,23 +45,24 @@ public class UserController {
     }
 
     @PostMapping(path = "/users")
-    String createUser(@RequestBody User user) {
+    User createUser(@RequestBody User user) {
         if (user == null) {
             throw new RuntimeException();
         }
         userRepository.save(user);
-        return success;
+        return user;
 
     }
 
-//    @PostMapping("/updateUser/{id}")
-//    public void updateUser(@PathVariable int id, @RequestBody UserUpdateRequest request) {
-//        userService.updateUser(id,
-//                request.getUserName(),
-//                request.getEmail(),
-//                request.getPassword(),
-//                request.getPhoneNumber());
-//    }
+    @PostMapping("/updateUser/{id}")
+    public void updateUser(@PathVariable int id, @RequestBody User user) {
+        User temp = getUserById(id);
+        temp.setUserName(user.getUserName());
+        temp.setEmail(user.getEmail());
+        temp.setPassword(user.getPassword());
+        temp.setPhoneNumber(user.getPhoneNumber());
+        userRepository.save(temp);
+    }
 
     @DeleteMapping(path = "/users/{id}")
     String deleteUser(@PathVariable int id) {
