@@ -58,8 +58,8 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
 
 
 
-        //String serverUrl = BASE_URL + SharedPrefsUtil.getUserName(this).toString();
-        String serverUrl = BASE_URL + "ahisel";
+        String serverUrl = BASE_URL + SharedPrefsUtil.getUserName(this);
+
 
 
         WebSocketManager.getInstance().connectWebSocket(serverUrl);

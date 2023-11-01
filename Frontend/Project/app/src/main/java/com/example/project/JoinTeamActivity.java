@@ -349,7 +349,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
             postData.put("playerName", name.getEditText().getText().toString());
             postData.put("number", number.getEditText().getText().toString());
             postData.put("position", selectedPos);
-            postData.put("user_id", "2");
+            postData.put("user_id", SharedPrefsUtil.getUserId(this));
 
 
         } catch (JSONException e) {
@@ -386,8 +386,8 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         JSONObject postData = new JSONObject();
         try {
-            postData.put("playerName", "Adam Hisel");
-            postData.put("user_id", "2");
+            postData.put("playerName", SharedPrefsUtil.getFirstName(this) + " " + SharedPrefsUtil.getLastName(this));
+            postData.put("user_id", SharedPrefsUtil.getUserId(this));
 
         } catch (JSONException e) {
             e.printStackTrace();
