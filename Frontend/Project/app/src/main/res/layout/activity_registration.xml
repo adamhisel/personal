@@ -16,7 +16,7 @@
         android:text="Welcome"
         android:textColor="@color/black"
         android:textSize="40sp"
-        android:layout_marginTop="75dp"/>
+        android:layout_marginTop="25dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,6 +35,34 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilFirstName"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="First Name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilLastName"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Last Name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />

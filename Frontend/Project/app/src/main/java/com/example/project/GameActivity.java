@@ -77,11 +77,11 @@ public class GameActivity extends AppCompatActivity {
 //
 //        hideShotButtons();
 //
-////        binding.imgBtnPlayer1.setOnClickListener(v -> setActivePlayer(1));
-////        binding.imgBtnPlayer2.setOnClickListener(v -> setActivePlayer(2));
-////        binding.imgBtnPlayer3.setOnClickListener(v -> setActivePlayer(3));
-////        binding.imgBtnPlayer4.setOnClickListener(v -> setActivePlayer(4));
-////        binding.imgBtnPlayer5.setOnClickListener(v -> setActivePlayer(5));
+//        binding.imgBtnPlayer1.setOnClickListener(v -> setActivePlayer(1));
+//        binding.imgBtnPlayer2.setOnClickListener(v -> setActivePlayer(2));
+//        binding.imgBtnPlayer3.setOnClickListener(v -> setActivePlayer(3));
+//        binding.imgBtnPlayer4.setOnClickListener(v -> setActivePlayer(4));
+//        binding.imgBtnPlayer5.setOnClickListener(v -> setActivePlayer(5));
 //
 //        binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
 //            @Override

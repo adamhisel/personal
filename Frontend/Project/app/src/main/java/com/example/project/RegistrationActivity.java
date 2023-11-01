@@ -98,22 +98,28 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void handleSignUp() {
         String userName = binding.etUserName.getText().toString().trim();
+        String firstName = binding.etFirstName.getText().toString().trim();
+        String lastName = binding.etLastName.getText().toString().trim();
         String email = binding.etEmail.getText().toString().trim();
         String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
 
         boolean isValidUserName = validateUserName();
+        boolean isValidFirstName = validateFirstName();
+        boolean isValidLastName = validateLastName();
         boolean isValidEmail = validateEmail();
         boolean isValidPhoneNumber = validatePhoneNumber();
         boolean isValidPassword = validatePassword();
 
-        if (!isValidUserName || !isValidEmail || !isValidPhoneNumber || !isValidPassword) {
+        if (!isValidUserName || !isValidFirstName || !isValidLastName || !isValidEmail || !isValidPhoneNumber || !isValidPassword) {
             return;  // Stops further execution if any validation fails.
         }
 
         JSONObject postData = new JSONObject();
         try {
             postData.put("userName", userName);
+            postData.put("firstName", firstName);
+            postData.put("lastName", lastName);
             postData.put("email", email);
             postData.put("phoneNumber", phoneNumber);
             postData.put("password", password);
@@ -153,12 +159,13 @@ public class RegistrationActivity extends AppCompatActivity {
         try {
             int id = response.getInt("id");
             String userName = response.getString("userName");
+            String firstName = response.getString("firstName");
+            String lastName = response.getString("lastName");
             String email = response.getString("email");
             String phoneNumber = response.getString("phoneNumber");
-            String userType = null;
 
             // Save user information using SharedPrefsUtil
-            SharedPrefsUtil.saveUserData(this, userName, email, phoneNumber, userType, String.valueOf(id));
+            SharedPrefsUtil.saveUserData(this, userName, firstName, lastName, email, phoneNumber, String.valueOf(id));
 
             Toast.makeText(RegistrationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
@@ -216,6 +223,26 @@ public class RegistrationActivity extends AppCompatActivity {
             return setFieldError(binding.tilUserName, "Field cannot be empty");
         } else {
             clearFieldError(binding.tilUserName);
+            return true;
+        }
+    }
+
+    private boolean validateFirstName() {
+        String firstName = binding.etFirstName.getText().toString().trim();
+        if (isEmpty(firstName)) {
+            return setFieldError(binding.tilFirstName, "Field cannot be empty");
+        } else {
+            clearFieldError(binding.tilFirstName);
+            return true;
+        }
+    }
+
+    private boolean validateLastName() {
+        String lastName = binding.etLastName.getText().toString().trim();
+        if (isEmpty(lastName)) {
+            return setFieldError(binding.tilLastName, "Field cannot be empty");
+        } else {
+            clearFieldError(binding.tilLastName);
             return true;
         }
     }

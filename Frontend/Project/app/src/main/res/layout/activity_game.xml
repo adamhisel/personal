@@ -164,26 +164,6 @@
 
         </LinearLayout>
 
-        <TableLayout
-            android:id="@+id/tableLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <!-- Table Header -->
-            <TableRow>
-                <TextView
-                    android:text="Player1"
-                    android:padding="8dp"/>
-                <TextView
-                    android:text="PTS"
-                    android:padding="8dp"/>
-                <!-- Add other stat columns as needed -->
-            </TableRow>
-
-            <!-- Data Rows will be added programmatically -->
-        </TableLayout>
-
     </LinearLayout>
 
 

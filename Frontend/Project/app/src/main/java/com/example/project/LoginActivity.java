@@ -141,10 +141,11 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPrefsUtil.saveUserData(
                         LoginActivity.this,
                         retrievedUserName,
+                        response.getString("firstName"),
+                        response.getString("lastName"),
                         response.getString("email"),
                         response.getString("phoneNumber"),
-                        null,
-                        response.getString("userID")
+                        String.valueOf(response.getInt("id"))
                 );
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
