@@ -7,6 +7,15 @@
     tools:context=".JoinTeamActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-black"
+        android:text="Join a Team:"
+        android:textColor="@color/black"
+        android:textSize="40sp" />
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilTeamName"
@@ -15,11 +24,13 @@
         android:layout_height="wrap_content"
         android:hint="Search Team Name">
 
-        <AutoCompleteTextView
-            android:id="@+id/tvTeamName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none" />
+
+
+            <AutoCompleteTextView
+                android:id="@+id/tvTeamName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
 
     </com.google.android.material.textfield.TextInputLayout>
 

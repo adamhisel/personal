@@ -122,15 +122,13 @@ public class AddTeamActivity extends AppCompatActivity {
                     }
                 }
 
-                postTeam(new TeamListCallback() {
+                postTeam(new TeamIdCallback() {
                     @Override
-                    public void onTeamListReceived(int id) {
-                        teamId = id; // Set the teamId in the callback
-
-                        // Now, you can access the teamId and proceed with other operations
-                        postCoach(new TeamListCallback() {
+                    public void onTeamIdReceived(int id) {
+                        teamId = id;
+                        postCoach(new TeamIdCallback() {
                             @Override
-                            public void onTeamListReceived(int id) {
+                            public void onTeamIdReceived(int id) {
                                 coachId = id;
                                 joinTeamCoach();
                                 joinTeamUser();
@@ -152,7 +150,7 @@ public class AddTeamActivity extends AppCompatActivity {
         });
 
     }
-    private void postTeam(final TeamListCallback callback) {
+    private void postTeam(final TeamIdCallback callback) {
         String url = "http://10.0.2.2:8080/teams";
 
         JSONObject postData = new JSONObject();
@@ -164,7 +162,7 @@ public class AddTeamActivity extends AppCompatActivity {
                 postData.put("password", password.getEditText().getText().toString().trim());
             }
             else{
-                postData.put("password", " ");
+                postData.put("password", "");
             }
 
         } catch (JSONException e) {
@@ -181,7 +179,7 @@ public class AddTeamActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                        callback.onTeamListReceived(teamId);
+                        callback.onTeamIdReceived(teamId);
                         Log.d("PostTeam", "Response received: " + response.toString());
                     }
                 }, new Response.ErrorListener() {
@@ -195,7 +193,7 @@ public class AddTeamActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }
 
-    private void postCoach(final TeamListCallback callback) {
+    private void postCoach(final TeamIdCallback callback) {
         String url = "http://10.0.2.2:8080/coaches";
 
         JSONObject postData = new JSONObject();
@@ -217,7 +215,7 @@ public class AddTeamActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                        callback.onTeamListReceived(coachId);
+                        callback.onTeamIdReceived(coachId);
                         Log.d("PostCoach", "Response received: " + response.toString());
 
                     }
@@ -257,7 +255,7 @@ public class AddTeamActivity extends AppCompatActivity {
 
     private void joinTeamCoach(){
 
-        String url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim();
+        String url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -317,8 +315,8 @@ public class AddTeamActivity extends AppCompatActivity {
         }
     }
 
-    public interface TeamListCallback {
-        void onTeamListReceived(int id);
+    public interface TeamIdCallback {
+        void onTeamIdReceived(int id);
     }
 
 

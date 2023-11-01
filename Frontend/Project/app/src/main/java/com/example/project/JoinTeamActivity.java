@@ -30,27 +30,28 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class JoinTeamActivity extends AppCompatActivity {
+public class JoinTeamActivity extends AppCompatActivity implements PasswordInputDialogFragment.PasswordInputListener {
 
     private RequestQueue mQueue;
     private ArrayList<String> teamArr;
-
     private ArrayList<String> idArr;
 
-    private ArrayList<String> teamTypeArr;
     private TextInputLayout name;
     private TextInputLayout number;
-
     private TextInputLayout position;
+
 
     private int teamId;
     private int playerId;
+    private int fanId;
+
     private AutoCompleteTextView teamNameAutoComplete;
     private AutoCompleteTextView typeAutoComplete;
     private AutoCompleteTextView positionAutoComplete;
 
+    private String teamPassword;
+    private boolean isPrivate = false;
     private boolean isPlayer = false;
-
     private String selectedPos;
 
     @Override
@@ -102,15 +103,14 @@ public class JoinTeamActivity extends AppCompatActivity {
             }
         });
 
-        fillTypeList(new TeamListCallback() {
-            @Override
-            public void onTeamListReceived(ArrayList<String> teamList) { teamTypeArr = teamList; }
-        });
-
 
         teamNameAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
-            teamId = Integer.parseInt(idArr.get(position));
+            for(int i = 0; i < teamArr.size(); i++){
+                if(selected.equals(teamArr.get(i))){
+                    teamId = Integer.parseInt(idArr.get(i));
+                }
+            }
         });
 
 
@@ -155,16 +155,26 @@ public class JoinTeamActivity extends AppCompatActivity {
                     if (!isValidName || !isValidNumber) {
                         return;
                     }
-
-                    joinTeamUser();
-                    joinTeamPlayer();
+                    postPlayer(new TeamIdCallback() {
+                        @Override
+                        public void onTeamIdReceived(int id) {
+                            playerId = id;
+                            getChosenTeam(new TeamStringCallback() {
+                                @Override
+                                public void onTeamStringReceived(String s) {
+                                    teamPassword = s;
+                                    showPasswordInputDialog();
+                                }
+                            });
+                        }
+                    });
                 }
                 else{
                     joinTeamUser();
+                    Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
+                    startActivity(intent);
                 }
 
-                Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
-                startActivity(intent);
             }
         });
 
@@ -232,25 +242,21 @@ public class JoinTeamActivity extends AppCompatActivity {
         mQueue.add(request);
     }
 
-    private void fillTypeList(final TeamListCallback callback) {
-        String url = "http://10.0.2.2:8080/teams";
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
+    private void getChosenTeam(final TeamStringCallback callback) {
+        String url = "http://10.0.2.2:8080/teams/" + teamId;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         try {
-                            ArrayList<String> temp1 = new ArrayList<>();
 
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject team = response.getJSONObject(i);
-                                String id = team.getString("teamIsPrivate");
-                                temp1.add(id);
-                            }
+                            isPrivate = response.getBoolean("teamIsPrivate");
+                            teamPassword = response.getString("password");
 
-                            callback.onTeamListReceived(temp1);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        callback.onTeamStringReceived(teamPassword);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -260,10 +266,6 @@ public class JoinTeamActivity extends AppCompatActivity {
         });
 
         mQueue.add(request);
-    }
-
-    public interface TeamListCallback {
-        void onTeamListReceived(ArrayList<String> teamList);
     }
 
 
@@ -295,9 +297,7 @@ public class JoinTeamActivity extends AppCompatActivity {
 
     private void joinTeamPlayer(){
 
-        postPlayer();
-
-        String url = "http://10.0.2.2:8080/User/" + teamId + "/teams/" + playerId;
+        String url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/" + teamPassword;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -318,7 +318,30 @@ public class JoinTeamActivity extends AppCompatActivity {
         mQueue.add(putRequest);
     }
 
-    private void postPlayer() {
+    private void joinTeamFan(){
+
+        String url = "http://10.0.2.2:8080/teams/" + teamId + "/fans/" + fanId;
+
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                response -> {
+                    if ("success".equals(response)) {
+
+                    } else if ("failure".equals(response)) {
+                    }
+                },
+                error -> {
+
+                    if (error.networkResponse != null) {
+                        String errorMessage = new String(error.networkResponse.data);
+                        Log.e("JoinTeam", "Error in request: " + errorMessage);
+                    }
+                }
+        );
+
+        mQueue.add(putRequest);
+    }
+
+    private void postPlayer(final TeamIdCallback callback) {
         String url = "http://10.0.2.2:8080/players";
 
         JSONObject postData = new JSONObject();
@@ -326,6 +349,7 @@ public class JoinTeamActivity extends AppCompatActivity {
             postData.put("playerName", name.getEditText().getText().toString());
             postData.put("number", number.getEditText().getText().toString());
             postData.put("position", selectedPos);
+            postData.put("user_id", "2");
 
 
         } catch (JSONException e) {
@@ -336,19 +360,64 @@ public class JoinTeamActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("PostUser", "Response received: " + response.toString());
+                        try {
+                            playerId = response.getInt("id");
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        callback.onTeamIdReceived(playerId);
+                        Log.d("PostPlayer", "Response received: " + response.toString());
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // Handle the error, e.g., display an error message
-                Log.e("PostUser", "Error in request: " + error.getMessage());
+                Log.e("PostPlayer", "Error in request: " + error.getMessage());
             }
         });
 
         mQueue.add(jsonObjectRequest);
     }
+
+    private void postFan(final TeamIdCallback callback) {
+        String url = "http://10.0.2.2:8080/fans";
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("playerName", "Adam Hisel");
+            postData.put("user_id", "2");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            fanId = response.getInt("id");
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        callback.onTeamIdReceived(fanId);
+                        Log.d("PostFan", "Response received: " + response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Handle the error, e.g., display an error message
+                Log.e("PostFan", "Error in request: " + error.getMessage());
+            }
+        });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
 
     private Boolean validateName() {
         String tilName = name.getEditText().getText().toString().trim();
@@ -393,5 +462,42 @@ public class JoinTeamActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    public interface TeamListCallback {
+        void onTeamListReceived(ArrayList<String> teamList);
+    }
+
+    public interface TeamIdCallback {
+        void onTeamIdReceived(int id);
+    }
+
+    public interface TeamStringCallback {
+        void onTeamStringReceived(String s);
+    }
+
+
+
+    private void showPasswordInputDialog() {
+        PasswordInputDialogFragment passwordDialog = new PasswordInputDialogFragment();
+        passwordDialog.setListener(this);
+        passwordDialog.show(getSupportFragmentManager(), "passwordDialog");
+    }
+
+    @Override
+    public void onPasswordEntered(String password) {
+        if(password.equals(this.teamPassword)){
+            Toast.makeText(this, "Password Is Correct! ", Toast.LENGTH_SHORT).show();
+            joinTeamPlayer();
+            joinTeamUser();
+            Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(this, "Password Is Incorrect! Please retry", Toast.LENGTH_SHORT).show();
+            showPasswordInputDialog();
+        }
+        ;
+    }
+
 
 }
