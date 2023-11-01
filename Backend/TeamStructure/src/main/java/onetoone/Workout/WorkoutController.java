@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+
+@RestController
 public class WorkoutController {
 
 @Autowired
@@ -38,4 +42,28 @@ private ShotsService shotsService;
 
         return ResponseEntity.ok("Shot added to workout with ID: " + workoutId);
     }
+    @PostMapping(path = "/{workoutId}/bulk-shots")
+    public ResponseEntity<Void> addShotsToWorkout(@PathVariable int workoutId, @RequestBody List<Shots> newShots) {
+        Workout workout = workoutService.getWorkoutById(workoutId);
+        if (workout == null) {
+            throw new RuntimeException("Workout not found with ID: " + workoutId);
+        }
+
+        for (Shots shot : newShots) {
+            shot.setWorkout(workout);
+            shotsService.saveShot(shot);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(path = "/{workoutId}/shots")
+    public List<Shots> getShotsFromWorkout(@PathVariable int workoutId) {
+        Workout workout = workoutService.getWorkoutById(workoutId);
+        if (workout == null) {
+            throw new RuntimeException("Workout not found with ID: " + workoutId);
+        }
+        return workout.getShots();
+    }
+
 }

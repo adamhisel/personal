@@ -1,5 +1,6 @@
 package onetoone.Shots;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import onetoone.Teams.Team;
 import onetoone.Workout.Workout;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,6 +26,7 @@ private int gameId;
 private int activityID;
 @ManyToOne
 @JoinColumn(name = "workoutId")
+@JsonBackReference
 private Workout workout;
 
 
