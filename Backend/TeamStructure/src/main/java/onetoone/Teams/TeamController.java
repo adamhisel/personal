@@ -120,7 +120,7 @@ public class TeamController {
     }
 
 
-    @DeleteMapping(path = "/teams/{id}")
+    @DeleteMapping("/teams/{id}")
     String deleteTeam(@PathVariable int id){
         teamRepository.deleteById(id);
         return success;

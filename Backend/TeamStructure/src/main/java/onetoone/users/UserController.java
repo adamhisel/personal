@@ -58,6 +58,8 @@ public class UserController {
     public void updateUser(@PathVariable int id, @RequestBody User user) {
         User temp = getUserById(id);
         temp.setUserName(user.getUserName());
+        temp.setFirstName(user.getFirstName());
+        temp.setLastName(user.getLastName());
         temp.setEmail(user.getEmail());
         temp.setPassword(user.getPassword());
         temp.setPhoneNumber(user.getPhoneNumber());
