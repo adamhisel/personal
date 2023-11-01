@@ -37,6 +37,7 @@ public class JoinTeamActivity extends AppCompatActivity {
 
     private ArrayList<String> idArr;
 
+    private ArrayList<String> teamTypeArr;
     private TextInputLayout name;
     private TextInputLayout number;
 
@@ -100,6 +101,12 @@ public class JoinTeamActivity extends AppCompatActivity {
                 idArr = teamList;
             }
         });
+
+        fillTypeList(new TeamListCallback() {
+            @Override
+            public void onTeamListReceived(ArrayList<String> teamList) { teamTypeArr = teamList; }
+        });
+
 
         teamNameAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
             String selected = (String) parent.getItemAtPosition(position);
@@ -225,13 +232,43 @@ public class JoinTeamActivity extends AppCompatActivity {
         mQueue.add(request);
     }
 
+    private void fillTypeList(final TeamListCallback callback) {
+        String url = "http://10.0.2.2:8080/teams";
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            ArrayList<String> temp1 = new ArrayList<>();
+
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject team = response.getJSONObject(i);
+                                String id = team.getString("teamIsPrivate");
+                                temp1.add(id);
+                            }
+
+                            callback.onTeamListReceived(temp1);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
     public interface TeamListCallback {
         void onTeamListReceived(ArrayList<String> teamList);
     }
 
 
     private void joinTeamUser(){
-        String userId = "1"/*SharedPrefsUtil.getUserId(this)*/;
+        String userId = "2"/*SharedPrefsUtil.getUserId(this)*/;
 
         String url = "http://10.0.2.2:8080/User/" + userId + "/teams/" + teamId;
 
