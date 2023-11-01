@@ -199,8 +199,8 @@ public class AddTeamActivity extends AppCompatActivity {
         JSONObject postData = new JSONObject();
         try {
 
-            postData.put("name", "Adam Hisel");
-            postData.put("user_id", "2");
+            postData.put("name", SharedPrefsUtil.getFirstName(this) + " " + SharedPrefsUtil.getLastName(this));
+            postData.put("user_id", SharedPrefsUtil.getUserId(this));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -230,7 +230,7 @@ public class AddTeamActivity extends AppCompatActivity {
     }
 
     private void joinTeamUser(){
-        String userId = "2"/*SharedPrefsUtil.getUserId(this)*/;
+        String userId = SharedPrefsUtil.getUserId(this);
 
         String url = "http://10.0.2.2:8080/User/" + userId + "/teams/" + teamId;
 

@@ -88,7 +88,7 @@ public class EditRosterActivity extends AppCompatActivity {
                 }
 
                 //postUser();
-                findPlayer();
+                //findPlayer();
                 //linkUserToTeam();
 
                 success.setText("Successfully added " + name.getEditText().getText());
@@ -107,66 +107,6 @@ public class EditRosterActivity extends AppCompatActivity {
             }
         });
     }
-
-    /*private void postTeam() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("teamName", teamName);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject team = response.getJSONObject(String.valueOf(response.length()));
-
-                            teamId = team.getInt("id");
-
-                            Log.d("PostTeam", "Response received: " + response.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("PostTeam", "Error in request: " + error.getMessage());
-            }
-        });
-
-        mQueue.add(jsonObjectRequest);
-    }*/
-
-    /*public void linkUserToTeam() {
-
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/players/" + playerId;
-
-        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                response -> {
-                    if ("success".equals(response)) {
-
-                    } else if ("failure".equals(response)) {
-                        // Team or player not found, or other failure
-                    }
-                },
-                error -> {
-
-                    if (error.networkResponse != null) {
-                        String errorMessage = new String(error.networkResponse.data);
-                        Log.e("LinkTeam", "Error in request: " + errorMessage);
-                    }
-                }
-        );
-
-
-        mQueue.add(putRequest);
-    }*/
 
    private void deleteUser() {
 
@@ -194,42 +134,7 @@ public class EditRosterActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }
 
-
-
-    /*private void postUser() {
-        //change this to address
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("playerName", name.getEditText().getText().toString());
-            postData.put("number", number.getEditText().getText().toString());
-            postData.put("position", position.getEditText().getText().toString());
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                            Log.d("PostUser", "Response received: " + response.toString());
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // Handle the error, e.g., display an error message
-                Log.e("PostUser", "Error in request: " + error.getMessage());
-            }
-        });
-
-        mQueue.add(jsonObjectRequest);
-    }*/
-
-    private void findPlayer() {
+    /*private void findPlayer() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -261,7 +166,7 @@ public class EditRosterActivity extends AppCompatActivity {
         });
 
         mQueue.add(request);
-    }
+    }*/
 
     private Boolean validateName() {
         String tilName = name.getEditText().getText().toString().trim();

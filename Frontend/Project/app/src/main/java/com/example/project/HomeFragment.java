@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
 
         TextView header = view.findViewById(R.id.header);
 
-        header.setText("Hello, " + "Ahisel"/*SharedPrefsUtil.getUserName(requireContext())*/);
+        header.setText("Hello, " + SharedPrefsUtil.getFirstName(requireContext());
 
         displayTeamButtons();
         addTeam.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     public void displayTeamButtons() {
-        String url = "http://10.0.2.2:8080/users/2" /*+ SharedPrefsUtil.getUserId(getContext()).toString()*/;
+        String url = "http://10.0.2.2:8080/users/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

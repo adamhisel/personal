@@ -270,7 +270,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
 
     private void joinTeamUser(){
-        String userId = "2"/*SharedPrefsUtil.getUserId(this)*/;
+        String userId = SharedPrefsUtil.getUserId(this);
 
         String url = "http://10.0.2.2:8080/User/" + userId + "/teams/" + teamId;
 
