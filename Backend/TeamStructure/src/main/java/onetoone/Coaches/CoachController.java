@@ -43,6 +43,12 @@ public class CoachController {
         return coach;
     }
 
+    @PostMapping("/updateCoach/{id}")
+    public void updateCoach(@PathVariable int id, @RequestBody Coach coach) {
+        Coach temp = getCoachById(id);
+        temp.setName(coach.getName());
+    }
+
     @DeleteMapping(path = "/coaches/{id}")
     String deleteCoach(@PathVariable int id) {
         coachRepository.deleteById(id);

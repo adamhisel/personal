@@ -1,5 +1,6 @@
 package onetoone.Fans;
 
+import onetoone.Players.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,12 @@ public class FanController {
            throw new RuntimeException();
         fanRepository.save(fan);
         return fan;
+    }
+
+    @PostMapping("/updateFan/{id}")
+    public void updateFan(@PathVariable int id, @RequestBody Fan fan) {
+        Fan temp = getFanById(id);
+        temp.setName(fan.getName());
     }
 
     @DeleteMapping(path = "/fans/{id}")

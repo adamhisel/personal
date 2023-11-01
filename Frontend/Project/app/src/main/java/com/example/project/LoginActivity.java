@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                         retrievedUserName,
                         response.getString("email"),
                         response.getString("phoneNumber"),
-                        response.getString("userType"),
+                        null,
                         response.getString("userID")
                 );
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);

@@ -23,6 +23,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * @author Adam Hisel
+ * Activity that allows a coach to edit their teams roster attributes such as
+ * a players position, number or status (player, coach, manager). The coach is also able
+ * to change the teams name and settings here as well as remove a player from the team.
+ */
 public class EditRosterActivity extends AppCompatActivity {
     private RequestQueue mQueue;
     private TextInputLayout name;
@@ -81,9 +87,9 @@ public class EditRosterActivity extends AppCompatActivity {
                     return;
                 }
 
-                postUser();
+                //postUser();
                 findPlayer();
-                linkUserToTeam();
+                //linkUserToTeam();
 
                 success.setText("Successfully added " + name.getEditText().getText());
                 name.getEditText().getText().clear();
@@ -137,7 +143,7 @@ public class EditRosterActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }*/
 
-    public void linkUserToTeam() {
+    /*public void linkUserToTeam() {
 
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/players/" + playerId;
 
@@ -160,9 +166,9 @@ public class EditRosterActivity extends AppCompatActivity {
 
 
         mQueue.add(putRequest);
-    }
+    }*/
 
-   /* private void deleteUser() {
+   private void deleteUser() {
 
         String url = "https://5a183357-b941-4d66-b21b-3b4961c7a63e.mock.pstmn.io/roster/1";
 
@@ -186,11 +192,11 @@ public class EditRosterActivity extends AppCompatActivity {
                 });
 
         mQueue.add(jsonObjectRequest);
-    }*/
+    }
 
 
 
-    private void postUser() {
+    /*private void postUser() {
         //change this to address
         String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
 
@@ -221,9 +227,9 @@ public class EditRosterActivity extends AppCompatActivity {
         });
 
         mQueue.add(jsonObjectRequest);
-    }
+    }*/
 
-    public void findPlayer() {
+    private void findPlayer() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -310,7 +316,7 @@ public class EditRosterActivity extends AppCompatActivity {
 
     }
 
-    public static boolean isInteger (String str){
+    private static boolean isInteger (String str){
         try {
             // Attempt to parse the string as an integer
             Integer.parseInt(str);
