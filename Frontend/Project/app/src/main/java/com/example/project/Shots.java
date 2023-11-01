@@ -1,4 +1,5 @@
 package com.example.project;
+
 public class Shots {
     private boolean made;
     private int value;

@@ -15,6 +15,9 @@ import android.widget.ImageView;
 
 import com.example.project.databinding.ActivityGameBinding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
@@ -49,6 +52,10 @@ public class GameActivity extends AppCompatActivity {
     private int[] playerButtonIds = new int[] {
             R.id.imgBtnPlayer1, R.id.imgBtnPlayer2, R.id.imgBtnPlayer3, R.id.imgBtnPlayer4, R.id.imgBtnPlayer5
     };
+
+    private List<Player> allPlayers = new ArrayList<>();
+    private List<Player> activeLineup = new ArrayList<>();
+    private Player activePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +192,8 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    private void setActivePlayer(int playerNumber) {
+    private void setActivePlayer(Player player) {
+        activePlayer = player;
         // Reset background color for all player buttons
         for (int i = 0; i < playerButtonIds.length; i++) {
             ImageButton button = findViewById(playerButtonIds[i]);
