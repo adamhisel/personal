@@ -1,5 +1,6 @@
 package onetoone.Workout;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import onetoone.Shots.Shots;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Workout {
 
     // Create a one-to-many relationship with Shots
     @OneToMany(mappedBy = "workout")
+    @JsonManagedReference
     private List<Shots> shots;
 
     public Workout() {
