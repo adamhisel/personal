@@ -6,21 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import onetoone.Players.Player;
 import onetoone.Players.PlayerRepository;
-import onetoone.Players.PlayerService;
 
-import onetoone.Teams.Team;
 import onetoone.Teams.TeamRepository;
-import onetoone.Teams.TeamService;
 
-import onetoone.users.User;
 import onetoone.users.UserRepository;
 
-import onetoone.Coaches.Coach;
 import onetoone.Coaches.CoachRepository;
 
-import onetoone.Fans.Fan;
 import onetoone.Fans.FanRepository;
 
 
@@ -50,7 +43,7 @@ class Main {
      * As mentioned in User.java just associating the Laptop object with the User will save it into the database because of the CascadeType
      */
     @Bean
-    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository, PlayerService playerService, TeamService teamService,
+    CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository,
                                UserRepository userRepository, CoachRepository coachRepository, FanRepository fanRepository) {
         return args -> {
 
