@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
 
         TextView header = view.findViewById(R.id.header);
 
-        header.setText("Hello, " + SharedPrefsUtil.getUserName(requireContext()));
+        header.setText("Hello, " + SharedPrefsUtil.getFirstName(requireContext());
 
         displayTeamButtons();
         addTeam.setOnClickListener(new View.OnClickListener() {
@@ -83,24 +83,22 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     public void displayTeamButtons() {
-        String url = "https:/10.0.2.2:8080/users/" + SharedPrefsUtil.getUserId(getContext()).toString();
+        String url = "http://10.0.2.2:8080/users/" + SharedPrefsUtil.getUserId(getContext());
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 try {
 
-                        JSONObject user = response.getJSONObject(0);
-
-                        JSONArray teams = user.getJSONArray("teams");
+                        JSONArray teams = response.getJSONArray("teams");
 
                         ArrayList<String> teamList = new ArrayList<>();
                         ArrayList<Integer> teamIds = new ArrayList<>();
 
                         for (int i = 0; i < teams.length(); i++) {
                             JSONObject team = teams.getJSONObject(i);
-                            teamList.add(new String(team.getString("teamName")));
-                            teamIds.add(new Integer(team.getInt("id")));
+                            teamList.add(team.getString("teamName"));
+                            teamIds.add(Integer.valueOf(team.getString("id")));
                         }
 
                         for(int j =0; j< teamList.size(); j++) {
@@ -117,14 +115,14 @@ public class HomeFragment extends Fragment {
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    int teamId = id;
                                     Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
-                                    intent.putExtra("teamId", teamId);
+                                    intent.putExtra("teamId", id);
+                                    intent.putExtra("teamName", teamName);
                                     startActivity(intent);
                                 }
                             });
 
-                            ll.addView(button, ll.getChildCount() - 4);
+                            ll.addView(button, ll.getChildCount() - teams.length()-1);
 
                         }
 

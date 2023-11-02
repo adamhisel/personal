@@ -2,6 +2,7 @@ package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +30,12 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
     private EditText msgEtx;
     private TextView msgTv;
 
+    private Button exitBtn;
+
+
     private ScrollView scrollViewChat;
+
+    private String teamName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +43,35 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
         setContentView(R.layout.activity_team_chat);
 
         scrollViewChat = (ScrollView) findViewById(R.id.scrollView);
-        sendBtn = (Button) findViewById(R.id.bt2);
+        sendBtn = (Button) findViewById(R.id.send);
+        exitBtn = (Button) findViewById(R.id.exit);
         msgEtx = (EditText) findViewById(R.id.et2);
-        msgTv = (TextView) findViewById(R.id.tx1);
+        msgTv = (TextView) findViewById(R.id.txt1);
+        TextView header = (TextView) findViewById(R.id.header);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            teamName =  intent.getStringExtra("teamName");
+        }
+
+        header.setText(teamName.toUpperCase() + " Team Chat");
 
 
-        //String serverUrl = BASE_URL + SharedPrefsUtil.getUserName(this).toString();
-        String serverUrl = BASE_URL + "ahisel";
+
+        String serverUrl = BASE_URL + SharedPrefsUtil.getUserName(this);
+
 
 
         WebSocketManager.getInstance().connectWebSocket(serverUrl);
         WebSocketManager.getInstance().setWebSocketListener(TeamChat.this);
 
+        exitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TeamChat.this, TeamRosterCoach.class);
+                startActivity(intent);
+            }
+        });
 
         sendBtn.setOnClickListener(v -> {
             try {
