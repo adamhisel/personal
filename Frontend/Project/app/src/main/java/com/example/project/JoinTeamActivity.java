@@ -36,7 +36,6 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     private ArrayList<String> teamArr;
     private ArrayList<String> idArr;
 
-    private TextInputLayout name;
     private TextInputLayout number;
     private TextInputLayout position;
 
@@ -51,6 +50,8 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
     private String teamPassword;
     private boolean isPrivate = false;
+
+    private boolean isInTeam = false;
     private boolean isPlayer = false;
     private String selectedPos;
 
@@ -69,7 +70,6 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         positionAutoComplete = findViewById(R.id.tvPosition);
 
-        name = findViewById(R.id.name);
         number = findViewById(R.id.number);
         position = findViewById(R.id.position);
 
@@ -123,18 +123,15 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
             if(selected.equals("Player")){
                 isPlayer = true;
-                name.setVisibility(View.VISIBLE);
                 this.position.setVisibility(View.VISIBLE);
                 number.setVisibility(View.VISIBLE);
             }
             else{
                 isPlayer = false;
-                name.setVisibility(View.INVISIBLE);
                 this.position.setVisibility(View.INVISIBLE);
                 number.setVisibility(View.INVISIBLE);
             }
         });
-
 
 
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(JoinTeamActivity.this, android.R.layout.simple_dropdown_item_1line, posArr);
@@ -148,36 +145,59 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isPlayer == true) {
-                    boolean isValidName = validateName();
-                    boolean isValidNumber = validateNumber();
-
-                    if (!isValidName || !isValidNumber) {
-                        return;
-                    }
-                    postPlayer(new TeamIdCallback() {
-                        @Override
-                        public void onTeamIdReceived(int id) {
-                            playerId = id;
-                            getChosenTeam(new TeamStringCallback() {
-                                @Override
-                                public void onTeamStringReceived(String s) {
-                                    teamPassword = s;
-                                    showPasswordInputDialog();
+                isUserInTeam(new TeamBooleanCallback() {
+                    @Override
+                    public void onTeamBooleanReceived(boolean b) {
+                        isInTeam = b;
+                        if (isInTeam) {
+                            teamNameAutoComplete.setError("Invalid selection");
+                            teamNameAutoComplete.requestFocus();
+                            Toast.makeText(getApplicationContext(), "You are already on this team!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Continue with the logic here, as the user is not in the team
+                            if (isPlayer) {
+                                boolean isValidNumber = validateNumber();
+                                if (!isValidNumber) {
+                                    return;
                                 }
-                            });
+                                postPlayer(new TeamIdCallback() {
+                                    @Override
+                                    public void onTeamIdReceived(int id) {
+                                        playerId = id;
+                                        getChosenTeam(new TeamStringAndBooleanCallback() {
+                                            @Override
+                                            public void onTeamStringAndBooleanReceived(String s, boolean b) {
+                                                teamPassword = s;
+                                                isPrivate = b;
+                                                if (isPrivate) {
+                                                    showPasswordInputDialog();
+                                                } else {
+                                                    joinTeamUser();
+                                                    joinTeamPlayer();
+                                                    Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                postFan(new TeamIdCallback() {
+                                    @Override
+                                    public void onTeamIdReceived(int id) {
+                                        fanId = id;
+                                        joinTeamFan();
+                                        joinTeamUser();
+                                        Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
                         }
-                    });
-                }
-                else{
-                    joinTeamUser();
-                    Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
-                    startActivity(intent);
-                }
-
+                    }
+                });
             }
         });
-
     }
 
     private void fillTeamList(final TeamListCallback callback) {
@@ -242,7 +262,44 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
         mQueue.add(request);
     }
 
-    private void getChosenTeam(final TeamStringCallback callback) {
+    private void isUserInTeam(final TeamBooleanCallback callback){
+        String url = "http://10.0.2.2:8080/users/" + SharedPrefsUtil.getUserId(this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONArray teams = response.getJSONArray("teams");
+
+                            for (int i = 0; i < teams.length(); i++) {
+                                JSONObject team = teams.getJSONObject(i);
+                                if(teamId == team.getInt("id")){
+                                    isInTeam = true;
+                                    break;
+                                }
+                                else{
+                                    isInTeam = false;
+                                    teamNameAutoComplete.setError(null);
+                                }
+                            }
+                            callback.onTeamBooleanReceived(isInTeam);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+    private void getChosenTeam(final TeamStringAndBooleanCallback callback) {
         String url = "http://10.0.2.2:8080/teams/" + teamId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -250,13 +307,13 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
                     public void onResponse(JSONObject response) {
                         try {
 
-                            isPrivate = response.getBoolean("teamIsPrivate");
+                            isPrivate = response.getBoolean("isTeamPrivate");
                             teamPassword = response.getString("password");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        callback.onTeamStringReceived(teamPassword);
+                        callback.onTeamStringAndBooleanReceived(teamPassword, isPrivate);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -291,13 +348,17 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
         );
 
         mQueue.add(putRequest);
-
-
     }
 
     private void joinTeamPlayer(){
 
-        String url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/" + teamPassword;
+        String url = "";
+        if(isPrivate == true) {
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/" + teamPassword;
+        }
+        else{
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/dummy";
+        }
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -310,7 +371,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
                     if (error.networkResponse != null) {
                         String errorMessage = new String(error.networkResponse.data);
-                        Log.e("JoinTeam", "Error in request: " + errorMessage);
+                        Log.e("JoinPlayer", "Error in request: " + errorMessage);
                     }
                 }
         );
@@ -333,7 +394,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
                     if (error.networkResponse != null) {
                         String errorMessage = new String(error.networkResponse.data);
-                        Log.e("JoinTeam", "Error in request: " + errorMessage);
+                        Log.e("JoinFan", "Error in request: " + errorMessage);
                     }
                 }
         );
@@ -346,7 +407,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         JSONObject postData = new JSONObject();
         try {
-            postData.put("playerName", name.getEditText().getText().toString());
+            postData.put("playerName", SharedPrefsUtil.getFirstName(this) + " " + SharedPrefsUtil.getLastName(this));
             postData.put("number", number.getEditText().getText().toString());
             postData.put("position", selectedPos);
             postData.put("user_id", SharedPrefsUtil.getUserId(this));
@@ -373,7 +434,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // Handle the error, e.g., display an error message
+
                 Log.e("PostPlayer", "Error in request: " + error.getMessage());
             }
         });
@@ -386,7 +447,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         JSONObject postData = new JSONObject();
         try {
-            postData.put("playerName", SharedPrefsUtil.getFirstName(this) + " " + SharedPrefsUtil.getLastName(this));
+            postData.put("name", SharedPrefsUtil.getFirstName(this) + " " + SharedPrefsUtil.getLastName(this));
             postData.put("user_id", SharedPrefsUtil.getUserId(this));
 
         } catch (JSONException e) {
@@ -410,7 +471,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // Handle the error, e.g., display an error message
+
                 Log.e("PostFan", "Error in request: " + error.getMessage());
             }
         });
@@ -418,23 +479,8 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
         mQueue.add(jsonObjectRequest);
     }
 
-
-    private Boolean validateName() {
-        String tilName = name.getEditText().getText().toString().trim();
-
-        if (tilName.isEmpty()) {
-            name.setError("Field cannot be empty");
-            return false;
-        } else {
-            name.setError(null);
-            name.setErrorEnabled(false);
-            return true;
-        }
-    }
-
     private Boolean validateNumber() {
         String tilNumber = number.getEditText().getText().toString().trim();
-
 
         if (tilNumber.isEmpty()) {
             number.setError("Field cannot be empty");
@@ -471,8 +517,11 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
         void onTeamIdReceived(int id);
     }
 
-    public interface TeamStringCallback {
-        void onTeamStringReceived(String s);
+    public interface TeamStringAndBooleanCallback {
+        void onTeamStringAndBooleanReceived(String s, boolean b);
+    }
+    public interface TeamBooleanCallback {
+        void onTeamBooleanReceived(boolean b);
     }
 
 
@@ -487,8 +536,8 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     public void onPasswordEntered(String password) {
         if(password.equals(this.teamPassword)){
             Toast.makeText(this, "Password Is Correct! ", Toast.LENGTH_SHORT).show();
-            joinTeamPlayer();
             joinTeamUser();
+            joinTeamPlayer();
             Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
             startActivity(intent);
         }

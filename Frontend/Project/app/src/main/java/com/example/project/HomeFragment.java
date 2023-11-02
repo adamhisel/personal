@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
 
         TextView header = view.findViewById(R.id.header);
 
-        header.setText("Hello, " + SharedPrefsUtil.getFirstName(requireContext());
+        header.setText("Hello, " + SharedPrefsUtil.getFirstName(requireContext()));
 
         displayTeamButtons();
         addTeam.setOnClickListener(new View.OnClickListener() {

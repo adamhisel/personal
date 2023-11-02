@@ -255,8 +255,13 @@ public class AddTeamActivity extends AppCompatActivity {
 
     private void joinTeamCoach(){
 
-        String url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
-
+        String url = "";
+        if(isPrivate == true) {
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim();
+        }
+        else{
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
+        }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
                     if ("success".equals(response)) {
