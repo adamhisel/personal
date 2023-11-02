@@ -59,7 +59,10 @@ public class GameController {
 
         return game;
     }
-
+    @GetMapping(path = "/games")
+    List<Game> getAllGames(){
+        return gameRepository.findAll();
+    }
 
 
     @PostMapping("/create")
@@ -75,19 +78,25 @@ public class GameController {
             }
         }
 
-        // Add shots to the game
+        // Save the game to the database
+        game = gameRepository.save(game);
+
+        // Add shots to the game and associate them with the saved game
         List<Shots> shots = request.getShots();
         if (shots != null) {
             for (Shots shot : shots) {
-                // Set the associated game for each shot
                 shot.setGame(game);
                 game.addShot(shot);
             }
         }
 
-        // Save the game to the database
-        return gameRepository.save(game);
+        // Save the game and shots to the database using saveAndFlush
+        gameRepository.saveAndFlush(game);
+
+        // Return the saved game
+        return game;
     }
+
 }
 
 

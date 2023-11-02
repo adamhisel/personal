@@ -18,7 +18,7 @@ public class Game {
 
     // Other game-specific properties can be added here
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference("gameShots")
 
     private List<Shots> shots = new ArrayList<>();
