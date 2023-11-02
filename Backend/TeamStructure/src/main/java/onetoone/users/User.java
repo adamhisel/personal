@@ -26,13 +26,16 @@ public class User{
 
 
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "user_team",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id"))
     private List<Team> teams;
 
 
-    @JsonIgnore
-    @OneToOne
-    private User user;
+//    @JsonIgnore
+//    @OneToOne
+//    private User user;
 
 
 

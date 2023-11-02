@@ -113,7 +113,7 @@ public class TeamController {
         if(team.getTeamIsPrivate()){
             if(Objects.equals(password, team.getPassword())){
                 coach.setTeam(team);
-                team.addCoach(coach);
+                //team.addCoach(coach);
                 teamRepository.save(team);
                 return success;
             }
@@ -141,6 +141,8 @@ public class TeamController {
         teamRepository.save(team);
         return success;
     }
+
+
 
 
     @DeleteMapping("/teams/{id}")
