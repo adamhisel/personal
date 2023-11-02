@@ -64,6 +64,8 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         Button joinButton = findViewById(R.id.btnJoin);
 
+        Button backButton = findViewById(R.id.exit);
+
         teamNameAutoComplete = findViewById(R.id.tvTeamName);
 
         typeAutoComplete = findViewById(R.id.tvUserType);
@@ -198,7 +200,17 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
                 });
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(JoinTeamActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
+
+
 
     private void fillTeamList(final TeamListCallback callback) {
         String url = "http://10.0.2.2:8080/teams";

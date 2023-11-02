@@ -66,7 +66,8 @@ public class AddTeamActivity extends AppCompatActivity {
         mQueue = Volley.newRequestQueue(this);
 
         Button finish = (Button)findViewById(R.id.finish);
-        Button back = findViewById(R.id.backButton);
+
+        Button backButton = findViewById(R.id.exit);
 
         teamName = findViewById(R.id.teamname);
 
@@ -141,7 +142,7 @@ public class AddTeamActivity extends AppCompatActivity {
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
