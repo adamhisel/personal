@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.project.databinding.ActivityGameBinding;
@@ -98,11 +99,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.i("GameActivity", "WebSocket Message: " + message);
 
         // Update UI based on WebSocket messages by running code on the UI thread
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // Update UI with the received message
-            }
+        runOnUiThread(() -> {
+            // Append the new message
+            binding.websocketMessages.append(message + "\n");
+
+            // Scroll to the bottom to show the latest message
+            binding.websocketScroll.fullScroll(ScrollView.FOCUS_DOWN);
         });
     }
 
@@ -164,29 +166,38 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         float x = event.getX();
         float y = event.getY();
 
+        String shotType = calculateShotType(x, y);
+
+        // Increment attempt counters
+        incrementShotAttempts(shotType);
+
+        // Show shot buttons and then wait for user to record as make or miss
+        showShotButtons();
+        recordMakeOrMiss(shotType, x, y);
+    }
+
+    private String calculateShotType(float x, float y) {
         // Scaling factors
         float widthScale = 600f / imageView.getWidth();
         float heightScale = 564f / imageView.getHeight();
 
-        // Real-world coordinates of the touch point
+        // Real-world coordinates
         float realX = x * widthScale;
         float realY = y * heightScale;
 
         // Calculate the distance to the basket
-        float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
+        float distanceToBasket = calculateDistanceToBasket(realX, realY);
 
-        String shotType;
+        // Determine the shot type
+        return (realX <= (300f - 264f) || realX >= (300f + 264f) || distanceToBasket >= 285)
+                ? "Three-Point Shot" : "Two-Point Shot";
+    }
 
-        // Check for the straight side zones of the 3-point line
-        boolean isBeyondSideZoneLeft = realX <= (300f - 264f);
-        boolean isBeyondSideZoneRight = realX >= (300f + 264f);
+    private float calculateDistanceToBasket(float realX, float realY) {
+        return (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
+    }
 
-        if (isBeyondSideZoneLeft || isBeyondSideZoneRight || distanceToBasket >= 285) {
-            shotType = "Three-Point Shot";
-        } else {
-            shotType = "Two-Point Shot";
-        }
-
+    private void incrementShotAttempts(String shotType) {
         if ("Three-Point Shot".equals(shotType)) {
             threePointAttempts++;
             if (activePlayer != null) activePlayer.recordThreePointShot(false);
@@ -194,16 +205,18 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             twoPointAttempts++;
             if (activePlayer != null) activePlayer.recordTwoPointShot(false);
         }
-
-        showShotButtons();
-
-        // Show dialog to record shot as make or miss
-        recordMakeOrMiss(shotType, x, y);
     }
 
     private void recordMakeOrMiss(String shotType, float x, float y) {
-        binding.btnMake.setOnClickListener(v -> {
-            boolean isThreePoint = "Three-Point Shot".equals(shotType);
+        // Set click listeners for make and miss buttons
+        binding.btnMake.setOnClickListener(v -> handleShotMade(shotType, x, y));
+        binding.btnMiss.setOnClickListener(v -> handleShotMissed(shotType, x, y));
+    }
+
+    private void handleShotMade(String shotType, float x, float y) {
+        // Logic when shot is made
+        // ... [existing code from the btnMake click listener] ...
+        boolean isThreePoint = "Three-Point Shot".equals(shotType);
             int value = isThreePoint ? 3 : 2;
             teamPoints += value;
 
@@ -234,10 +247,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             totalShots++;
             updateStats();
             hideShotButtons();
-        });
+    }
 
-        binding.btnMiss.setOnClickListener(v -> {
-            boolean isThreePoint = "Three-Point Shot".equals(shotType);
+    private void handleShotMissed(String shotType, float x, float y) {
+        // Logic when shot is made
+        // ... [existing code from the btnMake click listener] ...
+        boolean isThreePoint = "Three-Point Shot".equals(shotType);
             int value = isThreePoint ? 3 : 2;
 
             Shots shot = new Shots(false, value, (int) x, (int) y);
@@ -260,8 +275,110 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             totalShots++;
             updateStats();
             hideShotButtons();
-        });
     }
+
+//    private void recordBasketballShot(MotionEvent event) {
+//        float x = event.getX();
+//        float y = event.getY();
+//
+//        // Scaling factors
+//        float widthScale = 600f / imageView.getWidth();
+//        float heightScale = 564f / imageView.getHeight();
+//
+//        // Real-world coordinates of the touch point
+//        float realX = x * widthScale;
+//        float realY = y * heightScale;
+//
+//        // Calculate the distance to the basket
+//        float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
+//
+//        String shotType;
+//
+//        // Check for the straight side zones of the 3-point line
+//        boolean isBeyondSideZoneLeft = realX <= (300f - 264f);
+//        boolean isBeyondSideZoneRight = realX >= (300f + 264f);
+//
+//        if (isBeyondSideZoneLeft || isBeyondSideZoneRight || distanceToBasket >= 285) {
+//            shotType = "Three-Point Shot";
+//        } else {
+//            shotType = "Two-Point Shot";
+//        }
+//
+//        if ("Three-Point Shot".equals(shotType)) {
+//            threePointAttempts++;
+//            if (activePlayer != null) activePlayer.recordThreePointShot(false);
+//        } else {
+//            twoPointAttempts++;
+//            if (activePlayer != null) activePlayer.recordTwoPointShot(false);
+//        }
+//
+//        showShotButtons();
+//
+//        // Show dialog to record shot as make or miss
+//        recordMakeOrMiss(shotType, x, y);
+//    }
+//
+//    private void recordMakeOrMiss(String shotType, float x, float y) {
+//        binding.btnMake.setOnClickListener(v -> {
+//            boolean isThreePoint = "Three-Point Shot".equals(shotType);
+//            int value = isThreePoint ? 3 : 2;
+//            teamPoints += value;
+//
+//            Shots shot = new Shots(true, value, (int) x, (int) y);
+//            teamShots.add(shot); // Add the shot to the team's list
+//            Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
+//
+//            // Here, we check if there's an active player selected
+//            if (activePlayer != null) {
+//                // Add the shot to the active player's list
+//                activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
+//                Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
+//            }
+//            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
+//            String message = activePlayer.getName() + " made a " + (isThreePoint ? "3" : "2") +
+//                    " point shot, player's points: " + activePlayerPoints +
+//                    ", team's points: " + teamPoints;
+//            WebSocketManager.getInstance().sendMessage(message);
+//
+//            setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
+//            if (isThreePoint) {
+//                threePointMakes++;
+//                if (activePlayer != null) activePlayer.recordThreePointShot(true);
+//            } else {
+//                twoPointMakes++;
+//                if (activePlayer != null) activePlayer.recordTwoPointShot(true);
+//            }
+//            totalShots++;
+//            updateStats();
+//            hideShotButtons();
+//        });
+//
+//        binding.btnMiss.setOnClickListener(v -> {
+//            boolean isThreePoint = "Three-Point Shot".equals(shotType);
+//            int value = isThreePoint ? 3 : 2;
+//
+//            Shots shot = new Shots(false, value, (int) x, (int) y);
+//            teamShots.add(shot); // Add the shot to the team's list
+//            Log.d("GameActivity", "Shot missed: " + shot + " added to team shot list.");
+//
+//            if (activePlayer != null) {
+//                // Add the shot to the active player's list
+//                activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
+//                Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
+//            }
+//
+//            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
+//            String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") +
+//                    " point shot, player's points: " + activePlayerPoints +
+//                    ", team's points: " + teamPoints;
+//            WebSocketManager.getInstance().sendMessage(message);
+//
+//            setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
+//            totalShots++;
+//            updateStats();
+//            hideShotButtons();
+//        });
+//    }
 
     private void setIconAndPosition(Drawable drawable, float x, float y) {
         // Create a new ImageView instance for each shot

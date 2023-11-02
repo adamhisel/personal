@@ -246,7 +246,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void createWorkout(String userId) {
-        String url = LOCAL_URL + "/workouts?userId=" + userId; // Replace with your endpoint
+        String url = LOCAL_URL + "workouts?userId=" + userId; // Replace with your endpoint
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response

@@ -22,42 +22,42 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
+            android:background="#FFFFFF"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="10dp"
-            android:background="#FFFFFF">
+            android:weightSum="2">
 
             <Button
                 android:id="@+id/btnMake"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="make"/>
+                android:text="make" />
 
             <Button
                 android:id="@+id/btnMiss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="miss"/>
+                android:text="miss" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="5"
+            android:background="#FFFFFF"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="10dp"
-            android:background="#FFFFFF">
+            android:weightSum="5">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_margin="5dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -70,16 +70,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Player 1"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Player 1" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_margin="5dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -92,16 +92,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Player 2"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Player 2" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_margin="5dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -114,16 +114,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Player 3"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Player 3" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_margin="5dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -136,16 +136,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Player 4"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Player 4" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:layout_margin="5dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -158,14 +158,30 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Player 5"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Player 5" />
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <ScrollView
+            android:id="@+id/websocketScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp">
 
+            <TextView
+                android:id="@+id/websocketMessages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#CCCEEE"
+                android:padding="10dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+        </ScrollView>
+
+    </LinearLayout>
 
 
     <!-- End Game Button -->

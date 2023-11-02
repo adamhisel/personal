@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#000"
+        android:text="View Game"
+        android:textColor="#FFFFFF"
+
+        app:layout_constraintBottom_toTopOf="@+id/btnBegin"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBegin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
