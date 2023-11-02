@@ -40,7 +40,7 @@ public class TeamRosterCoach extends AppCompatActivity {
     private TableLayout tl;
     private RequestQueue mQueue;
 
-
+    private TextView coachText;
     private boolean exists = false;
 
     private int teamId;
@@ -54,6 +54,7 @@ public class TeamRosterCoach extends AppCompatActivity {
 
         mQueue = Volley.newRequestQueue(this);
         tl =  findViewById(R.id.tableLayout);
+        coachText = findViewById(R.id.coach);
         //Button addPlayer = findViewById(R.id.addPlayer);
         Button back = findViewById(R.id.backButton);
         Button teamChat = findViewById(R.id.chatButton);
@@ -63,6 +64,7 @@ public class TeamRosterCoach extends AppCompatActivity {
             teamId =  intent.getIntExtra("teamId", 0);
             teamName = intent.getStringExtra("teamName");
         }
+
 
         makeHeader();
         addPlayerDisplay();
@@ -156,6 +158,13 @@ public class TeamRosterCoach extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
 
+                    JSONArray coaches = response.getJSONArray("coaches");
+                    String text = "Coached by:";
+                        for(int j = 0; j < coaches.length(); j++){
+                            JSONObject coach = coaches.getJSONObject(j);
+                            text +=  " " + coach.getString("name");
+                        }
+                    coachText.setText(text);
 
                     JSONArray players = response.getJSONArray("players");
 
@@ -210,25 +219,6 @@ public class TeamRosterCoach extends AppCompatActivity {
                     }
 
                 } catch (JSONException e) {
-
-                    android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-
-                    TableRow tableRow = new TableRow(TeamRosterCoach.this);
-
-                    Resources resources = getResources();
-                    Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
-
-                    TextView textView = new TextView(TeamRosterCoach.this);
-                    textView.setPadding(10, 10, 10, 10);
-                    textView.setLayoutParams(trparams);
-                    textView.setTextSize(25);
-                    textView.setTypeface(null, android.graphics.Typeface.BOLD);
-                    textView.setBackground(drawable);
-                    textView.setText("No Players Exist In This Team");
-                    tableRow.addView(textView);
-
-                    tl.addView(tableRow);
-
 
                 }
 
@@ -285,5 +275,6 @@ public class TeamRosterCoach extends AppCompatActivity {
 
         tl.addView(tableRow);
     }
+
 
 }

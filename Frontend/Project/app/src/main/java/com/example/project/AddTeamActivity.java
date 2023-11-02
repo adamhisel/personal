@@ -66,7 +66,8 @@ public class AddTeamActivity extends AppCompatActivity {
         mQueue = Volley.newRequestQueue(this);
 
         Button finish = (Button)findViewById(R.id.finish);
-        Button back = findViewById(R.id.backButton);
+
+        Button backButton = findViewById(R.id.exit);
 
         teamName = findViewById(R.id.teamname);
 
@@ -141,7 +142,7 @@ public class AddTeamActivity extends AppCompatActivity {
             }
         });
 
-        back.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
@@ -255,8 +256,13 @@ public class AddTeamActivity extends AppCompatActivity {
 
     private void joinTeamCoach(){
 
-        String url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
-
+        String url = "";
+        if(isPrivate == true) {
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim();
+        }
+        else{
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
+        }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
                     if ("success".equals(response)) {
