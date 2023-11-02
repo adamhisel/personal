@@ -3,7 +3,7 @@ package onetoone.Players;
 import javax.persistence.*;
 
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import onetoone.Game.Game;
@@ -48,6 +48,7 @@ public class Player {
     @JsonIgnore
     private Team team;
     @ManyToMany(mappedBy = "players")
+    @JsonIgnore
     private List<Game> games = new ArrayList<>();
 
     public Player( String playerName, int number, String position, int user_id, int team_id) {

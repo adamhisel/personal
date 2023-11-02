@@ -1,5 +1,6 @@
 package onetoone.Game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import onetoone.Shots.Shots;
 import onetoone.Players.Player;
@@ -17,8 +18,9 @@ public class Game {
 
     // Other game-specific properties can be added here
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "game", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JsonManagedReference("gameShots")
+
     private List<Shots> shots = new ArrayList<>();
 
     @ManyToMany
@@ -63,7 +65,6 @@ public class Game {
 
     public void addShot(Shots shot) {
         this.shots.add(shot);
-        shot.setGame(this);
     }
 
     public void removeShot(Shots shot) {

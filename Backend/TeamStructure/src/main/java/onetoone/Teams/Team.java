@@ -54,7 +54,7 @@ public class Team {
      * @JoinColumn defines the ownership of the foreign key i.e. the user table will have a field called laptop_id
      */
     @OneToMany
-    private List<Player> players;
+    public List<Player> players;
 
     @OneToMany
     private List<Coach> coaches;
