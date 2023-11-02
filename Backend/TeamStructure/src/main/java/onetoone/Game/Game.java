@@ -1,40 +1,48 @@
 package onetoone.Game;
 
-import onetoone.Players.Player;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import onetoone.Shots.Shots;
-import onetoone.Teams.Team;
+import onetoone.Players.Player;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Game {
-   @OneToMany
-    List<Player> player;
 
-    @OneToMany
-    List<Shots> shots;
-
-
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private int gameId;
+    private int id;
 
-    public Game(){
+    // Other game-specific properties can be added here
 
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("gameShots")
+    private List<Shots> shots = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "game_players",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "player_id"))
+    private List<Player> players = new ArrayList<>();
+
+    public Game() {
+        // Default (no-argument) constructor
     }
-    public Game(Team team, List<Shots> shots){
-        this.team = team;
-        this.shots = shots;
 
+    public Game(List<Player> playerList, List<Shots> shotsList) {
+        this.players = playerList;
+        this.shots = shotsList;
+        // Initialize game-specific properties
     }
 
-    public Team getTeam() {
-        return team;
+    public int getId() {
+        return id;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Shots> getShots() {
@@ -45,8 +53,34 @@ public class Game {
         this.shots = shots;
     }
 
-    public void addShot(Shots newShot) {
+    public List<Player> getPlayers() {
+        return players;
     }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public void addShot(Shots shot) {
+        this.shots.add(shot);
+        shot.setGame(this);
+    }
+
+    public void removeShot(Shots shot) {
+        this.shots.remove(shot);
+        shot.setGame(null);
+    }
+
+    public void addPlayer(Player player) {
+        this.players.add(player);
+        player.getGames().add(this);
+    }
+
+    public void removePlayer(Player player) {
+        this.players.remove(player);
+        player.getGames().remove(this);
+    }
+
 
 
 }
