@@ -22,43 +22,6 @@ public class GameController {
     @Autowired
     PlayerRepository playerRepository;
 
-    @PostMapping(path = "/game")
-    Game createGame(@RequestBody Game game) {
-        if (game == null) {
-            throw new RuntimeException("Invalid request");
-        }
-
-        // Save the game to establish its ID
-        game = gameRepository.save(game);
-
-        // Ensure the Shots are associated with the game
-        List<Shots> shots = game.getShots();
-        if (shots != null) {
-            for (Shots shot : shots) {
-                shot.setGame(game);
-            }
-        }
-
-        // Save the Shots (assuming you have a shotRepository)
-        if (shots != null) {
-            shotRepository.saveAll(shots);
-        }
-
-        return game;
-    }
-    @PostMapping(path = "/game/addShot")
-    public Game addShotToGame(@RequestParam int playerId, @RequestParam int gameId, @RequestBody Shots newShot) {
-        Game game = gameRepository.findById(gameId);
-        Player player = playerRepository.findById(playerId);
-
-        // Check if the player belongs to the game's team (you may need to modify this based on your data model)
-        newShot.setGame(game); // Save the new shot
-
-        game.addShot(newShot); // Add the shot to the game's shots list
-        gameRepository.save(game); // Save the updated game
-
-        return game;
-    }
     @GetMapping(path = "/games")
     List<Game> getAllGames(){
         return gameRepository.findAll();
@@ -95,6 +58,15 @@ public class GameController {
 
         // Return the saved game
         return game;
+    }
+
+    @PostMapping("/game/addshot/{gameId}")
+    public Game addShot(@RequestBody Shots newShot, @PathVariable int gameId){
+        Game game = gameRepository.findById(gameId);
+        game.addShot(newShot);
+        shotRepository.save(newShot);
+        return game;
+
     }
 
 }
