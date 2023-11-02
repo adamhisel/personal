@@ -1,6 +1,7 @@
 package onetoone.Shots;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import onetoone.Game.Game;
 import onetoone.Teams.Team;
 import onetoone.Workout.Workout;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,7 +23,9 @@ private int makemiss;
 private int value;
 private int xCoord;
 private int yCoord;
-private int gameId;
+@ManyToOne
+@JsonBackReference("gameShots")
+ private Game game;
 private int activityID;
 @ManyToOne
 @JoinColumn(name = "workoutId")
@@ -34,12 +37,11 @@ public Shots() {
         // Default (no-argument) constructor
     }
 
-public Shots(int makemiss, int value, int xCoord, int yCoord, int gameId, int playerId, int activityID){
+public Shots(int makemiss, int value, int xCoord, int yCoord, int playerId, int activityID){
     this.makemiss = makemiss;
     this.value = value;
     this.xCoord = xCoord;
     this.yCoord = yCoord;
-    this.gameId = gameId;
     this.playerId = playerId;
     this.activityID = activityID;
 
@@ -94,13 +96,6 @@ public Shots(int makemiss, int value, int xCoord, int yCoord, int gameId, int pl
         this.yCoord = yCoord;
     }
 
-    public int getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
-    }
 
     public int getActivityID() {
         return activityID;
@@ -116,6 +111,14 @@ public Shots(int makemiss, int value, int xCoord, int yCoord, int gameId, int pl
 
     public Workout getWorkout() {
         return workout;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }
 
