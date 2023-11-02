@@ -129,7 +129,7 @@ public class TeamController {
         }
     }
 
-    @PostMapping("/teams/{teamId}/fans/{fanId}")
+    @PutMapping("/teams/{teamId}/fans/{fanId}")
     String assignFanToTeam(@PathVariable int teamId, @PathVariable int fanId){
         Team team = teamRepository.findById(teamId);
         Fan fan = fanRepository.findById(fanId);

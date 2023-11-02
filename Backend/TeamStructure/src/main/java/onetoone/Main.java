@@ -49,17 +49,6 @@ class Main {
                                UserRepository userRepository, CoachRepository coachRepository, FanRepository fanRepository) {
         return args -> {
 
-        User user1 = new User("mharsh", "mason", "harsh", "mh@email.com", "passowrd", "123456789");
-        userRepository.save(user1);
-
-        Team team1 = new Team("lakers", "password", false);
-        teamRepository.save(team1);
-
-        user1.addTeam(team1);
-        team1.addUser(user1);
-        teamRepository.save(team1);
-        userRepository.save(user1);
-
 
         };
     }

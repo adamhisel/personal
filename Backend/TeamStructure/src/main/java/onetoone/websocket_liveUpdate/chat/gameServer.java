@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@ServerEndpoint("/game/{id}")
+@ServerEndpoint("/game/{username}")
 @Component
 public class gameServer {
     private static Map < Session, String > sessionUsernameMap = new Hashtable < > ();
