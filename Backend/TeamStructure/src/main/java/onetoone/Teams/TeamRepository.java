@@ -18,6 +18,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     @Transactional
     void deleteById(int id);
 
+    Team findByTeamName(String teamName);
+
 
 //    Team findByPlayer_Id(int id);
 

@@ -47,11 +47,14 @@ public class Player {
     @JoinColumn(name = "team_id")
     @JsonIgnore
     private Team team;
-    @ManyToMany(mappedBy = "players")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "player_game", // The name of the join table
+            joinColumns = @JoinColumn(name = "player_id"), // The column name for the Player foreign key
+            inverseJoinColumns = @JoinColumn(name = "game_id") // The column name for the Game foreign key
+    )
     private List<Game> games = new ArrayList<>();
 
-    public Player( String playerName, int number, String position, int user_id, int team_id) {
+    public Player( String playerName, int number, String position, int user_id) {
         this.playerName = playerName;
         this.number = number;
         this.position = position;

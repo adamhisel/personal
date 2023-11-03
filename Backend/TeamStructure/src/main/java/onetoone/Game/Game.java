@@ -1,86 +1,111 @@
 package onetoone.Game;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import onetoone.Shots.Shots;
 import onetoone.Players.Player;
+import onetoone.Teams.Team;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Entity
 public class Game {
+
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
 
-    // Other game-specific properties can be added here
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference("gameShots")
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-    private List<Shots> shots = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(name = "game_players",
-            joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "player_id"))
+    @OneToMany(mappedBy = "game")
+    @JsonManagedReference(value = "game-shots")
+    private List<Shots> teamShots = new ArrayList<>();
+
+
+    @ManyToMany(mappedBy = "games")
     private List<Player> players = new ArrayList<>();
+
 
     public Game() {
         // Default (no-argument) constructor
     }
 
+
     public Game(List<Player> playerList, List<Shots> shotsList) {
         this.players = playerList;
-        this.shots = shotsList;
+        this.teamShots = shotsList;
         // Initialize game-specific properties
     }
+
 
     public int getId() {
         return id;
     }
 
+
     public void setId(int id) {
         this.id = id;
     }
 
-    public List<Shots> getShots() {
-        return shots;
+
+    public List<Shots> getTeamShots() {
+        return teamShots;
     }
 
-    public void setShots(List<Shots> shots) {
-        this.shots = shots;
+
+    public void setTeamShots(List<Shots> teamShots) {
+        this.teamShots = teamShots;
     }
+
 
     public List<Player> getPlayers() {
         return players;
     }
 
+
     public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
-    public void addShot(Shots shot) {
-        this.shots.add(shot);
+
+    // Method to get shots for a specific team within this game
+    public List<Shots> getTeamShots(int teamId) {
+        return this.teamShots.stream()
+                .filter(shot -> shot.getTeam() != null && shot.getTeam().getId() == teamId)
+                .collect(Collectors.toList());
     }
 
-    public void removeShot(Shots shot) {
-        this.shots.remove(shot);
-        shot.setGame(null);
+
+    // Method to get shots for a specific player within this game
+    public List<Shots> getPlayerShots(int playerId) {
+        return this.teamShots.stream()
+                .filter(shot -> shot.getPlayer() != null && shot.getPlayer().getId() == playerId)
+                .collect(Collectors.toList());
     }
+
 
     public void addPlayer(Player player) {
         this.players.add(player);
         player.getGames().add(this);
     }
 
+
     public void removePlayer(Player player) {
         this.players.remove(player);
         player.getGames().remove(this);
     }
+
 
 
 
