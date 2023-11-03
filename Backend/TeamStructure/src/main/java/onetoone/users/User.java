@@ -33,10 +33,6 @@ public class User{
     private List<Team> teams;
 
 
-//    @JsonIgnore
-//    @OneToOne
-//    private User user;
-
 
 
     public User(String userName, String firstName, String lastName, String email,String password, String phoneNumber){
