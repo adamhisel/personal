@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,15 +36,17 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment {
 
-
     private RequestQueue mQueue;
 
     private LinearLayout ll;
+
+    private Bundle savedInstance;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
+        savedInstance = savedInstanceState;
         View view = inflater.inflate(R.layout.fragment_home_coach, container, false);
 
         mQueue = Volley.newRequestQueue(requireContext());
@@ -53,9 +57,9 @@ public class HomeFragment extends Fragment {
 
         ImageButton joinTeam = view.findViewById(R.id.join);
 
-        TextView header = view.findViewById(R.id.header);
+        //TextView header = view.findViewById(R.id.header);
 
-        header.setText("Hello, " + SharedPrefsUtil.getFirstName(requireContext()));
+        //header.setText("Hello, " + SharedPrefsUtil.getFirstName(requireContext()));
 
         displayTeamButtons();
         addTeam.setOnClickListener(new View.OnClickListener() {
@@ -115,10 +119,21 @@ public class HomeFragment extends Fragment {
                             button.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Intent intent = new Intent(getActivity(), TeamRosterCoach.class);
-                                    intent.putExtra("teamId", id);
-                                    intent.putExtra("teamName", teamName);
-                                    startActivity(intent);
+                                    if (savedInstance == null) {
+                                        TeamRosterFragment fragment = new TeamRosterFragment();
+                                        Bundle args = new Bundle();
+                                        args.putInt("teamId", id);
+                                        args.putString("teamName", teamName);
+                                        fragment.setArguments(args);
+                                        SharedPrefsUtil.saveTeamData(getContext(), teamName, String.valueOf(id));
+
+                                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                        transaction.replace(R.id.linear, fragment);
+                                        transaction.addToBackStack(null);
+                                        transaction.commit();
+
+                                    }
                                 }
                             });
 
@@ -139,5 +154,6 @@ public class HomeFragment extends Fragment {
 
         mQueue.add(request);
     }
+
 
 }
