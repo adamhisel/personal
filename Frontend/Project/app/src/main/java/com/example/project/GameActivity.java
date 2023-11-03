@@ -84,7 +84,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         createGame();
 
         WebSocketManager.getInstance().setWebSocketListener(this);
-        WebSocketManager.getInstance().connectWebSocket("wss://your-websocket-url"); // Server URL
+        WebSocketManager.getInstance().connectWebSocket("wss://BASE_URL"); // Server URL
     }
 
     @Override
@@ -104,7 +104,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         // Handle incoming messages from WebSocket
         Log.i("GameActivity", "WebSocket Message: " + message);
 
-        // Update UI based on WebSocket messages by running code on the UI thread
         runOnUiThread(() -> {
             // Append the new message
             binding.websocketMessages.append(message + "\n");
@@ -162,16 +161,15 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void createGame() {
-        String url = LOCAL_URL + "games"; // Adjust the LOCAL_URL to point to your server's base URL
+        String url = BASE_URL + "games";
         Log.d(TAG, "Creating new game");
 
         // Create a JsonObjectRequest for a POST request to create a new game
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
-                    gameId = response.optInt("id"); // Assuming 'id' is the field name in the JSON response
+                    gameId = response.optInt("id");
                     Log.d(TAG, "Game created successfully with ID: " + gameId);
-                    // Use the gameId for further actions, like adding shots to this game
                 }, error -> {
             Log.e(TAG, "Failed to create game. Error: " + error.toString());
             // Handle error
@@ -183,9 +181,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
     private void loadPlayersForTeam(int teamId) {
-        String url = LOCAL_URL + "teams/" + teamId + "/players";
+        String url = BASE_URL + "teams/" + teamId + "/players";
 
-        // Request a string response from the provided URL.
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
@@ -288,7 +285,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         teamShots.add(shot); // Add the shot to the team's list
         Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
 
-        // Here, we check if there's an active player selected
+        // Check if there's an active player selected
         if (activePlayer != null) {
             // Add the shot to the active player's list
             activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
@@ -379,7 +376,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void sendTeamShots(int gameId, List<Shots> teamShots) {
-        String url = LOCAL_URL + "games/" + gameId + "/team-shots";
+        String url = BASE_URL + "games/" + gameId + "/team-shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : teamShots) {
             JSONObject shotObject = new JSONObject();
@@ -408,7 +405,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void sendPlayerShots(int gameId, int playerId, List<Shots> playerShots) {
-        String url = LOCAL_URL + "games/" + gameId + "/players/" + playerId + "/shots";
+        String url = BASE_URL + "games/" + gameId + "/players/" + playerId + "/shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : playerShots) {
             JSONObject shotObject = new JSONObject();

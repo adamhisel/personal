@@ -32,12 +32,9 @@ import java.util.List;
 public class WorkoutFragment extends Fragment {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
-
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
-
-    private FragmentWorkoutBinding binding;
-
     private static RequestQueue mQueue;
+    private FragmentWorkoutBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +69,7 @@ public class WorkoutFragment extends Fragment {
 
     // Method to fetch workouts for a specific user
     private void fetchWorkoutsForUser(String userId) {
-        String url = LOCAL_URL + "workouts?userId=" + userId;
+        String url = BASE_URL + "workouts?userId=" + userId;
 
         // Initialize the request queue if it's null
         if (mQueue == null) {
@@ -80,17 +77,14 @@ public class WorkoutFragment extends Fragment {
         }
 
         // Create a GET request to fetch workouts
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                response -> {
-                    // Parse the response to get a list of workouts
-                    List<Workout> workouts = parseWorkouts(response);
-                    // Now update the UI with this list (e.g., using a RecyclerView)
-                    displayWorkouts(workouts);
-                },
-                error -> {
-                    // Handle error
-                    Log.e("WorkoutFragment", "Error fetching workouts: " + error.getMessage());
-                });
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+            // Parse the response to get a list of workouts
+            List<Workout> workouts = parseWorkouts(response);
+            displayWorkouts(workouts);
+        }, error -> {
+            // Handle error
+            Log.e("WorkoutFragment", "Error fetching workouts: " + error.getMessage());
+        });
 
         // Add the request to the Volley request queue
         mQueue.add(request);
@@ -123,8 +117,6 @@ public class WorkoutFragment extends Fragment {
         return workouts;
     }
 
-
-
     // Method to display the workouts in the UI
     private void displayWorkouts(List<Workout> workouts) {
         LinearLayout workoutsContainer = binding.llWorkoutsContainer;
@@ -148,8 +140,6 @@ public class WorkoutFragment extends Fragment {
             workoutsContainer.addView(button);
         }
     }
-
-
 
     @Override
     public void onDestroyView() {
