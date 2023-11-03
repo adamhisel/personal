@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements WebSocketListener{
 
     private static final String TAG = "GameActivity";
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
@@ -82,6 +82,42 @@ public class GameActivity extends AppCompatActivity {
         setupCourtImageView();
         setupShotTypeIndicator();
         createGame();
+
+        WebSocketManager.getInstance().setWebSocketListener(this);
+        WebSocketManager.getInstance().connectWebSocket("wss://your-websocket-url"); // Server URL
+    }
+
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+        // WebSocket connection is open and ready to use
+        Log.i("GameActivity", "WebSocket Opened");
+    }
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote) {
+        // Handle the closing of the WebSocket
+        Log.i("GameActivity", "WebSocket Closed");
+    }
+
+    @Override
+    public void onWebSocketMessage(String message) {
+        // Handle incoming messages from WebSocket
+        Log.i("GameActivity", "WebSocket Message: " + message);
+
+        // Update UI based on WebSocket messages by running code on the UI thread
+        runOnUiThread(() -> {
+            // Append the new message
+            binding.websocketMessages.append(message + "\n");
+
+            // Scroll to the bottom to show the latest message
+            binding.websocketScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        });
+    }
+
+    @Override
+    public void onWebSocketError(Exception ex) {
+        // Handle WebSocket errors
+        Log.e("GameActivity", "WebSocket Error: " + ex.getMessage());
     }
 
     private void initializeViews() {
@@ -296,7 +332,7 @@ public class GameActivity extends AppCompatActivity {
         String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") +
                 " point shot, player's points: " + activePlayerPoints +
                 ", team's points: " + teamPoints;
-
+        WebSocketManager.getInstance().sendMessage(message);
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
         hideShotButtons();
@@ -408,5 +444,13 @@ public class GameActivity extends AppCompatActivity {
     private void hideShotButtons() {
         binding.btnMake.setVisibility(View.GONE);
         binding.btnMiss.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Disconnect WebSocket when the activity is being destroyed
+        WebSocketManager.getInstance().disconnectWebSocket();
+        WebSocketManager.getInstance().removeWebSocketListener();
     }
 }

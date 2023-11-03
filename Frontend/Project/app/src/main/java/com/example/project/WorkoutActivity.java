@@ -105,6 +105,8 @@ public class WorkoutActivity extends AppCompatActivity {
         imageView = binding.courtImageView;
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
+        String userName = SharedPrefsUtil.getUserName(this);
+        binding.tvUserInfo.setText(userName);
 
         hideShotButtons();
 

@@ -128,8 +128,8 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX);
-        imageView.setY(y - ICON_SIZE_PX);
+        imageView.setX(x - ICON_SIZE_PX/2);
+        imageView.setY(y - ICON_SIZE_PX/2);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
     }
