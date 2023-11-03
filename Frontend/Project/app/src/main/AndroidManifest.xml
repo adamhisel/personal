@@ -16,6 +16,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".WorkoutDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GameWebsocketActivity"
+            android:exported="false" />
+        <activity
             android:name=".JoinTeamActivity"
             android:exported="false" />
         <activity

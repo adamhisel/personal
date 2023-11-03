@@ -21,6 +21,16 @@ public class Shots {
         this.made = made;
     }
 
+    @Override
+    public String toString() {
+        return "Shots{" +
+                "made=" + made +
+                ", value=" + value +
+                ", xCoord=" + xCoord +
+                ", yCoord=" + yCoord +
+                '}';
+    }
+
     public int getValue() {
         return value;
     }

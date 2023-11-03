@@ -40,6 +40,13 @@ public class GameFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        binding.btnView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireActivity(), GameWebsocketActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

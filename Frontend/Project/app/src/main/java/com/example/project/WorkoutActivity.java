@@ -74,9 +74,6 @@ public class WorkoutActivity extends AppCompatActivity {
     private int workoutId;
 
 
-    private TextView shootingPercentageTextView, threePointRatioTextView, twoPointRatioTextView, totalShotsTextView, userInfoTextView;
-
-
     /**
      * Called when the activity is starting.
      * This is where most initialization should go: calling setContentView(int) to inflate
@@ -249,13 +246,14 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void createWorkout(String userId) {
-        String url = LOCAL_URL + "/workouts?userId=" + userId; // Replace with your endpoint
+        String url = LOCAL_URL + "workouts?userId=" + userId;
+        Log.d(TAG, "Creating workout for user with id" + userId);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
                     workoutId = response.optInt("workoutId");
                     Log.d(TAG, "Workout created successfully. Received workoutId: " + workoutId);
-                    // Now you can send shots to this workout using workoutId
+                    // Send shots to this workout using workoutId
                 }, error -> {
             Log.e(TAG, "Failed to create workout. Error: " + error.toString());
             // Handle error
@@ -265,7 +263,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void sendShots(int workoutId, List<Shots> shotsList) {
-        String url = LOCAL_URL + workoutId + "/bulk-shots";
+        String url = LOCAL_URL + "workouts/" + workoutId + "/bulk-shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : shotsList) {
             JSONObject shotObject = new JSONObject();
@@ -274,7 +272,6 @@ public class WorkoutActivity extends AppCompatActivity {
                 shotObject.put("value", shot.getValue());
                 shotObject.put("xCoord", shot.getxCoord());
                 shotObject.put("yCoord", shot.getyCoord());
-                // Add other shot details as needed
                 shotsArray.put(shotObject);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -285,7 +282,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
-                    // You could still log the response if you're interested
+                    // Log the response
                     Log.d(TAG, "Response received");
                 },
                 error -> {
