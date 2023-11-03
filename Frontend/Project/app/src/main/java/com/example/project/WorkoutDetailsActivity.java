@@ -1,8 +1,5 @@
 package com.example.project;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,11 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.project.databinding.ActivityWorkoutBinding;
 import com.example.project.databinding.ActivityWorkoutDetailsBinding;
 
 import org.json.JSONException;
@@ -24,13 +23,11 @@ import org.json.JSONObject;
 public class WorkoutDetailsActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
-
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
-
     private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
+    private static RequestQueue mQueue;
     private ActivityWorkoutDetailsBinding binding;
     private ImageView imageView;
-    private static RequestQueue mQueue;
     private Drawable green, red;
     private int totalShots = 0;
     private int threePointMakes = 0;
@@ -77,7 +74,7 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
     }
 
     private void fetchAndDisplayShots(int workoutId) {
-        String url = LOCAL_URL + "workouts/" + workoutId + "/shots";
+        String url = BASE_URL + "workouts/" + workoutId + "/shots";
 
         // Create a JSON Array request for fetching the shots data
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -92,7 +89,6 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
                             float xCoord = (float) shot.getDouble("xCoord");
                             float yCoord = (float) shot.getDouble("yCoord");
 
-                            // You may need to scale these coordinates depending on how they match with your imageView's dimensions
                             Drawable drawable = made ? green : red;
                             setIconAndPosition(drawable, xCoord, yCoord);
 
@@ -128,8 +124,8 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX);
-        imageView.setY(y - ICON_SIZE_PX);
+        imageView.setX(x - ICON_SIZE_PX / 2);
+        imageView.setY(y - ICON_SIZE_PX / 2);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
     }

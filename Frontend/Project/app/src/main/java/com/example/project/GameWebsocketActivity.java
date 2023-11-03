@@ -16,6 +16,8 @@ import com.example.project.databinding.ActivityGameWebsocketBinding;
 public class GameWebsocketActivity extends AppCompatActivity implements WebSocketListener {
 
     private ActivityGameWebsocketBinding binding;
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +27,7 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         setContentView(binding.getRoot());
 
         WebSocketManager.getInstance().setWebSocketListener(this);
-        WebSocketManager.getInstance().connectWebSocket("wss://your-websocket-url"); // Server URL
+        WebSocketManager.getInstance().connectWebSocket("wss://BASE_URL"); // Server URL
 
         binding.btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +54,6 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         // Handle incoming messages from WebSocket
         Log.i("GameWebsocketActivity", "WebSocket Message: " + message);
 
-        // Update UI based on WebSocket messages by running code on the UI thread
         runOnUiThread(() -> {
             // Append the new message
             binding.websocketMessages.append(message + "\n");
