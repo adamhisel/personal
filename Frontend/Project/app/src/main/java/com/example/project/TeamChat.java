@@ -1,6 +1,8 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.graphics.Rect;
@@ -54,7 +56,7 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
             teamName =  intent.getStringExtra("teamName");
         }
 
-        header.setText(teamName.toUpperCase() + " Team Chat");
+        header.setText(SharedPrefsUtil.getTeamName(this) + " Team Chat");
 
 
 
@@ -68,8 +70,13 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
         exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TeamChat.this, TeamRosterCoach.class);
-                startActivity(intent);
+                finish();
+                TeamRosterFragment teamRosterFragment = new TeamRosterFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, teamRosterFragment);
+                fragmentTransaction.commit();
+
             }
         });
 

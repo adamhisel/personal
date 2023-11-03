@@ -11,8 +11,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".AddTeamActivity"
-        android:id = "@+id/addTeamLayout">
+        android:id = "@+id/addTeamLayout"
+        android:padding="16dp">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/exit"
+        android:layout_width="125dp"
+        android:layout_height="47dp"
+        android:text="BACK"
+        app:backgroundTint="#000000"
+        app:icon="?attr/actionModeCloseDrawable" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -72,17 +80,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#000"
-            android:textSize="25dp"
             android:text="ADD TEAM"
             android:textColor="#FFFFFF" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/backButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#000"
-            android:text="BACK TO HOME"
-            android:textColor="#FFFFFF" />
-
 
     </LinearLayout>
 </FrameLayout>

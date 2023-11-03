@@ -3,10 +3,15 @@ package onetoone.Players;
 import javax.persistence.*;
 
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import onetoone.Game.Game;
 import onetoone.Teams.Team;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -42,6 +47,9 @@ public class Player {
     @JoinColumn(name = "team_id")
     @JsonIgnore
     private Team team;
+    @ManyToMany(mappedBy = "players")
+    @JsonIgnore
+    private List<Game> games = new ArrayList<>();
 
     public Player( String playerName, int number, String position, int user_id, int team_id) {
         this.playerName = playerName;
@@ -93,6 +101,23 @@ public class Player {
         this.team = team;
     }
 
+    public List<Game> getGames() {
+        return games;
+    }
+
+    public void setGames(List<Game> games) {
+        this.games = games;
+    }
+
+    public void addGame(Game game) {
+        if (games == null) {
+            games = new ArrayList<>();
+        }
+        games.add(game);
+        if (!game.getPlayers().contains(this)) {
+            game.addPlayer(this);
+        }
+    }
 
 
 }

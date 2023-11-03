@@ -6,9 +6,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.View;
 
 
 import com.example.project.databinding.ActivityMainBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * @author Adam Hisel
@@ -18,30 +20,21 @@ import com.example.project.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-
+    private BottomNavigationView nav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
         replaceFrag(new HomeFragment());
-        /*if (SharedPrefsUtil.getUserType(this).equals("coach")){
-            replaceFrag(new HomeFragmentCoach());
-        }
-        else{
-            replaceFrag(new HomeFragmentPlayer());
-       }*/
+
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                replaceFrag(new HomeFragment());
-//                if (SharedPrefsUtil.getUserType(this).equals("coach")){
-//                    replaceFrag(new HomeFragmentCoach());
-//                }
-//                else{
-//                    replaceFrag(new HomeFragmentPlayer());
-//                }
+                replaceFrag(new TeamRosterFragment());
             }
             else if(item.getItemId() == R.id.workout) {
                 replaceFrag(new WorkoutFragment());
@@ -59,13 +52,19 @@ public class MainActivity extends AppCompatActivity {
             return true;
 
         });
+
+
     }
 
-    private void replaceFrag(Fragment frag){
+    public void replaceFrag(Fragment frag){
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, frag);
         fragmentTransaction.commit();
+
+        // Update the visibility of the BottomNavigationView based on the current fragmen
+
     }
 }
 

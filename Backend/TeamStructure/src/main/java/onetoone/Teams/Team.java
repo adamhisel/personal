@@ -54,7 +54,7 @@ public class Team {
      * @JoinColumn defines the ownership of the foreign key i.e. the user table will have a field called laptop_id
      */
     @OneToMany
-    private List<Player> players;
+    public List<Player> players;
 
     @OneToMany
     private List<Coach> coaches;
@@ -63,10 +63,9 @@ public class Team {
     private List<Fan> fans;
 
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToMany(mappedBy = "teams")
     @JsonIgnore
-    private User user;
+    private List<User> users;
 
 
     public Team(String teamName, String password, boolean team_is_private) {
@@ -76,12 +75,14 @@ public class Team {
         players = new ArrayList<>();
         coaches = new ArrayList<>();
         fans = new ArrayList<>();
+        users = new ArrayList<>();
     }
 
     public Team() {
         players = new ArrayList<>();
         coaches = new ArrayList<>();
         fans = new ArrayList<>();
+        users = new ArrayList<>();
     }
 
     // =============================== Getters and Setters for each field ================================== //
@@ -128,13 +129,15 @@ public class Team {
         this.fans.add(fan);
     }
 
-    public User getUser(){
-        return this.user;
+    public List getUsers(){
+        return this.users;
     }
 
-    public void setUser(User user){
-        this.user = user;
+    public void setUsers(List<User> users){
+        this.users = users;
     }
+
+    public void addUser(User user){ users.add(user);}
 
     public String getPassword(){
         return password;

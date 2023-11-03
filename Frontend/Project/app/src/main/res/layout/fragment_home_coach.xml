@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_home">
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="sans-serif-black"
-        android:text=""
-        android:textColor="@color/black"
-        android:textSize="40sp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:id = "@+id/linear"
+        android:orientation="horizontal">
+
+        <!--<LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-black"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="40sp" />
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             tools:context=".HomeFragment">
@@ -47,7 +56,7 @@
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             tools:context=".HomeFragment">
@@ -109,6 +118,7 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>
+
 
 
