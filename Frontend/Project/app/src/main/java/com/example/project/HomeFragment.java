@@ -121,10 +121,6 @@ public class HomeFragment extends Fragment {
                                 public void onClick(View view) {
                                     if (savedInstance == null) {
                                         TeamRosterFragment fragment = new TeamRosterFragment();
-                                        Bundle args = new Bundle();
-                                        args.putInt("teamId", id);
-                                        args.putString("teamName", teamName);
-                                        fragment.setArguments(args);
                                         SharedPrefsUtil.saveTeamData(getContext(), teamName, String.valueOf(id));
 
                                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
