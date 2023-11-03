@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements WebSocketListener{
 
     private static final String TAG = "GameActivity";
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
@@ -82,6 +82,41 @@ public class GameActivity extends AppCompatActivity {
         setupCourtImageView();
         setupShotTypeIndicator();
         createGame();
+
+        WebSocketManager.getInstance().setWebSocketListener(this);
+        WebSocketManager.getInstance().connectWebSocket("wss://BASE_URL"); // Server URL
+    }
+
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+        // WebSocket connection is open and ready to use
+        Log.i("GameActivity", "WebSocket Opened");
+    }
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote) {
+        // Handle the closing of the WebSocket
+        Log.i("GameActivity", "WebSocket Closed");
+    }
+
+    @Override
+    public void onWebSocketMessage(String message) {
+        // Handle incoming messages from WebSocket
+        Log.i("GameActivity", "WebSocket Message: " + message);
+
+        runOnUiThread(() -> {
+            // Append the new message
+            binding.websocketMessages.append(message + "\n");
+
+            // Scroll to the bottom to show the latest message
+            binding.websocketScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        });
+    }
+
+    @Override
+    public void onWebSocketError(Exception ex) {
+        // Handle WebSocket errors
+        Log.e("GameActivity", "WebSocket Error: " + ex.getMessage());
     }
 
     private void initializeViews() {
@@ -126,16 +161,15 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void createGame() {
-        String url = LOCAL_URL + "games"; // Adjust the LOCAL_URL to point to your server's base URL
+        String url = BASE_URL + "games";
         Log.d(TAG, "Creating new game");
 
         // Create a JsonObjectRequest for a POST request to create a new game
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
-                    gameId = response.optInt("id"); // Assuming 'id' is the field name in the JSON response
+                    gameId = response.optInt("id");
                     Log.d(TAG, "Game created successfully with ID: " + gameId);
-                    // Use the gameId for further actions, like adding shots to this game
                 }, error -> {
             Log.e(TAG, "Failed to create game. Error: " + error.toString());
             // Handle error
@@ -147,9 +181,8 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void loadPlayersForTeam(int teamId) {
-        String url = LOCAL_URL + "teams/" + teamId + "/players";
+        String url = BASE_URL + "teams/" + teamId + "/players";
 
-        // Request a string response from the provided URL.
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
@@ -252,7 +285,7 @@ public class GameActivity extends AppCompatActivity {
         teamShots.add(shot); // Add the shot to the team's list
         Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
 
-        // Here, we check if there's an active player selected
+        // Check if there's an active player selected
         if (activePlayer != null) {
             // Add the shot to the active player's list
             activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
@@ -296,7 +329,7 @@ public class GameActivity extends AppCompatActivity {
         String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") +
                 " point shot, player's points: " + activePlayerPoints +
                 ", team's points: " + teamPoints;
-
+        WebSocketManager.getInstance().sendMessage(message);
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
         hideShotButtons();
@@ -343,7 +376,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void sendTeamShots(int gameId, List<Shots> teamShots) {
-        String url = LOCAL_URL + "games/" + gameId + "/team-shots";
+        String url = BASE_URL + "games/" + gameId + "/team-shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : teamShots) {
             JSONObject shotObject = new JSONObject();
@@ -372,7 +405,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void sendPlayerShots(int gameId, int playerId, List<Shots> playerShots) {
-        String url = LOCAL_URL + "games/" + gameId + "/players/" + playerId + "/shots";
+        String url = BASE_URL + "games/" + gameId + "/players/" + playerId + "/shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : playerShots) {
             JSONObject shotObject = new JSONObject();
@@ -408,5 +441,13 @@ public class GameActivity extends AppCompatActivity {
     private void hideShotButtons() {
         binding.btnMake.setVisibility(View.GONE);
         binding.btnMiss.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Disconnect WebSocket when the activity is being destroyed
+        WebSocketManager.getInstance().disconnectWebSocket();
+        WebSocketManager.getInstance().removeWebSocketListener();
     }
 }

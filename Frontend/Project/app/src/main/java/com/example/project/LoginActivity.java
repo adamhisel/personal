@@ -27,34 +27,14 @@ import org.json.JSONObject;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Base URL for the remote server connection
-     */
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
 
-    /**
-     * Local URL for the local server connection
-     */
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
 
-    /**
-     * View binding for this activity
-     */
     private ActivityLoginBinding binding;
-
-    /**
-     * RequestQueue for handling network requests.
-     */
     private static RequestQueue mQueue;
 
 
-    /**
-     * Called when the activity is starting. This is where most initialization should go.
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down
-     *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
-     *                           Note: Otherwise it is null.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         setupButtonListeners();
     }
 
-    /**
-     * Initializes button click listeners.
-     */
     private void setupButtonListeners() {
         binding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,9 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Handles user login.
-     */
     private void loginUser() {
         String userName = binding.etUserName.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
@@ -108,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         String loginUrl = BASE_URL + "loginUser/" + userName + "/" + password;
         String testUrl = LOCAL_URL + "loginUser/" + userName + "/" + password;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, loginUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -126,12 +100,6 @@ public class LoginActivity extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }
 
-    /**
-     * Handles the server's response to a login request.
-     * @param response The JSONObject response from the server.
-     * @param userName The user's username.
-     * @param password The user's password.
-     */
     private void handleLoginResponse(JSONObject response, String userName, String password) {
         try {
             String retrievedUserName = response.getString("userName");
@@ -157,39 +125,20 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Checks if the given text is empty.
-     * @param text The text to check.
-     * @return True if the text is empty or null, otherwise false.
-     */
     private boolean isEmpty(String text) {
         return text == null || text.trim().isEmpty();
     }
 
-    /**
-     * Sets an error message on a TextInputLayout and returns false.
-     * @param field The TextInputLayout to set the error message on.
-     * @param errorText The error message.
-     * @return Always returns false.
-     */
     private boolean setFieldError(TextInputLayout field, String errorText) {
         field.setError(errorText);
         return false;
     }
 
-    /**
-     * Clears the error message from a TextInputLayout.
-     * @param field The TextInputLayout to clear the error message from.
-     */
     private void clearFieldError(TextInputLayout field) {
         field.setError(null);
         field.setErrorEnabled(false);
     }
 
-    /**
-     * Validates the user name input field.
-     * @return True if the field is valid, otherwise false.
-     */
     private boolean validateUserName() {
         String userName = binding.etUserName.getText().toString().trim();
         if (isEmpty(userName)) {
@@ -200,10 +149,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Validates the password input field.
-     * @return True if the field is valid, otherwise false.
-     */
     private boolean validatePassword() {
         String password = binding.etPassword.getText().toString().trim();
         if (isEmpty(password)) {

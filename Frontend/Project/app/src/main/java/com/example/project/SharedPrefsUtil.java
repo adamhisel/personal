@@ -40,12 +40,6 @@ public class SharedPrefsUtil {
         editor.apply();
     }
 
-    /**
-     * Retrieves the user's name from shared preferences.
-     *
-     * @param context The application context used to access shared preferences.
-     * @return The user's name or an empty string if not set.
-     */
     public static String getUserName(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_USER_NAME, "");
@@ -61,40 +55,20 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString(KEY_LAST_NAME, "");
     }
 
-    /**
-     * Retrieves the user's email address from shared preferences.
-     *
-     * @param context The application context used to access shared preferences.
-     * @return The user's email address or an empty string if not set.
-     */
     public static String getEmail(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_EMAIL, "");
     }
 
-    /**
-     * Retrieves the user's phone number from shared preferences.
-     *
-     * @param context The application context used to access shared preferences.
-     * @return The user's phone number or an empty string if not set.
-     */
     public static String getPhoneNumber(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_PHONE_NUMBER, "");
     }
 
-
-    /**
-     * Retrieves the user's unique identifier from shared preferences.
-     *
-     * @param context The application context used to access shared preferences.
-     * @return The user's unique identifier or an empty string if not set.
-     */
     public static String getUserId(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_USER_ID, "");
     }
-
 
     public static String getTeamName(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -106,13 +80,6 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString(KEY_TEAM_ID, "");
     }
 
-
-
-    /**
-     * Clears all user data from shared preferences.
-     *
-     * @param context The application context used to access shared preferences.
-     */
     public static void clearUserData(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

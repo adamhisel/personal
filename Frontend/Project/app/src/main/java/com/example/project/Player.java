@@ -16,8 +16,6 @@ public class Player {
     private int twoPointMakes;
     private int twoPointAttempts;
 
-
-    // Constructor updated to include number and position
     public Player(int id, String playerName, int number, String position) {
         this.id = id;
         this.playerName = playerName;

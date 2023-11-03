@@ -9,7 +9,10 @@ import onetoone.Teams.TeamRepository;
 
 import org.apache.catalina.Store;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import onetoone.Shots.ShotsService;
 
 import java.util.List;
 
@@ -19,55 +22,79 @@ public class GameController {
     GameRepository gameRepository;
     @Autowired
     ShotRepository shotRepository;
+
+    @Autowired
+    ShotsService shotsService;
+
     @Autowired
     PlayerRepository playerRepository;
 
     @GetMapping(path = "/games")
-    List<Game> getAllGames(){
+    public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
 
 
-    @PostMapping("/create")
-    public Game createGame(@RequestBody CreateGameRequest request) {
-        // Create a new game
+    @PostMapping("/games")
+    public Game createGame() {
+        // Initialize a new game without shots or players yet
         Game game = new Game();
-
-        // Add players to the game
-        List<Player> players = request.getPlayers();
-        if (players != null) {
-            for (Player player : players) {
-                game.addPlayer(player);
-            }
-        }
-
-        // Save the game to the database
-        game = gameRepository.save(game);
-
-        // Add shots to the game and associate them with the saved game
-        List<Shots> shots = request.getShots();
-        if (shots != null) {
-            for (Shots shot : shots) {
-                shot.setGame(game);
-                game.addShot(shot);
-            }
-        }
-
-        // Save the game and shots to the database using saveAndFlush
-        gameRepository.saveAndFlush(game);
-
-        // Return the saved game
-        return game;
+        return gameRepository.save(game);
     }
 
-    @PostMapping("/game/addshot/{gameId}")
-    public Game addShot(@RequestBody Shots newShot, @PathVariable int gameId){
+
+    @PostMapping("/games/{gameId}/team-shots")
+    public ResponseEntity<Void> addTeamShotsToGame(@PathVariable int gameId, @RequestBody List<Shots> teamShots) {
         Game game = gameRepository.findById(gameId);
-        game.addShot(newShot);
-        shotRepository.save(newShot);
-        return game;
 
+
+        for (Shots shot : teamShots) {
+            shot.setGame(game);
+            shotsService.saveShot(shot);
+        }
+
+
+        return ResponseEntity.ok().build();
     }
+
+
+    @PostMapping("/games/{gameId}/players/{playerId}/shots")
+    public ResponseEntity<Void> addPlayerShotsToGame(@PathVariable int gameId, @PathVariable int playerId, @RequestBody List<Shots> playerShots) {
+        Game game = gameRepository.findById(gameId);
+        Player player = playerRepository.findById(playerId);
+
+
+        for (Shots shot : playerShots) {
+            shot.setGame(game); // Link shot to game
+            shot.setPlayer(player); // Link shot to player
+            shotsService.saveShot(shot);
+        }
+
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/games/{gameId}/shots")
+    public List<Shots> getShotsFromGame(@PathVariable int gameId) {
+        Game game = gameRepository.findById(gameId);
+        return game.getTeamShots();
+    }
+
+
+    @GetMapping("/games/{gameId}/teams/{teamId}/shots")
+    public List<Shots> getShotsByTeamInGame(@PathVariable int gameId, @PathVariable int teamId) {
+        Game game = gameRepository.findById(gameId);
+        return game.getTeamShots(teamId);
+    }
+
+
+    @GetMapping("/games/{gameId}/players/{playerId}/shots")
+    public List<Shots> getShotsByPlayerInGame(@PathVariable int gameId, @PathVariable int playerId) {
+        Game game = gameRepository.findById(gameId);
+        return game.getPlayerShots(playerId);
+    }
+
 
 }
 

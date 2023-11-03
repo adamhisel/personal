@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @ServerEndpoint("/game/{username}")
 @Component
 public class gameServer {
-    private static Map < Session, String > sessionUsernameMap = new Hashtable < > ();
+    private static Map <Session, String > sessionUsernameMap = new Hashtable < > ();
     private static Map < String, Session > usernameSessionMap = new Hashtable < > ();
 
     // server side logger
