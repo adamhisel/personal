@@ -1,85 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".MainActivity">
+        android:id="@+id/frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".MainActivity">
 
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/exit"
-        android:layout_width="125dp"
-        android:layout_height="47dp"
-        android:text="Exit"
-        app:backgroundTint="#000000"
-        app:icon="?attr/actionModeCloseDrawable" />
-
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_gravity="center"
-        android:scrollbars="vertical"
-        android:text=""
-        android:textColor="#000000"
-        android:textSize="35dp"
-        android:textStyle="bold" />
-
-
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbarStyle="insideInset"
-        app:layout_constraintBottom_toTopOf="@+id/et2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/exit"
+            android:layout_width="125dp"
+            android:layout_height="47dp"
+            android:text="Exit"
+            app:backgroundTint="#000000"
+            app:icon="?attr/actionModeCloseDrawable" />
 
         <TextView
-            android:id="@+id/txt1"
-            android:layout_width="match_parent"
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
             android:scrollbars="vertical"
             android:text=""
             android:textColor="#000000"
-            android:textSize="20dp"
+            android:textSize="35dp"
             android:textStyle="bold" />
 
-    </ScrollView>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        >
-"
 
-        <EditText
-            android:id="@+id/et2"
-            android:layout_width="266dp"
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbarStyle="insideInset"
+            app:layout_constraintBottom_toTopOf="@+id/et2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+
+            <TextView
+                android:id="@+id/txt1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:text=""
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="Message:"
-            android:textSize="20dp" />
+            >
+    "
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/send"
-            android:layout_width="wrap_content"
-            android:layout_height="47dp"
-            android:text="Send"
-            app:backgroundTint="#000000"
-            app:icon="@android:drawable/ic_menu_send" />
+            <EditText
+                android:id="@+id/et2"
+                android:layout_width="266dp"
+                android:layout_height="wrap_content"
+                android:hint="Message:"
+                android:textSize="20dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="47dp"
+                android:text="Send"
+                app:backgroundTint="#000000"
+                app:icon="@android:drawable/ic_menu_send" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
-
-
-</LinearLayout>
+</FrameLayout>
