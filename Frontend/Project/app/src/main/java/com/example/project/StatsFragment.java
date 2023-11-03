@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.content.Intent;
+import android.widget.ScrollView;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -46,6 +48,8 @@ import java.util.ArrayList;
 public class StatsFragment extends Fragment {
 
     private RequestQueue mQueue;
+    private ScrollView scroll;
+    private LinearLayout ll;
     private TextView fgPerc1;
     private TextView threePPerc1;
     private TextView twoPPerc1;
@@ -61,6 +65,9 @@ public class StatsFragment extends Fragment {
     private TextView fgVal;
     private TextView threepVal;
     private TextView twoPVal;
+
+    private ArrayList<String> playerNameArr;
+    private ArrayList<Integer> pointsArr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,14 +95,24 @@ public class StatsFragment extends Fragment {
         threepVal = view.findViewById(R.id.threepVal);
         twoPVal = view.findViewById(R.id.twoPVal);
 
-        getGameStats();
+        scroll = view.findViewById(R.id.sv);
+        ll = view.findViewById(R.id.ll);
+
+        getGameStats(new TeamStringListAndIntListCallback() {
+            @Override
+            public void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i) {
+                playerNameArr = s;
+                pointsArr = i;
+                findLeaders();
+            }
+        });
 
         return view;
 
     }
 
-    private void getGameStats(){
-        String url = "http://10.0.2.2:8080/teams/" + SharedPrefsUtil.getTeamId(getContext());
+    private void getGameStats(final TeamStringListAndIntListCallback callback){
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + SharedPrefsUtil.getTeamId(getContext());
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -111,6 +128,9 @@ public class StatsFragment extends Fragment {
                             int twoPCount = 0;
                             int twoPMade = 0;
                             int totalP = 0;
+
+                            ArrayList<String> tempString = new ArrayList<>();
+                            ArrayList<Integer> tempInt = new ArrayList<>();
 
                             for (int i = 0; i < games.length(); i++) {
                                 JSONObject game = games.getJSONObject(i);
@@ -154,67 +174,73 @@ public class StatsFragment extends Fragment {
 
                                     }
 
+                                    String playerName = player.getString("playerName");
+                                    tempString.add(playerName);
+                                    tempInt.add(playersPoints);
 
                                 }
                             }
 
-                                DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                                DecimalFormat decimalFormat2 = new DecimalFormat("#.#");
+                            playerNameArr = tempString;
+                            pointsArr = tempInt;
 
-                                totalP = threePMade * 3 + twoPMade * 2;
+                            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+                            DecimalFormat decimalFormat2 = new DecimalFormat("#.#");
 
-                                float ppg = ((float)totalP/gameCount);
+                            totalP = threePMade * 3 + twoPMade * 2;
 
-                                String ppgString = decimalFormat2.format(ppg);
+                            float ppg = ((float)totalP/gameCount);
 
-
-                                float fgPerc = ((float) fgMade / fgCount) * 100;
-
-                                String fgPercString = decimalFormat.format(fgPerc);
-
-                                float fgPercFloat = Float.parseFloat(fgPercString);
-
-                                int fgPercInt = Math.round(fgPercFloat);
-
-                                fgProg.setProgress(fgPercInt);
+                            String ppgString = decimalFormat2.format(ppg);
 
 
+                            float fgPerc = ((float) fgMade / fgCount) * 100;
 
-                                float threePPerc = ((float) threePMade / threePCount) * 100;
+                            String fgPercString = decimalFormat.format(fgPerc);
 
-                                String threePPercString = decimalFormat.format(threePPerc);
+                            float fgPercFloat = Float.parseFloat(fgPercString);
 
-                                float threePPercFloat = Float.parseFloat(threePPercString);
+                            int fgPercInt = Math.round(fgPercFloat);
 
-                                int threePercInt = Math.round(threePPercFloat);
-
-                                threeProg.setProgress(threePercInt);
+                            fgProg.setProgress(fgPercInt);
 
 
 
-                                float twoPPerc = ((float) twoPMade / twoPCount) * 100;
+                            float threePPerc = ((float) threePMade / threePCount) * 100;
 
-                                String twoPPercString = decimalFormat.format(twoPPerc);
+                            String threePPercString = decimalFormat.format(threePPerc);
 
-                                float twoPPercFloat = Float.parseFloat(twoPPercString);
+                            float threePPercFloat = Float.parseFloat(threePPercString);
 
-                                int twoPercInt = Math.round(twoPPercFloat);
+                            int threePercInt = Math.round(threePPercFloat);
 
-                                twoProg.setProgress(twoPercInt);
-
-                                fgPerc1.setText("FG%: " + twoPPercString + "%");
-                                threePPerc1.setText("3PT%: " + threePPercString + "%");
-                                twoPPerc1.setText("2PT%: " + twoPPercString + "%");
-
-                                gamesVal.setText(gameCount);
-                                pointsVal.setText(totalP);
-                                ppgVal.setText(ppgString);
-
-                                fgVal.setText(fgMade + "/" + fgCount);
-                                threepVal.setText(threePMade + "/" + threePCount);
-                                twoPVal.setText(twoPMade + "/" + twoPCount);
+                            threeProg.setProgress(threePercInt);
 
 
+
+                            float twoPPerc = ((float) twoPMade / twoPCount) * 100;
+
+                            String twoPPercString = decimalFormat.format(twoPPerc);
+
+                            float twoPPercFloat = Float.parseFloat(twoPPercString);
+
+                            int twoPercInt = Math.round(twoPPercFloat);
+
+                            twoProg.setProgress(twoPercInt);
+
+                            fgPerc1.setText("FG%: " + twoPPercString + "%");
+                            threePPerc1.setText("3PT%: " + threePPercString + "%");
+                            twoPPerc1.setText("2PT%: " + twoPPercString + "%");
+
+                            gamesVal.setText(String.valueOf(gameCount));
+                            pointsVal.setText(String.valueOf(totalP));
+                            ppgVal.setText(ppgString);
+
+                            fgVal.setText(fgMade + "/" + fgCount);
+                            threepVal.setText(threePMade + "/" + threePCount);
+                            twoPVal.setText(twoPMade + "/" + twoPCount);
+
+                            callback.onTeamStringListAndIntListReceived(playerNameArr, pointsArr);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -227,5 +253,41 @@ public class StatsFragment extends Fragment {
         });
 
         mQueue.add(request);
+    }
+
+    private void findLeaders(){
+        if (playerNameArr.size() > 0) {
+            for(int j = 0; j < playerNameArr.size(); j++) {
+                int highestPoints = pointsArr.get(0);
+                String highestScorer = playerNameArr.get(0);
+                int index  = 0;
+
+                for (int i = 1; i < pointsArr.size(); i++) {
+                    if (pointsArr.get(i) > highestPoints) {
+                        highestPoints = pointsArr.get(i);
+                        highestScorer = playerNameArr.get(i);
+                        index = i;
+                    }
+                }
+
+                TextView textView = new TextView(requireContext());
+                textView.setText(j+ ". " + highestScorer + "            " + highestPoints);
+
+                ll.addView(textView);
+
+                scroll.fullScroll(ScrollView.FOCUS_UP);
+
+                playerNameArr.remove(index);
+                pointsArr.remove(index);
+
+            }
+        } else {
+            Toast.makeText(getContext(), "No shots where taken", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    public interface TeamStringListAndIntListCallback {
+        void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i);
     }
 }

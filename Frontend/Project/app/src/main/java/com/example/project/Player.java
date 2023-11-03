@@ -1,7 +1,9 @@
 package com.example.project;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class Player {
     private int id;
@@ -13,6 +15,7 @@ public class Player {
     private int threePointAttempts;
     private int twoPointMakes;
     private int twoPointAttempts;
+
 
     // Constructor updated to include number and position
     public Player(int id, String playerName, int number, String position) {
@@ -27,53 +30,66 @@ public class Player {
         this.twoPointAttempts = 0;
     }
 
+
     public void recordThreePointShot(boolean made) {
         this.threePointAttempts++;
         if (made) this.threePointMakes++;
     }
+
 
     public void recordTwoPointShot(boolean made) {
         this.twoPointAttempts++;
         if (made) this.twoPointMakes++;
     }
 
+
     public void addShot(Shots shot) {
         shotsList.add(shot);
     }
+
 
     public String getName() {
         return playerName;
     }
 
+
     public int getNumber() {
         return number;
     }
+
 
     public void setNumber(int number) {
         this.number = number;
     }
 
+
     public String getPosition() {
         return position;
     }
+
 
     public void setPosition(String position) {
         this.position = position;
     }
 
+
     public List<Shots> getShots() {
         return shotsList;
     }
+
 
     public int getThreePointMakes() {
         return threePointMakes;
     }
 
+
     public int getTwoPointMakes() {
         return twoPointMakes;
     }
+
 
     public int getId() {
         return id;
     }
 }
+
