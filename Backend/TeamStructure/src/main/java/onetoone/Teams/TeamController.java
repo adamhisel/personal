@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import onetoone.Coaches.Coach;
 import onetoone.Coaches.CoachRepository;
+import onetoone.Fans.FanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import onetoone.Players.Player;
 import onetoone.Players.PlayerRepository;
+
+import onetoone.Coaches.Coach;
+import onetoone.Coaches.CoachRepository;
+
+import onetoone.Fans.Fan;
+import onetoone.Fans.FanRepository;
 
 /**
  *
@@ -34,6 +41,9 @@ public class TeamController {
 
     @Autowired
     PlayerRepository playerRepository;
+
+    @Autowired
+    FanRepository fanRepository;
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -103,7 +113,7 @@ public class TeamController {
         if(team.getTeamIsPrivate()){
             if(Objects.equals(password, team.getPassword())){
                 coach.setTeam(team);
-                team.addCoach(coach);
+                //team.addCoach(coach);
                 teamRepository.save(team);
                 return success;
             }
@@ -118,6 +128,21 @@ public class TeamController {
             return success;
         }
     }
+
+    @PutMapping("/teams/{teamId}/fans/{fanId}")
+    String assignFanToTeam(@PathVariable int teamId, @PathVariable int fanId){
+        Team team = teamRepository.findById(teamId);
+        Fan fan = fanRepository.findById(fanId);
+        if(team == null || fan == null) {
+            return failure;
+        }
+        fan.setTeam(team);
+        team.addFan(fan);
+        teamRepository.save(team);
+        return success;
+    }
+
+
 
 
     @DeleteMapping("/teams/{id}")

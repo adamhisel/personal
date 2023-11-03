@@ -1,6 +1,8 @@
 package onetoone;
 
 
+import onetoone.Teams.Team;
+import onetoone.users.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -46,8 +48,6 @@ class Main {
     CommandLineRunner initUser(TeamRepository teamRepository, PlayerRepository playerRepository,
                                UserRepository userRepository, CoachRepository coachRepository, FanRepository fanRepository) {
         return args -> {
-
-
 
 
         };

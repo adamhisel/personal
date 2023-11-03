@@ -83,7 +83,7 @@ public class UserController {
         Team team = teamRepository.findById(teamId);
         if(team == null || user == null)
             return failure;
-        team.setUser(user);
+        team.addUser(user);
         user.addTeam(team);
         userRepository.save(user);
         return success;
