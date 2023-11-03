@@ -8,6 +8,7 @@
     tools:context=".WorkoutFragment">
 
     <TextView
+        android:id="@+id/tvWorkout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-black"
@@ -18,6 +19,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnBegin"
+        app:layout_constraintTop_toBottomOf="@+id/tvWorkout">
+
+        <LinearLayout
+            android:id="@+id/llWorkoutsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+        </LinearLayout>
+    </ScrollView>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBegin"

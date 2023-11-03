@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".WorkoutDetailsActivity">
+
+    <!-- The court ImageView -->
+    <ImageView
+        android:id="@+id/courtImageView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/court_image" />
+
+    <!-- This LinearLayout will contain all the shooting stats -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="450dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/shootingPercentageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Shooting Percentage: 0%"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/threePointRatioTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="3 Point Ratio: 0/0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/twoPointRatioTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="2 Point Ratio: 0/0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/totalShotsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Total Shots: 0"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+    <!-- End Session Button -->
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:text="Go Back" />
+
+</FrameLayout>
