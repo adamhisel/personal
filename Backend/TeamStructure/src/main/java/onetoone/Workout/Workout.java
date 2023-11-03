@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import onetoone.users.User;
+
 @Entity
 public class Workout {
     @Id
@@ -20,11 +22,18 @@ public class Workout {
     @JsonManagedReference
     private List<Shots> shots;
 
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
     public Workout() {
         // Default (no-argument) constructor
     }
 
-    public Workout(int playerId) {
+    public Workout(User user) {
+        this.user = user;
+
+
         this.playerId = playerId;
         this.shots = new ArrayList<>();
     }
@@ -44,6 +53,15 @@ public class Workout {
     public void setPlayerId(int playerId) {
         this.playerId = playerId;
     }
+
+    public User getUser(){
+        return user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
+
 
     public List<Shots> getShots() {
         return shots;

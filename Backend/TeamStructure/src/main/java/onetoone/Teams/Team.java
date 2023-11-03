@@ -17,6 +17,7 @@ import onetoone.Coaches.Coach;
 import onetoone.Fans.Fan;
 import onetoone.Players.Player;
 import onetoone.users.User;
+import onetoone.Game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,10 @@ public class Team {
 
     @OneToMany
     private List<Fan> fans;
+
+    @OneToMany(mappedBy = "team")
+    private List<Game> games;
+
 
 
     @ManyToMany(mappedBy = "teams")
@@ -146,6 +151,18 @@ public class Team {
     public void setPassword(String password){
         this.password = password;
     }
+
+    // Getter for games
+    public List<Game> getGames() {
+        return games;
+    }
+
+
+    // Setter for games
+    public void setGames(List<Game> games) {
+        this.games = games;
+    }
+
 
     public boolean getTeamIsPrivate(){
         return team_is_private;
