@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center"
-                    android:text="FG %"
+                    android:text="FG%"
                     android:textAlignment="center"
                     android:textColor="#000000"
                     android:textSize="35dp" />
@@ -49,17 +49,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center"
-                    android:text="3PT %"
+                    android:text="3PT%"
                     android:textAlignment="center"
                     android:textColor="#000000"
                     android:textSize="35dp" />
 
                 <TextView
-                    android:id="@+id/ftPerc"
+                    android:id="@+id/twoPPerc"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:gravity="center"
-                    android:text="FT %"
+                    android:text="2PT%"
                     android:textAlignment="center"
                     android:textColor="#000000"
                     android:textSize="35dp" />
@@ -98,7 +98,7 @@
                     android:scrollIndicators="none" />
 
                 <ProgressBar
-                    android:id="@+id/ftprog"
+                    android:id="@+id/twopprog"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
@@ -240,12 +240,12 @@
                     android:textSize="25dp" />
 
                 <TextView
-                    android:id="@+id/fta"
+                    android:id="@+id/twoPa"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="FTM/FTA"
+                    android:text="2PT/2PTA"
                     android:textAlignment="center"
                     android:textColor="#000000"
                     android:textSize="25dp" />
@@ -283,7 +283,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/ftVal"
+                    android:id="@+id/twoPVal"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
