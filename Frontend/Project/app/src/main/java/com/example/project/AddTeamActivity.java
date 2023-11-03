@@ -152,7 +152,7 @@ public class AddTeamActivity extends AppCompatActivity {
 
     }
     private void postTeam(final TeamIdCallback callback) {
-        String url = "http://10.0.2.2:8080/teams";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JSONObject postData = new JSONObject();
 
@@ -195,7 +195,7 @@ public class AddTeamActivity extends AppCompatActivity {
     }
 
     private void postCoach(final TeamIdCallback callback) {
-        String url = "http://10.0.2.2:8080/coaches";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/coaches";
 
         JSONObject postData = new JSONObject();
         try {
@@ -233,7 +233,7 @@ public class AddTeamActivity extends AppCompatActivity {
     private void joinTeamUser(){
         String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = "http://10.0.2.2:8080/User/" + userId + "/teams/" + teamId;
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/User/" + userId + "/teams/" + teamId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -258,10 +258,10 @@ public class AddTeamActivity extends AppCompatActivity {
 
         String url = "";
         if(isPrivate == true) {
-            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim();
+            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim();
         }
         else{
-            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
+            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
         }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
