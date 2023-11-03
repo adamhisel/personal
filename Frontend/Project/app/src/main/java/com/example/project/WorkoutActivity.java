@@ -246,7 +246,8 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void createWorkout(String userId) {
-        String url = LOCAL_URL + "workouts?userId=" + userId; // Replace with your endpoint
+        String url = LOCAL_URL + "workouts?userId=" + userId;
+        Log.d(TAG, "Creating workout for user with id" + userId);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
@@ -262,7 +263,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void sendShots(int workoutId, List<Shots> shotsList) {
-        String url = LOCAL_URL + workoutId + "/bulk-shots";
+        String url = LOCAL_URL + "workouts/" + workoutId + "/bulk-shots";
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : shotsList) {
             JSONObject shotObject = new JSONObject();

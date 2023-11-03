@@ -1,8 +1,5 @@
 package com.example.project;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -14,39 +11,40 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityGameBinding;
 
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity implements WebSocketListener {
+public class GameActivity extends AppCompatActivity {
 
+    private static final String TAG = "GameActivity";
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
-
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
-    /**
-     * Size of the icons (made or missed shots) in pixels
-     */
+
     private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
-
-    /**
-     * View binding for this activity
-     */
+    private static RequestQueue mQueue;
     private ActivityGameBinding binding;
-
-    /**
-     * ImageView representing the basketball court
-     */
     private ImageView imageView;
 
-    /**
-     * Drawable for a made shot (green circle) or missed shot (red cross)
-     */
     private Drawable green, red;
 
     private int totalShots = 0;
@@ -54,16 +52,22 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private int threePointAttempts = 0;
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
-    private int[] playerButtonIds = new int[] {
+    private int teamPoints = 0;
+
+    private final int[] playerButtonIds = new int[]{
             R.id.imgBtnPlayer1, R.id.imgBtnPlayer2, R.id.imgBtnPlayer3, R.id.imgBtnPlayer4, R.id.imgBtnPlayer5
     };
-    private List<Shots> teamShots = new ArrayList<>();
+    private final int[] playerTextViewIds = new int[]{
+            R.id.tvBtnPlayer1, R.id.tvBtnPlayer2, R.id.tvBtnPlayer3, R.id.tvBtnPlayer4, R.id.tvBtnPlayer5
+    };
+
+    private final List<Shots> teamShots = new ArrayList<>();
     private List<Player> players = new ArrayList<>();
+
     private Player activePlayer;
     private int activePlayerIndex;
 
-    private int teamPoints = 0;
-    private HashMap<String, Integer> playerPoints = new HashMap<>();
+    private int gameId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,47 +75,13 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loadPlayers();
+        mQueue = Volley.newRequestQueue(this);
+
+        loadPlayersForTeam(1);
         initializeViews();
         setupCourtImageView();
         setupShotTypeIndicator();
-
-        WebSocketManager.getInstance().setWebSocketListener(this);
-        WebSocketManager.getInstance().connectWebSocket("wss://your-websocket-url"); // Server URL
-
-    }
-
-    @Override
-    public void onWebSocketOpen(ServerHandshake handshakedata) {
-        // WebSocket connection is open and ready to use
-        Log.i("GameActivity", "WebSocket Opened");
-    }
-
-    @Override
-    public void onWebSocketClose(int code, String reason, boolean remote) {
-        // Handle the closing of the WebSocket
-        Log.i("GameActivity", "WebSocket Closed");
-    }
-
-    @Override
-    public void onWebSocketMessage(String message) {
-        // Handle incoming messages from WebSocket
-        Log.i("GameActivity", "WebSocket Message: " + message);
-
-        // Update UI based on WebSocket messages by running code on the UI thread
-        runOnUiThread(() -> {
-            // Append the new message
-            binding.websocketMessages.append(message + "\n");
-
-            // Scroll to the bottom to show the latest message
-            binding.websocketScroll.fullScroll(ScrollView.FOCUS_DOWN);
-        });
-    }
-
-    @Override
-    public void onWebSocketError(Exception ex) {
-        // Handle WebSocket errors
-        Log.e("GameActivity", "WebSocket Error: " + ex.getMessage());
+        createGame();
     }
 
     private void initializeViews() {
@@ -121,14 +91,25 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         hideShotButtons();
 
+        // Set up player button listeners
         for (int i = 0; i < playerButtonIds.length; i++) {
-            ImageButton button = findViewById(playerButtonIds[i]);
-            setPlayerButtonFunctionality(button, i);
+            ImageButton playerButton = findViewById(playerButtonIds[i]);
+            final int index = i;
+            playerButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setActivePlayer(index);
+                }
+            });
         }
 
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sendTeamShots(gameId, teamShots);
+                for (Player player : players) {
+                    sendPlayerShots(gameId, player.getId(), player.getShots());
+                }
                 finish();
             }
         });
@@ -144,12 +125,58 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         });
     }
 
-    private void loadPlayers() {
-        // For demonstration, I’m just adding players manually.
-        players = new ArrayList<>();
-        players.add(new Player("Player 1"));
-        players.add(new Player("Player 2"));
-        activePlayerIndex = 0;
+    private void createGame() {
+        String url = LOCAL_URL + "games"; // Adjust the LOCAL_URL to point to your server's base URL
+        Log.d(TAG, "Creating new game");
+
+        // Create a JsonObjectRequest for a POST request to create a new game
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
+                response -> {
+                    // Handle response
+                    gameId = response.optInt("id"); // Assuming 'id' is the field name in the JSON response
+                    Log.d(TAG, "Game created successfully with ID: " + gameId);
+                    // Use the gameId for further actions, like adding shots to this game
+                }, error -> {
+            Log.e(TAG, "Failed to create game. Error: " + error.toString());
+            // Handle error
+        });
+
+        // Add the request to your request queue
+        mQueue.add(request);
+    }
+
+
+    private void loadPlayersForTeam(int teamId) {
+        String url = LOCAL_URL + "teams/" + teamId + "/players";
+
+        // Request a string response from the provided URL.
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        // Since the response is a JSONArray, directly create a JSONArray from the response string.
+                        JSONArray playersArray = new JSONArray(response);
+                        players = new ArrayList<>();
+                        for (int i = 0; i < 5; i++) {
+                            JSONObject playerObject = playersArray.getJSONObject(i);
+                            int playerId = playerObject.getInt("id");
+                            String playerName = playerObject.getString("playerName");
+                            int playerNumber = playerObject.getInt("number");
+                            String position = playerObject.getString("position");
+                            Player player = new Player(playerId, playerName, playerNumber, position);
+                            players.add(player);
+                            Log.i("GameActivity", "Loaded player: " + playerName); // Logging the loaded player
+                        }
+                        updatePlayerButtonLabels();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        // Handle the JSON exception here
+                    }
+                }, error -> {
+            // Handle error here
+            Log.e("GameActivity", "Failed to load team players: " + error.toString());
+            Toast.makeText(GameActivity.this, "Failed to load team players.", Toast.LENGTH_SHORT).show();
+        });
+        mQueue.add(request);
     }
 
     private void setupShotTypeIndicator() {
@@ -190,7 +217,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         // Determine the shot type
         return (realX <= (300f - 264f) || realX >= (300f + 264f) || distanceToBasket >= 285)
-                ? "Three-Point Shot" : "Two-Point Shot";
+                ? "Three-Point Shot"
+                : "Two-Point Shot";
     }
 
     private float calculateDistanceToBasket(float realX, float realY) {
@@ -200,10 +228,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private void incrementShotAttempts(String shotType) {
         if ("Three-Point Shot".equals(shotType)) {
             threePointAttempts++;
-            if (activePlayer != null) activePlayer.recordThreePointShot(false);
+            if (activePlayer != null)
+                activePlayer.recordThreePointShot(false);
         } else {
             twoPointAttempts++;
-            if (activePlayer != null) activePlayer.recordTwoPointShot(false);
+            if (activePlayer != null)
+                activePlayer.recordTwoPointShot(false);
         }
     }
 
@@ -214,171 +244,63 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void handleShotMade(String shotType, float x, float y) {
-        // Logic when shot is made
-        // ... [existing code from the btnMake click listener] ...
         boolean isThreePoint = "Three-Point Shot".equals(shotType);
-            int value = isThreePoint ? 3 : 2;
-            teamPoints += value;
+        int value = isThreePoint ? 3 : 2;
+        teamPoints += value;
 
-            Shots shot = new Shots(true, value, (int) x, (int) y);
-            teamShots.add(shot); // Add the shot to the team's list
-            Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
+        Shots shot = new Shots(true, value, (int) x, (int) y);
+        teamShots.add(shot); // Add the shot to the team's list
+        Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
 
-            // Here, we check if there's an active player selected
-            if (activePlayer != null) {
-                // Add the shot to the active player's list
-                activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
-                Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
-            }
-            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-            String message = activePlayer.getName() + " made a " + (isThreePoint ? "3" : "2") +
-                    " point shot, player's points: " + activePlayerPoints +
-                    ", team's points: " + teamPoints;
-            WebSocketManager.getInstance().sendMessage(message);
+        // Here, we check if there's an active player selected
+        if (activePlayer != null) {
+            // Add the shot to the active player's list
+            activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
+            Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
+        }
+        int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
+        String message = activePlayer.getName() + " made a " + (isThreePoint ? "3" : "2") +
+                " point shot, player's points: " + activePlayerPoints +
+                ", team's points: " + teamPoints;
+        WebSocketManager.getInstance().sendMessage(message);
 
-            setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
-            if (isThreePoint) {
-                threePointMakes++;
-                if (activePlayer != null) activePlayer.recordThreePointShot(true);
-            } else {
-                twoPointMakes++;
-                if (activePlayer != null) activePlayer.recordTwoPointShot(true);
-            }
-            totalShots++;
-            updateStats();
-            hideShotButtons();
+        setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
+        if (isThreePoint) {
+            threePointMakes++;
+            if (activePlayer != null)
+                activePlayer.recordThreePointShot(true);
+        } else {
+            twoPointMakes++;
+            if (activePlayer != null)
+                activePlayer.recordTwoPointShot(true);
+        }
+        totalShots++;
+        hideShotButtons();
     }
 
     private void handleShotMissed(String shotType, float x, float y) {
-        // Logic when shot is made
-        // ... [existing code from the btnMake click listener] ...
         boolean isThreePoint = "Three-Point Shot".equals(shotType);
-            int value = isThreePoint ? 3 : 2;
+        int value = isThreePoint ? 3 : 2;
 
-            Shots shot = new Shots(false, value, (int) x, (int) y);
-            teamShots.add(shot); // Add the shot to the team's list
-            Log.d("GameActivity", "Shot missed: " + shot + " added to team shot list.");
+        Shots shot = new Shots(false, value, (int) x, (int) y);
+        teamShots.add(shot); // Add the shot to the team's list
+        Log.d("GameActivity", "Shot missed: " + shot + " added to team shot list.");
 
-            if (activePlayer != null) {
-                // Add the shot to the active player's list
-                activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
-                Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
-            }
+        if (activePlayer != null) {
+            // Add the shot to the active player's list
+            activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
+            Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
+        }
 
-            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-            String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") +
-                    " point shot, player's points: " + activePlayerPoints +
-                    ", team's points: " + teamPoints;
-            WebSocketManager.getInstance().sendMessage(message);
+        int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
+        String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") +
+                " point shot, player's points: " + activePlayerPoints +
+                ", team's points: " + teamPoints;
 
-            setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
-            totalShots++;
-            updateStats();
-            hideShotButtons();
+        setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
+        totalShots++;
+        hideShotButtons();
     }
-
-//    private void recordBasketballShot(MotionEvent event) {
-//        float x = event.getX();
-//        float y = event.getY();
-//
-//        // Scaling factors
-//        float widthScale = 600f / imageView.getWidth();
-//        float heightScale = 564f / imageView.getHeight();
-//
-//        // Real-world coordinates of the touch point
-//        float realX = x * widthScale;
-//        float realY = y * heightScale;
-//
-//        // Calculate the distance to the basket
-//        float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
-//
-//        String shotType;
-//
-//        // Check for the straight side zones of the 3-point line
-//        boolean isBeyondSideZoneLeft = realX <= (300f - 264f);
-//        boolean isBeyondSideZoneRight = realX >= (300f + 264f);
-//
-//        if (isBeyondSideZoneLeft || isBeyondSideZoneRight || distanceToBasket >= 285) {
-//            shotType = "Three-Point Shot";
-//        } else {
-//            shotType = "Two-Point Shot";
-//        }
-//
-//        if ("Three-Point Shot".equals(shotType)) {
-//            threePointAttempts++;
-//            if (activePlayer != null) activePlayer.recordThreePointShot(false);
-//        } else {
-//            twoPointAttempts++;
-//            if (activePlayer != null) activePlayer.recordTwoPointShot(false);
-//        }
-//
-//        showShotButtons();
-//
-//        // Show dialog to record shot as make or miss
-//        recordMakeOrMiss(shotType, x, y);
-//    }
-//
-//    private void recordMakeOrMiss(String shotType, float x, float y) {
-//        binding.btnMake.setOnClickListener(v -> {
-//            boolean isThreePoint = "Three-Point Shot".equals(shotType);
-//            int value = isThreePoint ? 3 : 2;
-//            teamPoints += value;
-//
-//            Shots shot = new Shots(true, value, (int) x, (int) y);
-//            teamShots.add(shot); // Add the shot to the team's list
-//            Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
-//
-//            // Here, we check if there's an active player selected
-//            if (activePlayer != null) {
-//                // Add the shot to the active player's list
-//                activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
-//                Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
-//            }
-//            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-//            String message = activePlayer.getName() + " made a " + (isThreePoint ? "3" : "2") +
-//                    " point shot, player's points: " + activePlayerPoints +
-//                    ", team's points: " + teamPoints;
-//            WebSocketManager.getInstance().sendMessage(message);
-//
-//            setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
-//            if (isThreePoint) {
-//                threePointMakes++;
-//                if (activePlayer != null) activePlayer.recordThreePointShot(true);
-//            } else {
-//                twoPointMakes++;
-//                if (activePlayer != null) activePlayer.recordTwoPointShot(true);
-//            }
-//            totalShots++;
-//            updateStats();
-//            hideShotButtons();
-//        });
-//
-//        binding.btnMiss.setOnClickListener(v -> {
-//            boolean isThreePoint = "Three-Point Shot".equals(shotType);
-//            int value = isThreePoint ? 3 : 2;
-//
-//            Shots shot = new Shots(false, value, (int) x, (int) y);
-//            teamShots.add(shot); // Add the shot to the team's list
-//            Log.d("GameActivity", "Shot missed: " + shot + " added to team shot list.");
-//
-//            if (activePlayer != null) {
-//                // Add the shot to the active player's list
-//                activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
-//                Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
-//            }
-//
-//            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-//            String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") +
-//                    " point shot, player's points: " + activePlayerPoints +
-//                    ", team's points: " + teamPoints;
-//            WebSocketManager.getInstance().sendMessage(message);
-//
-//            setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
-//            totalShots++;
-//            updateStats();
-//            hideShotButtons();
-//        });
-//    }
 
     private void setIconAndPosition(Drawable drawable, float x, float y) {
         // Create a new ImageView instance for each shot
@@ -386,22 +308,15 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX/2);
-        imageView.setY(y - ICON_SIZE_PX/2);
+        imageView.setX(x - ICON_SIZE_PX / 2);
+        imageView.setY(y - ICON_SIZE_PX / 2);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
     }
 
-    private void updateStats() {
-        // Update the TextViews with the new stats
-        float shootingPercentage = 0;
-        if (totalShots > 0) {
-            shootingPercentage = (float) (threePointMakes + twoPointMakes) / totalShots * 100;
-        }
-
-    }
-
     private void setActivePlayer(int playerIndex) {
+        Log.d(TAG, "setActivePlayer called with playerIndex: " + playerIndex);
+
         activePlayerIndex = playerIndex;
         activePlayer = players.get(playerIndex);
 
@@ -409,25 +324,80 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         for (int i = 0; i < playerButtonIds.length; i++) {
             ImageButton button = findViewById(playerButtonIds[i]);
             button.setBackgroundColor(Color.TRANSPARENT); // Or any default color
+            Log.d(TAG, "Resetting background color for button at index: " + i);
         }
 
         // Set background color for active player's button
         ImageButton activePlayerButton = findViewById(playerButtonIds[activePlayerIndex]);
         activePlayerButton.setBackgroundColor(Color.DKGRAY); // Dark color for active player
+        Log.d(TAG, "Setting dark gray background for active player button at index: " + activePlayerIndex);
     }
 
-    private void setPlayerButtonFunctionality(ImageButton button, int playerIndex) {
-        if (playerIndex >= players.size()) {
-            button.setEnabled(false);
-            // OnClickListener that shows a message
-            button.setOnClickListener(v -> {
-                // Do nothing or show a message
-                Toast.makeText(GameActivity.this, "No player associated with this button.", Toast.LENGTH_SHORT).show();
-            });
-        } else {
-            button.setEnabled(true);
-            button.setOnClickListener(v -> setActivePlayer(playerIndex));
+
+    private void updatePlayerButtonLabels() {
+        for (int i = 0; i < players.size(); i++) {
+            TextView playerTextView = findViewById(playerTextViewIds[i]);
+            Player player = players.get(i);
+            playerTextView.setText(player.getName());
         }
+    }
+
+    private void sendTeamShots(int gameId, List<Shots> teamShots) {
+        String url = LOCAL_URL + "games/" + gameId + "/team-shots";
+        JSONArray shotsArray = new JSONArray();
+        for (Shots shot : teamShots) {
+            JSONObject shotObject = new JSONObject();
+            try {
+                shotObject.put("made", shot.isMade());
+                shotObject.put("value", shot.getValue());
+                shotObject.put("xCoord", shot.getxCoord());
+                shotObject.put("yCoord", shot.getyCoord());
+                shotsArray.put(shotObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d(TAG, "Sending team shots: " + shotsArray.toString());
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
+                response -> {
+                    Log.d(TAG, "Team shots sent successfully");
+                },
+                error -> {
+                    Log.e(TAG, "Failed to send team shots. Error: " + error.toString());
+                });
+
+        mQueue.add(request);
+    }
+
+    private void sendPlayerShots(int gameId, int playerId, List<Shots> playerShots) {
+        String url = LOCAL_URL + "games/" + gameId + "/players/" + playerId + "/shots";
+        JSONArray shotsArray = new JSONArray();
+        for (Shots shot : playerShots) {
+            JSONObject shotObject = new JSONObject();
+            try {
+                shotObject.put("made", shot.isMade());
+                shotObject.put("value", shot.getValue());
+                shotObject.put("xCoord", shot.getxCoord());
+                shotObject.put("yCoord", shot.getyCoord());
+                shotsArray.put(shotObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d(TAG, "Sending player shots for player " + playerId + ": " + shotsArray.toString());
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
+                response -> {
+                    Log.d(TAG, "Player shots sent successfully");
+                },
+                error -> {
+                    Log.e(TAG, "Failed to send player shots. Error: " + error.toString());
+                });
+
+        mQueue.add(request);
     }
 
     private void showShotButtons() {
@@ -439,13 +409,4 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         binding.btnMake.setVisibility(View.GONE);
         binding.btnMiss.setVisibility(View.GONE);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // Disconnect WebSocket when the activity is being destroyed
-        WebSocketManager.getInstance().disconnectWebSocket();
-        WebSocketManager.getInstance().removeWebSocketListener();
-    }
 }
-

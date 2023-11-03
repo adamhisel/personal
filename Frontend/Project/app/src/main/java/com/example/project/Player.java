@@ -4,20 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    private String name;
+    private int id;
+    private String playerName;
+    private int number;
+    private String position;
     private List<Shots> shotsList;
     private int threePointMakes;
     private int threePointAttempts;
     private int twoPointMakes;
     private int twoPointAttempts;
 
-    public Player(String name) {
-        this.name = name;
+    // Constructor updated to include number and position
+    public Player(int id, String playerName, int number, String position) {
+        this.id = id;
+        this.playerName = playerName;
+        this.number = number;
+        this.position = position;
+        this.shotsList = new ArrayList<>();
         this.threePointMakes = 0;
         this.threePointAttempts = 0;
         this.twoPointMakes = 0;
         this.twoPointAttempts = 0;
-        this.shotsList = new ArrayList<>();
     }
 
     public void recordThreePointShot(boolean made) {
@@ -35,8 +42,25 @@ public class Player {
     }
 
     public String getName() {
-        return name;
+        return playerName;
     }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
     public List<Shots> getShots() {
         return shotsList;
     }
@@ -49,5 +73,7 @@ public class Player {
         return twoPointMakes;
     }
 
-
+    public int getId() {
+        return id;
+    }
 }
