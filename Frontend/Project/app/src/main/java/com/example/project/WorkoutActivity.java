@@ -35,7 +35,6 @@ import java.util.List;
  */
 public class WorkoutActivity extends AppCompatActivity {
 
-
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
@@ -56,6 +55,7 @@ public class WorkoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWorkoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         initializeViews();
         setupCourtImageView();
@@ -87,12 +87,27 @@ public class WorkoutActivity extends AppCompatActivity {
     private void setupCourtImageView() {
         imageView.post(() -> {
             int width = imageView.getWidth();
-            float aspectRatio = 564f / 600f;  // real court's height / width
+            float aspectRatio = 564f / 600f; // real court's height / width
             ViewGroup.LayoutParams params = imageView.getLayoutParams();
-            params.height = (int) (width * aspectRatio);
+            int imageHeight = (int) (width * aspectRatio);
+            params.height = imageHeight;
             imageView.setLayoutParams(params);
+
+            // Set the top margin of the buttons and stats layout
+            int buttonsTopMargin = imageHeight;
+            setViewTopMargin(binding.llButtons, buttonsTopMargin + 10);
+
+            int statsTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50; // 50 is the space between buttons and stats
+            setViewTopMargin(binding.llStats, statsTopMargin);
         });
     }
+
+    private void setViewTopMargin(View view, int topMargin) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.topMargin = topMargin;
+        view.setLayoutParams(layoutParams);
+    }
+
 
     private void setupShotTypeIndicator() {
         imageView.setOnTouchListener((v, event) -> {
@@ -187,16 +202,18 @@ public class WorkoutActivity extends AppCompatActivity {
             shootingPercentage = (float) (threePointMakes + twoPointMakes) / totalShots * 100;
         }
 
-        binding.shootingPercentageTextView.setText(String.format("Shooting Percentage: %.2f%%", shootingPercentage));
-        binding.threePointRatioTextView.setText(String.format("3 Point Ratio: %d/%d", threePointMakes, threePointAttempts));
-        binding.twoPointRatioTextView.setText(String.format("2 Point Ratio: %d/%d", twoPointMakes, twoPointAttempts));
-        binding.totalShotsTextView.setText(String.format("Total Shots: %d", totalShots));
+        binding.tvFGPercentValue.setText(String.format("%.2f%%", shootingPercentage));
+        binding.tvThreePointValue.setText(String.format("%d/%d", threePointMakes, threePointAttempts));
+        binding.tvTwoPointValue.setText(String.format("%d/%d", twoPointMakes, twoPointAttempts));
+        binding.tvTotalShotsValue.setText(String.format("%d/%d", (twoPointMakes + threePointMakes), totalShots));
     }
 
     private void createWorkout(String userId) {
         String url = BASE_URL + "workouts?userId=" + userId;
+        String testUrl = LOCAL_URL + "workouts?userId=" + userId;
         Log.d(TAG, "Creating workout for user with id" + userId);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, testUrl, null,
                 response -> {
                     // Handle response
                     workoutId = response.optInt("workoutId");
@@ -212,6 +229,8 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void sendShots(int workoutId, List<Shots> shotsList) {
         String url = BASE_URL + "workouts/" + workoutId + "/bulk-shots";
+        String testUrl = LOCAL_URL + "workouts/" + workoutId + "/bulk-shots";
+
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : shotsList) {
             JSONObject shotObject = new JSONObject();
@@ -228,7 +247,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
         Log.d(TAG, "Sending shots: " + shotsArray);
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
                 response -> {
                     // Log the response
                     Log.d(TAG, "Response received");

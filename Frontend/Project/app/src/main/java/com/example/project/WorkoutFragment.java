@@ -70,6 +70,7 @@ public class WorkoutFragment extends Fragment {
     // Method to fetch workouts for a specific user
     private void fetchWorkoutsForUser(String userId) {
         String url = BASE_URL + "workouts?userId=" + userId;
+        String testUrl = LOCAL_URL + "workouts?userId=" + userId;
 
         // Initialize the request queue if it's null
         if (mQueue == null) {
@@ -77,7 +78,7 @@ public class WorkoutFragment extends Fragment {
         }
 
         // Create a GET request to fetch workouts
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, testUrl, null, response -> {
             // Parse the response to get a list of workouts
             List<Workout> workouts = parseWorkouts(response);
             displayWorkouts(workouts);

@@ -77,7 +77,7 @@ public class ProfileFragment extends Fragment {
     private void getProfile(String userId) {
         String url = BASE_URL + "users/" + userId;
         String testUrl = LOCAL_URL + "users/" + userId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
