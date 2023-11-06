@@ -33,9 +33,6 @@ public class Workout {
 
     public Workout(User user) {
         this.user = user;
-
-
-        this.playerId = playerId;
         this.shots = new ArrayList<>();
     }
 

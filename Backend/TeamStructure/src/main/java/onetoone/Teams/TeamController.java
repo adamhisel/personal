@@ -6,6 +6,10 @@ import java.util.Objects;
 import onetoone.Coaches.Coach;
 import onetoone.Coaches.CoachRepository;
 import onetoone.Fans.FanRepository;
+import onetoone.Game.Game;
+import onetoone.Game.GameRepository;
+import onetoone.users.User;
+import onetoone.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +48,10 @@ public class TeamController {
 
     @Autowired
     FanRepository fanRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    GameRepository gameRepository;
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -77,18 +85,22 @@ public class TeamController {
     }
 
 
-    @PutMapping("/teams/{teamId}/players/{playerId}/{password}")
-    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId, @PathVariable String password){
+    @PutMapping("/teams/{teamId}/players/{playerId}/{password}/{userId}")
+    String assignPLayerToTeam(@PathVariable int teamId,@PathVariable int playerId, @PathVariable String password, @PathVariable int userId){
         Team team = teamRepository.findById(teamId);
         Player player = playerRepository.findById(playerId);
-        if(team == null || player == null){
+        User user = userRepository.findById(userId);
+        if(team == null || player == null||user == null){
             return failure;
         }
         if(team.getTeamIsPrivate()){
             if(Objects.equals(password, team.getPassword())){
                 player.setTeam(team);
                 team.addPlayer(player);
+                team.addUser(user);
+                user.addTeam(team);
                 teamRepository.save(team);
+                userRepository.save(user);
                 return success;
             }
             else{
@@ -98,15 +110,19 @@ public class TeamController {
         else {
             player.setTeam(team);
             team.addPlayer(player);
+            team.addUser(user);
+            user.addTeam(team);
             teamRepository.save(team);
+            userRepository.save(user);
             return success;
         }
     }
 
-    @PutMapping("/teams/{teamId}/coaches/{coachId}/{password}")
-    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId,@PathVariable String password){
+    @PutMapping("/teams/{teamId}/coaches/{coachId}/{password}/{userId}")
+    String assignCoachToTeam(@PathVariable int teamId,@PathVariable int coachId,@PathVariable String password,@PathVariable int userId){
         Team team = teamRepository.findById(teamId);
         Coach coach = coachRepository.findById(coachId);
+        User user = userRepository.findById(userId);
         if(team == null || coach == null) {
             return failure;
         }
@@ -115,6 +131,7 @@ public class TeamController {
                 coach.setTeam(team);
                 //team.addCoach(coach);
                 teamRepository.save(team);
+                team.addUser(user);
                 return success;
             }
             else{
@@ -129,17 +146,34 @@ public class TeamController {
         }
     }
 
-    @PutMapping("/teams/{teamId}/fans/{fanId}")
-    String assignFanToTeam(@PathVariable int teamId, @PathVariable int fanId){
+    @PutMapping("/teams/{teamId}/fans/{fanId}/{userId}")
+    String assignFanToTeam(@PathVariable int teamId, @PathVariable int fanId, @PathVariable int userId){
         Team team = teamRepository.findById(teamId);
         Fan fan = fanRepository.findById(fanId);
-        if(team == null || fan == null) {
+        User user = userRepository.findById(userId);
+        if(team == null || fan == null||user == null) {
             return failure;
         }
         fan.setTeam(team);
         team.addFan(fan);
+        team.addUser(user);
         teamRepository.save(team);
         return success;
+    }
+    @PutMapping("teams/{teamId}/addGame/{gameId}")
+    String addGameToTeam(@PathVariable int teamId, @PathVariable int gameId){
+        Team team = teamRepository.findById(teamId);
+        Game game = gameRepository.findById(gameId);
+        if(team == null || game == null){
+            return failure;
+        }
+        else {
+            team.addGame(game);
+            game.setTeam(team);
+            teamRepository.save(team);
+            gameRepository.save(game);
+            return success;
+        }
     }
 
 

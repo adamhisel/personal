@@ -64,6 +64,7 @@ public class Team {
     private List<Fan> fans;
 
     @OneToMany(mappedBy = "team")
+    @JsonIgnore
     private List<Game> games;
 
 
@@ -162,6 +163,8 @@ public class Team {
     public void setGames(List<Game> games) {
         this.games = games;
     }
+
+    public void addGame(Game game){games.add(game);}
 
 
     public boolean getTeamIsPrivate(){

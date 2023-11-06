@@ -28,6 +28,8 @@ public class GameController {
 
     @Autowired
     PlayerRepository playerRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @GetMapping(path = "/games")
     public List<Game> getAllGames() {
@@ -35,11 +37,16 @@ public class GameController {
     }
 
 
-    @PostMapping("/games")
-    public Game createGame() {
+    @PostMapping("/games/{teamId}")
+    public Game createGame(@PathVariable int teamId) {
         // Initialize a new game without shots or players yet
         Game game = new Game();
+        Team team  = teamRepository.findById(teamId);
+        game.setTeam(team);
+        team.addGame(game);
+        teamRepository.save(team);
         return gameRepository.save(game);
+
     }
 
 
