@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
-                android:text="FG"
+                android:text="FG%"
                 android:textAlignment="center"
                 android:textColor="#000000"
                 android:textSize="25sp" />
