@@ -26,7 +26,8 @@ import org.java_websocket.handshake.ServerHandshake;
 
 public class TeamChat extends AppCompatActivity implements WebSocketListener{
 
-    private String BASE_URL = "ws://10.0.2.2:8080/chat/";
+    private String userName = SharedPrefsUtil.getUserName(this);
+    private String BASE_URL = "ws://10.0.2.2:8080/chat/" + userName;
 
     private Button sendBtn;
     private EditText msgEtx;

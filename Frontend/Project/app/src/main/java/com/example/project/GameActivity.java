@@ -19,9 +19,10 @@ import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityGameBinding;
 
@@ -31,10 +32,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class GameActivity extends AppCompatActivity implements WebSocketListener{
+public class GameActivity extends AppCompatActivity implements WebSocketListener {
 
     private static final String TAG = "GameActivity";
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
@@ -42,27 +42,23 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
     private static RequestQueue mQueue;
-    private ActivityGameBinding binding;
-    private ImageView imageView;
-
-    private Drawable green, red;
-
-    private int totalShots = 0;
-    private int threePointMakes = 0;
-    private int threePointAttempts = 0;
-    private int twoPointMakes = 0;
-    private int twoPointAttempts = 0;
-    private int teamPoints = 0;
-
     private final int[] playerButtonIds = new int[]{
             R.id.imgBtnPlayer1, R.id.imgBtnPlayer2, R.id.imgBtnPlayer3, R.id.imgBtnPlayer4, R.id.imgBtnPlayer5
     };
     private final int[] playerTextViewIds = new int[]{
             R.id.tvBtnPlayer1, R.id.tvBtnPlayer2, R.id.tvBtnPlayer3, R.id.tvBtnPlayer4, R.id.tvBtnPlayer5
     };
-
     private final List<Shots> teamShots = new ArrayList<>();
-    private List<Player> players = new ArrayList<>();
+    private ActivityGameBinding binding;
+    private ImageView imageView;
+    private Drawable green, red;
+    private int totalShots = 0;
+    private int threePointMakes = 0;
+    private int threePointAttempts = 0;
+    private int twoPointMakes = 0;
+    private int twoPointAttempts = 0;
+    private int teamPoints = 0;
+    private final List<Player> players = new ArrayList<>();
 
     private Player activePlayer;
     private int activePlayerIndex;
@@ -84,8 +80,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         setupShotTypeIndicator();
         createGame();
 
-        String url = "wss://BASE_URL";
-        String testUrl = "wss://LOCAL_URL";
+        String userName = SharedPrefsUtil.getUserName(this);
+        String url = "wss://BASE_URL" + "game/" + userName;
+        String testUrl = "wss://LOCAL_URL" + "game/" + userName;
 
         WebSocketManager.getInstance().setWebSocketListener(this);
         WebSocketManager.getInstance().connectWebSocket(testUrl);
@@ -186,34 +183,36 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
     private void loadPlayersForTeam(int teamId) {
-        String url = BASE_URL + "teams/" + teamId + "/players";
-        String testUrl = LOCAL_URL + "teams/" + teamId + "/players";
+        String url = BASE_URL + "teams";
+        String testUrl = LOCAL_URL + "teams";
 
-        StringRequest request = new StringRequest(Request.Method.GET, testUrl,
-                response -> {
-                    try {
-                        // Since the response is a JSONArray, directly create a JSONArray from the response string.
-                        JSONArray playersArray = new JSONArray(response);
-                        players = new ArrayList<>();
-                        for (int i = 0; i < 5; i++) {
-                            JSONObject playerObject = playersArray.getJSONObject(i);
-                            int playerId = playerObject.getInt("id");
-                            String playerName = playerObject.getString("playerName");
-                            int playerNumber = playerObject.getInt("number");
-                            String position = playerObject.getString("position");
-                            Player player = new Player(playerId, playerName, playerNumber, position);
-                            players.add(player);
-                            Log.i("GameActivity", "Loaded player: " + playerName); // Logging the loaded player
-                        }
-                        updatePlayerButtonLabels();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        // Handle the JSON exception here
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, testUrl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray playersArray = response.getJSONArray("players");
+
+                    for (int i = 0; i < 5; i++) {
+                        JSONObject playerObject = playersArray.getJSONObject(i);
+                        int playerId = playerObject.getInt("id");
+                        String playerName = playerObject.getString("playerName");
+                        int playerNumber = playerObject.getInt("number");
+                        String position = playerObject.getString("position");
+                        Player player = new Player(playerId, playerName, playerNumber, position);
+                        players.add(player);
+                        Log.i("GameActivity", "Loaded player: " + playerName); // Logging the loaded player
                     }
-                }, error -> {
-            // Handle error here
-            Log.e("GameActivity", "Failed to load team players: " + error.toString());
-            Toast.makeText(GameActivity.this, "Failed to load team players.", Toast.LENGTH_SHORT).show();
+                    updatePlayerButtonLabels();
+                } catch (JSONException e) {
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("GameActivity", "Failed to load team players: " + error.toString());
+                Toast.makeText(GameActivity.this, "Failed to load team players.", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
         });
         mQueue.add(request);
     }
@@ -398,7 +397,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
 
-
     private void sendTeamShots(int gameId, List<Shots> teamShots) {
         String url = BASE_URL + "games/" + gameId + "/team-shots";
         String testUrl = LOCAL_URL + "games/" + gameId + "/team-shots";
@@ -417,7 +415,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             }
         }
 
-        Log.d(TAG, "Sending team shots: " + shotsArray.toString());
+        Log.d(TAG, "Sending team shots: " + shotsArray);
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
                 response -> {
@@ -448,7 +446,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             }
         }
 
-        Log.d(TAG, "Sending player shots for player " + playerId + ": " + shotsArray.toString());
+        Log.d(TAG, "Sending player shots for player " + playerId + ": " + shotsArray);
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
                 response -> {

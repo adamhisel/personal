@@ -26,8 +26,10 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         binding = ActivityGameWebsocketBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        String url = "wss://BASE_URL";
-        String testUrl = "wss://LOCAL_URL";
+
+        String userName = SharedPrefsUtil.getUserName(this);
+        String url = "wss://BASE_URL" + "game/" + userName;
+        String testUrl = "wss://LOCAL_URL" + "game/" + userName;
 
         WebSocketManager.getInstance().setWebSocketListener(this);
         WebSocketManager.getInstance().connectWebSocket(testUrl);
