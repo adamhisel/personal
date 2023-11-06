@@ -77,7 +77,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         mQueue = Volley.newRequestQueue(this);
 
-        loadPlayersForTeam(1);
+        String teamId = SharedPrefsUtil.getTeamId(this);
+        loadPlayersForTeam(Integer.parseInt(teamId));
         initializeViews();
         setupCourtImageView();
         setupShotTypeIndicator();
@@ -223,6 +224,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void recordBasketballShot(MotionEvent event) {
+        // Check if there is an active player
+        if (activePlayer == null) {
+            Toast.makeText(this, "Please select a player first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         float x = event.getX();
         float y = event.getY();
 
@@ -368,12 +374,25 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
     private void updatePlayerButtonLabels() {
-        for (int i = 0; i < players.size(); i++) {
+        int playerCount = players.size();
+        for (int i = 0; i < playerButtonIds.length; i++) {
+            ImageButton playerButton = findViewById(playerButtonIds[i]);
             TextView playerTextView = findViewById(playerTextViewIds[i]);
-            Player player = players.get(i);
-            playerTextView.setText(player.getName());
+
+            if (i < playerCount) {
+                // There is a player for this button
+                Player player = players.get(i);
+                playerTextView.setText(player.getName());
+                enablePlayerButton(playerButton);
+            } else {
+                // No player for this button
+                playerTextView.setText("No Player");
+                disablePlayerButton(playerButton);
+            }
         }
     }
+
+
 
     private void sendTeamShots(int gameId, List<Shots> teamShots) {
         String url = BASE_URL + "games/" + gameId + "/team-shots";
@@ -441,6 +460,18 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private void hideShotButtons() {
         binding.btnMake.setVisibility(View.GONE);
         binding.btnMiss.setVisibility(View.GONE);
+    }
+
+    private void enablePlayerButton(ImageButton button) {
+        button.setEnabled(true);
+        // Set button to opaque
+        button.setAlpha(1.0f);
+    }
+
+    private void disablePlayerButton(ImageButton button) {
+        button.setEnabled(false);
+        // Set button to semi-transparent
+        button.setAlpha(0.5f);
     }
 
     @Override
