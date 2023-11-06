@@ -1,6 +1,7 @@
 package onetoone.Game;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import onetoone.Shots.Shots;
@@ -29,7 +30,7 @@ public class Game {
 
 
     @OneToMany(mappedBy = "game")
-    @JsonManagedReference(value = "game-shots")
+    @JsonBackReference(value = "game-shots")
     private List<Shots> teamShots = new ArrayList<>();
 
 
