@@ -48,7 +48,7 @@ public class Player {
     @JsonIgnore
     private Team team;
     @ManyToMany
-    @JoinTable(name = "player_game", // The name of the join table
+    @JoinTable(name = "game_player", // The name of the join table
             joinColumns = @JoinColumn(name = "player_id"), // The column name for the Player foreign key
             inverseJoinColumns = @JoinColumn(name = "game_id") // The column name for the Game foreign key
     )
