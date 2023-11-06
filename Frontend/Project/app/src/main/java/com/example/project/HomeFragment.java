@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     public void displayTeamButtons() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/users/" + SharedPrefsUtil.getUserId(getContext());
+        String url = "http://10.0.2.2:8080/users/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

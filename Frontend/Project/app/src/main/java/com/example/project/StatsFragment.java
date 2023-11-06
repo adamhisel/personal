@@ -112,7 +112,7 @@ public class StatsFragment extends Fragment {
     }
 
     private void getGameStats(final TeamStringListAndIntListCallback callback){
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + SharedPrefsUtil.getTeamId(getContext());
+        String url = "http://10.0.2.2:8080/teams/" + SharedPrefsUtil.getTeamId(getContext());
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override

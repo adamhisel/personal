@@ -210,8 +210,10 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void createWorkout(String userId) {
         String url = BASE_URL + "workouts?userId=" + userId;
+        String testUrl = LOCAL_URL + "workouts?userId=" + userId;
         Log.d(TAG, "Creating workout for user with id" + userId);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, testUrl, null,
                 response -> {
                     // Handle response
                     workoutId = response.optInt("workoutId");
@@ -227,6 +229,8 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void sendShots(int workoutId, List<Shots> shotsList) {
         String url = BASE_URL + "workouts/" + workoutId + "/bulk-shots";
+        String testUrl = LOCAL_URL + "workouts/" + workoutId + "/bulk-shots";
+
         JSONArray shotsArray = new JSONArray();
         for (Shots shot : shotsList) {
             JSONObject shotObject = new JSONObject();
@@ -243,7 +247,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
         Log.d(TAG, "Sending shots: " + shotsArray);
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
                 response -> {
                     // Log the response
                     Log.d(TAG, "Response received");

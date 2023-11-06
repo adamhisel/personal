@@ -79,10 +79,10 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        String loginUrl = BASE_URL + "loginUser/" + userName + "/" + password;
+        String url = BASE_URL + "loginUser/" + userName + "/" + password;
         String testUrl = LOCAL_URL + "loginUser/" + userName + "/" + password;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, loginUrl, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

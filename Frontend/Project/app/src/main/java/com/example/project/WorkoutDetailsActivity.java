@@ -75,10 +75,11 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
 
     private void fetchAndDisplayShots(int workoutId) {
         String url = BASE_URL + "workouts/" + workoutId + "/shots";
+        String testUrl = LOCAL_URL + "workouts/" + workoutId + "/shots";
 
         // Create a JSON Array request for fetching the shots data
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET, url, null,
+                Request.Method.GET, testUrl, null,
                 response -> {
                     // Parse the response and add shots to the view
                     try {
