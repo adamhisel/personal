@@ -98,7 +98,7 @@ public class TeamController {
                 player.setTeam(team);
                 team.addPlayer(player);
                 team.addUser(user);
-                user.addTeam(team);
+                //user.addTeam(team);
                 teamRepository.save(team);
                 userRepository.save(user);
                 return success;
@@ -111,7 +111,7 @@ public class TeamController {
             player.setTeam(team);
             team.addPlayer(player);
             team.addUser(user);
-            user.addTeam(team);
+            //user.addTeam(team);
             teamRepository.save(team);
             userRepository.save(user);
             return success;
@@ -129,7 +129,7 @@ public class TeamController {
         if(team.getTeamIsPrivate()){
             if(Objects.equals(password, team.getPassword())){
                 coach.setTeam(team);
-                //team.addCoach(coach);
+                team.addCoach(coach);
                 teamRepository.save(team);
                 team.addUser(user);
                 return success;
