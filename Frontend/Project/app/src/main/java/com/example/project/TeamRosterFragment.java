@@ -60,6 +60,9 @@ public class TeamRosterFragment extends Fragment {
         teamId= Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()));
         teamName= SharedPrefsUtil.getTeamName(getContext());
 
+        makeHeader();
+        addPlayerDisplay();
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
