@@ -319,7 +319,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
                     public void onResponse(JSONObject response) {
                         try {
 
-                            isPrivate = response.getBoolean("isTeamPrivate");
+                            isPrivate = response.getBoolean("teamIsPrivate");
                             teamPassword = response.getString("password");
 
                         } catch (JSONException e) {
@@ -366,10 +366,10 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         String url = "";
         if(isPrivate == true) {
-            url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/" + teamPassword;
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/" + teamPassword + "/" + SharedPrefsUtil.getUserId(this);
         }
         else{
-            url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/dummy";
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/players/" + playerId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
         }
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
@@ -393,7 +393,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
     private void joinTeamFan(){
 
-        String url = "http://10.0.2.2:8080/teams/" + teamId + "/fans/" + fanId;
+        String url = "http://10.0.2.2:8080/teams/" + teamId + "/fans/" + fanId + "/" + SharedPrefsUtil.getUserId(this);
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
