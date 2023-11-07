@@ -72,7 +72,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String url = BASE_URL + "updateUser/" + userId;
         String testUrl = LOCAL_URL + "updateUser/" + userId;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

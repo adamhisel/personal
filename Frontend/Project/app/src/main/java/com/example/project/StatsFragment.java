@@ -101,7 +101,7 @@ public class StatsFragment extends Fragment {
     }
 
     private void getPlayers() {
-        String url = "http://10.0.2.2:8080/teams/" + teamId;
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -131,7 +131,7 @@ public class StatsFragment extends Fragment {
     }
 
     private void getGames() {
-        String url = "http://10.0.2.2:8080/games";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -162,7 +162,7 @@ public class StatsFragment extends Fragment {
     }
 
     private void getShotsForGame(final int gameId, final int gamesCount) {
-        String url = "http://10.0.2.2:8080/games/" + gameId + "/shots";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/games/" + gameId + "/shots";
         JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     for (int i = 0; i < response.length(); i++) {

@@ -107,7 +107,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
         WebSocketManager.getInstance().setWebSocketListener(this);
-        WebSocketManager.getInstance().connectWebSocket(testUrl);
+        WebSocketManager.getInstance().connectWebSocket(url);
     }
 
 
@@ -225,7 +225,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
         // Create a JsonObjectRequest for a POST request to create a new game
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, testUrl, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
                     gameId = response.optInt("id");
@@ -247,7 +247,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         String testUrl = LOCAL_URL + "teams/" + teamId + "/addGame/" + gameId;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, testUrl, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, null,
                 response -> {
                     // Handle response
                     Log.d(TAG, "Game " + gameId + " added successfully to team " + teamId);
@@ -268,7 +268,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         String testUrl = LOCAL_URL + "teams/" + teamId;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, testUrl, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -531,7 +531,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.d(TAG, "Sending team shots: " + shotsArray);
 
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
                     Log.d(TAG, "Team shots sent successfully");
                 },
@@ -567,7 +567,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.d(TAG, "Sending player shots for player " + playerId + ": " + shotsArray);
 
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
                     Log.d(TAG, "Player shots sent successfully");
                 },

@@ -78,7 +78,7 @@ public class WorkoutFragment extends Fragment {
         }
 
         // Create a GET request to fetch workouts
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, testUrl, null, response -> {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
             // Parse the response to get a list of workouts
             List<Workout> workouts = parseWorkouts(response);
             displayWorkouts(workouts);

@@ -1,5 +1,7 @@
 package com.example.project;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -28,11 +30,8 @@ public class ProfileFragment extends Fragment {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
 
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
-
-    private FragmentProfileBinding binding;
-
     private static RequestQueue mQueue;
-
+    private FragmentProfileBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,20 +76,22 @@ public class ProfileFragment extends Fragment {
     private void getProfile(String userId) {
         String url = BASE_URL + "users/" + userId;
         String testUrl = LOCAL_URL + "users/" + userId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            String username = response.getString("userName");
-                            String email = response.getString("email");
-                            String phoneNumber = response.getString("phoneNumber");
+                        if (binding != null) {
+                            try {
+                                String username = response.getString("userName");
+                                String email = response.getString("email");
+                                String phoneNumber = response.getString("phoneNumber");
 
-                            binding.etUserName.setText(username);
-                            binding.etEmail.setText(email);
-                            binding.etPhoneNumber.setText(phoneNumber);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                                binding.etUserName.setText(username);
+                                binding.etEmail.setText(email);
+                                binding.etPhoneNumber.setText(phoneNumber);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 },
@@ -115,6 +116,9 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (mQueue != null) {
+            mQueue.cancelAll(TAG);
+        }
         binding = null;
     }
 }

@@ -213,7 +213,7 @@ public class WorkoutActivity extends AppCompatActivity {
         String testUrl = LOCAL_URL + "workouts?userId=" + userId;
         Log.d(TAG, "Creating workout for user with id" + userId);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, testUrl, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
                     workoutId = response.optInt("workoutId");
@@ -247,7 +247,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
         Log.d(TAG, "Sending shots: " + shotsArray);
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
                     // Log the response
                     Log.d(TAG, "Response received");

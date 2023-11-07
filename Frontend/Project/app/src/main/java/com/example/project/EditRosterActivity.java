@@ -110,7 +110,7 @@ public class EditRosterActivity extends AppCompatActivity {
 
    private void deleteUser() {
 
-        String url = "http://10.0.2.2:8080/roster/1";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/roster/1";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
