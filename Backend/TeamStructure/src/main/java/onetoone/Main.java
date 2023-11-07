@@ -17,9 +17,7 @@ import onetoone.users.UserRepository;
 import onetoone.Coaches.CoachRepository;
 
 import onetoone.Fans.FanRepository;
-
-
-
+import org.springframework.context.annotation.ComponentScan;
 
 
 /**
@@ -29,7 +27,10 @@ import onetoone.Fans.FanRepository;
  */ 
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"onetoone.websocket"})
+@ComponentScan(basePackages = {"onetoone.websocket_liveUpdate.chat"})
 class Main {
+
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);

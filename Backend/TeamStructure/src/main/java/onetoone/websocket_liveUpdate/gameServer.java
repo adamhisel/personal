@@ -1,4 +1,4 @@
-package onetoone.websocket_liveUpdate.chat;
+package onetoone.websocket_liveUpdate;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -50,10 +50,10 @@ public class gameServer {
             usernameSessionMap.put(username, session);
 
             // send to the user joining in
-            sendMessageToPArticularUser(username, "Welcome to the chat server, "+username);
+            sendMessageToPArticularUser(username, "Welcome to the Game server, "+username);
 
             // send to everyone in the chat
-            broadcast("User: " + username + " has Joined the Chat");
+            broadcast("User: " + username + " has Joined the game server.");
         }
     }
 
