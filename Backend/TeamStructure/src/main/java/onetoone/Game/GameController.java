@@ -42,6 +42,12 @@ public class GameController {
         // Initialize a new game without shots or players yet
         Game game = new Game();
         Team team  = teamRepository.findById(teamId);
+        List <Player> playersList = team.players;
+        for (Player player : playersList) {
+            player.addGame(game);
+            playerRepository.save(player);
+        }
+
         game.setTeam(team);
         team.addGame(game);
         teamRepository.save(team);
