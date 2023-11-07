@@ -82,6 +82,8 @@ public class StatsFragment extends Fragment {
     private ArrayList<String> playerNameArr;
     private ArrayList<Integer> pointsArr;
 
+    private ArrayList<Integer> gameIdArr;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,12 +122,19 @@ public class StatsFragment extends Fragment {
         ll = view.findViewById(R.id.ll);
 
 
-        getGames(new TeamStringListAndIntListCallback() {
+        getGames2(new TeamIntListCallback() {
             @Override
-            public void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i) {
-                playerNameArr = s;
-                pointsArr = i;
-                findLeaders();
+            public void onTeamIntListReceived(ArrayList<Integer> i) {
+
+                gameIdArr = i;
+               /* getGames(new TeamStringListAndIntListCallback() {
+                    @Override
+                    public void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i) {
+                        playerNameArr = s;
+                        pointsArr = i;
+                        findLeaders();
+                    }
+                });*/
             }
         });
 
@@ -136,7 +145,49 @@ public class StatsFragment extends Fragment {
     }
 
 
-    private void getGames(final TeamStringListAndIntListCallback callback){
+    private void getGames2(final TeamIntListCallback callback){
+        String url = "http://10.0.2.2:8080/games";
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+
+                           gameIdArr = new ArrayList<>();
+
+
+                            for(int j = 0; j < response.length(); j++) {
+                                JSONObject game = response.getJSONObject(j);
+
+
+                                int tid = game.getInt("team");
+
+
+                                if (tid == Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()))) {
+                                    int gid = game.getInt("id");
+                                    gameIdArr.add(gid);
+                                }
+                            }
+                            callback.onTeamIntListReceived(gameIdArr);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+
+        mQueue.add(request);
+    }
+
+
+
+
+    private void getGames(int gameId, final TeamStringListAndIntListCallback callback){
         String url = "http://10.0.2.2:8080/games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -567,5 +618,9 @@ public class StatsFragment extends Fragment {
 
     public interface TeamStringListAndIntListCallback {
         void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i);
+    }
+
+    public interface TeamIntListCallback {
+        void onTeamIntListReceived(ArrayList<Integer> i);
     }
 }
