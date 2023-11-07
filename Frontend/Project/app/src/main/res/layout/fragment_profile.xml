@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
+    android:background="#FFFFFF"
     android:orientation="vertical"
+    android:padding="20dp"
     tools:context=".ProfileFragment">
 
     <FrameLayout
@@ -17,9 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-        android:src="@drawable/baseline_settings_48"
-        android:contentDescription="Edit Profile"
-        android:background="?android:attr/selectableItemBackgroundBorderless" />
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Edit Profile"
+            android:src="@drawable/baseline_settings_48" />
     </FrameLayout>
 
     <ImageView

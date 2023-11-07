@@ -98,17 +98,9 @@ public class WorkoutFragment extends Fragment {
             for (int i = 0; i < response.length(); i++) {
                 JSONObject workoutJson = response.getJSONObject(i);
                 int workoutId = workoutJson.getInt("workoutId");
-                JSONArray shotsJsonArray = workoutJson.getJSONArray("shots");
+                // Initialize an empty list of shots
+                // Since we are not displaying shots here, it's okay to not fetch them at this stage.
                 List<Shots> shots = new ArrayList<>();
-                for (int j = 0; j < shotsJsonArray.length(); j++) {
-                    JSONObject shotJson = shotsJsonArray.getJSONObject(j);
-                    boolean made = shotJson.getBoolean("made");
-                    int value = shotJson.getInt("value");
-                    float xCoord = (float) shotJson.getDouble("xCoord");
-                    float yCoord = (float) shotJson.getDouble("yCoord");
-                    Shots shot = new Shots(made, value, xCoord, yCoord);
-                    shots.add(shot);
-                }
                 Workout workout = new Workout(workoutId, shots);
                 workouts.add(workout);
             }

@@ -40,6 +40,7 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWorkoutDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         int workoutId = getIntent().getIntExtra("WORKOUT_ID", -1);
 
@@ -55,7 +56,7 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
 
 
-        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+        binding.btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -66,11 +67,21 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
     private void setupCourtImageView() {
         imageView.post(() -> {
             int width = imageView.getWidth();
-            float aspectRatio = 564f / 600f;  // real court's height / width
+            float aspectRatio = 564f / 600f; // real court's height / width
             ViewGroup.LayoutParams params = imageView.getLayoutParams();
-            params.height = (int) (width * aspectRatio);
+            int imageHeight = (int) (width * aspectRatio);
+            params.height = imageHeight;
             imageView.setLayoutParams(params);
+
+            int statsTopMargin = imageHeight + 100;
+            setViewTopMargin(binding.llStats, statsTopMargin);
         });
+    }
+
+    private void setViewTopMargin(View view, int topMargin) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.topMargin = topMargin;
+        view.setLayoutParams(layoutParams);
     }
 
     private void fetchAndDisplayShots(int workoutId) {
@@ -78,44 +89,40 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         String testUrl = LOCAL_URL + "workouts/" + workoutId + "/shots";
 
         // Create a JSON Array request for fetching the shots data
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET, testUrl, null,
-                response -> {
-                    // Parse the response and add shots to the view
-                    try {
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject shot = response.getJSONObject(i);
-                            boolean made = shot.getBoolean("made");
-                            int value = shot.getInt("value");
-                            float xCoord = (float) shot.getDouble("xCoord");
-                            float yCoord = (float) shot.getDouble("yCoord");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, testUrl, null, response -> {
+            // Parse the response and add shots to the view
+            try {
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject shot = response.getJSONObject(i);
+                    boolean made = shot.getBoolean("made");
+                    int value = shot.getInt("value");
+                    float xCoord = (float) shot.getDouble("xCoord");
+                    float yCoord = (float) shot.getDouble("yCoord");
 
-                            Drawable drawable = made ? green : red;
-                            setIconAndPosition(drawable, xCoord, yCoord);
+                    Drawable drawable = made ? green : red;
+                    setIconAndPosition(drawable, xCoord, yCoord);
 
-                            // Update your statistics accordingly
-                            if (value == 3) {
-                                threePointAttempts++;
-                                if (made) threePointMakes++;
-                            } else {
-                                twoPointAttempts++;
-                                if (made) twoPointMakes++;
-                            }
-                            totalShots++;
-                        }
-                        // After all shots are processed, update the stats display
-                        updateStats();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    // Update statistics accordingly
+                    if (value == 3) {
+                        threePointAttempts++;
+                        if (made) threePointMakes++;
+                    } else {
+                        twoPointAttempts++;
+                        if (made) twoPointMakes++;
                     }
-                },
-                error -> {
-                    // Handle the error
-                    Log.e("Volley", "Error fetching shot data", error);
+                    totalShots++;
                 }
-        );
+                // After all shots are processed, update the stats display
+                updateStats();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }, error -> {
+            // Handle the error
+            Log.e("Volley", "Error fetching shot data", error);
+        });
 
-        // Add the request to your RequestQueue
+        // Add the request to RequestQueue
         mQueue.add(jsonArrayRequest);
     }
 
@@ -138,11 +145,9 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
             shootingPercentage = (float) (threePointMakes + twoPointMakes) / totalShots * 100;
         }
 
-        binding.shootingPercentageTextView.setText(String.format("Shooting Percentage: %.2f%%", shootingPercentage));
-        binding.threePointRatioTextView.setText(String.format("3 Point Ratio: %d/%d", threePointMakes, threePointAttempts));
-        binding.twoPointRatioTextView.setText(String.format("2 Point Ratio: %d/%d", twoPointMakes, twoPointAttempts));
-        binding.totalShotsTextView.setText(String.format("Total Shots: %d", totalShots));
+        binding.tvFGPercentValue.setText(String.format("%.2f%%", shootingPercentage));
+        binding.tvThreePointValue.setText(String.format("%d/%d", threePointMakes, threePointAttempts));
+        binding.tvTwoPointValue.setText(String.format("%d/%d", twoPointMakes, twoPointAttempts));
+        binding.tvTotalShotsValue.setText(String.format("%d/%d", (twoPointMakes + threePointMakes), totalShots));
     }
-
-
 }

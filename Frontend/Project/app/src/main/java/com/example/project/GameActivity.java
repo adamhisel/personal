@@ -65,24 +65,32 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private int gameId;
 
+    private String teamId;
+
+    private String userName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         mQueue = Volley.newRequestQueue(this);
+        teamId = SharedPrefsUtil.getTeamId(this);
+        userName = SharedPrefsUtil.getUserName(this);
 
-        String teamId = SharedPrefsUtil.getTeamId(this);
+        Log.d("GameActivity", "Team ID retrieved: " + teamId);
         loadPlayersForTeam(Integer.parseInt(teamId));
         initializeViews();
         setupCourtImageView();
         setupShotTypeIndicator();
         createGame();
+        addGameToTeam(Integer.parseInt(teamId), gameId);
 
-        String userName = SharedPrefsUtil.getUserName(this);
-        String url = "wss://BASE_URL" + "game/" + userName;
-        String testUrl = "wss://LOCAL_URL" + "game/" + userName;
+        Log.d("GameActivity", "User name retrieved: " + userName);
+        String url = "ws://" + "coms-309-018.class.las.iastate.edu:8080/game/" + userName;
+        String testUrl = "ws://" + "10.0.2.2:8080/game/" + userName;
 
         WebSocketManager.getInstance().setWebSocketListener(this);
         WebSocketManager.getInstance().connectWebSocket(testUrl);
@@ -107,10 +115,10 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         runOnUiThread(() -> {
             // Append the new message
-            binding.websocketMessages.append(message + "\n");
+            binding.tvWebsocketMessages.append(message + "\n");
 
             // Scroll to the bottom to show the latest message
-            binding.websocketScroll.fullScroll(ScrollView.FOCUS_DOWN);
+            binding.svWebsocket.fullScroll(ScrollView.FOCUS_DOWN);
         });
     }
 
@@ -152,26 +160,44 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
     private void setupCourtImageView() {
-        imageView.post(() -> {
-            int width = imageView.getWidth();
-            float aspectRatio = 564f / 600f;  // real court's height / width
-            ViewGroup.LayoutParams params = imageView.getLayoutParams();
-            params.height = (int) (width * aspectRatio);
-            imageView.setLayoutParams(params);
+        binding.courtImageView.post(() -> {
+            int width = binding.courtImageView.getWidth();
+            float aspectRatio = 564f / 600f; // real court's height / width
+            ViewGroup.LayoutParams params = binding.courtImageView.getLayoutParams();
+            int imageHeight = (int) (width * aspectRatio);
+            params.height = imageHeight;
+            binding.courtImageView.setLayoutParams(params);
+
+            // Set the top margin of the buttons layout
+            int buttonsTopMargin = imageHeight;
+            setViewTopMargin(binding.llButtons, buttonsTopMargin + 10);
+
+            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50; // 50 is the space between buttons and players
+            setViewTopMargin(binding.llPlayers, playersTopMargin);
+
+            int scrollViewTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 10; // for example
+            setViewTopMargin(binding.svWebsocket, scrollViewTopMargin);
         });
     }
 
+    private void setViewTopMargin(View view, int topMargin) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.topMargin = topMargin;
+        view.setLayoutParams(layoutParams);
+    }
+
     private void createGame() {
-        String url = BASE_URL + "games";
-        String testUrl = LOCAL_URL + "games";
-        Log.d(TAG, "Creating new game");
+        String url = BASE_URL + "games/" + teamId; // Include the teamId in the URL
+        String testUrl = LOCAL_URL + "games/" + teamId; // Use this for testing with local server
+
+        Log.d(TAG, "Creating new game for team: " + teamId);
 
         // Create a JsonObjectRequest for a POST request to create a new game
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, testUrl, null,
                 response -> {
                     // Handle response
                     gameId = response.optInt("id");
-                    Log.d(TAG, "Game created successfully with ID: " + gameId);
+                    Log.d(TAG, "Game created successfully for team " + teamId + " with ID: " + gameId);
                 }, error -> {
             Log.e(TAG, "Failed to create game. Error: " + error.toString());
             // Handle error
@@ -181,10 +207,29 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         mQueue.add(request);
     }
 
+    private void addGameToTeam(int teamId, int gameId) {
+        String url = BASE_URL + "teams/" + teamId + "/addGame/" + gameId;
+        String testUrl = LOCAL_URL + "teams/" + teamId + "/addGame/" + gameId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, testUrl, null,
+                response -> {
+                    // Handle response
+                    Log.d(TAG, "Game " + gameId + " added successfully to team " + teamId);
+                }, error -> {
+            // Handle error
+            Log.e(TAG, "Failed to add game to team. Error: " + error.toString());
+            Toast.makeText(GameActivity.this, "Failed to add game to team.", Toast.LENGTH_SHORT).show();
+        });
+
+        // Add the request to your request queue
+        mQueue.add(request);
+    }
+
+
 
     private void loadPlayersForTeam(int teamId) {
-        String url = BASE_URL + "teams";
-        String testUrl = LOCAL_URL + "teams";
+        String url = BASE_URL + "teams/" + teamId;
+        String testUrl = LOCAL_URL + "teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, testUrl, null, new Response.Listener<JSONObject>() {
             @Override
@@ -192,7 +237,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 try {
                     JSONArray playersArray = response.getJSONArray("players");
 
-                    for (int i = 0; i < 5; i++) {
+                    for (int i = 0; i < playersArray.length(); i++) {
                         JSONObject playerObject = playersArray.getJSONObject(i);
                         int playerId = playerObject.getInt("id");
                         String playerName = playerObject.getString("playerName");
@@ -351,8 +396,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX / 2);
-        imageView.setY(y - ICON_SIZE_PX / 2);
+        imageView.setX(x - ICON_SIZE_PX);
+        imageView.setY(y - ICON_SIZE_PX);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
     }
@@ -379,7 +424,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private void updatePlayerButtonLabels() {
         int playerCount = players.size();
-        for (int i = 0; i < playerButtonIds.length; i++) {
+        // Limit the button count to 5
+        int buttonCount = Math.min(playerButtonIds.length, 5);
+        for (int i = 0; i < buttonCount; i++) {
             ImageButton playerButton = findViewById(playerButtonIds[i]);
             TextView playerTextView = findViewById(playerTextViewIds[i]);
 
