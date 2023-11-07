@@ -1,4 +1,5 @@
 package com.example.project;
+
 import android.os.Bundle;
 
 
@@ -37,6 +38,8 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityMainBinding;
+import com.example.project.databinding.FragmentStatsBinding;
+import com.example.project.databinding.FragmentWorkoutBinding;
 
 
 import org.json.JSONArray;
@@ -46,6 +49,12 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -57,570 +66,214 @@ public class StatsFragment extends Fragment {
 
 
     private RequestQueue mQueue;
-    private ScrollView scroll;
-    private LinearLayout ll;
-    private TextView fgPerc1;
-    private TextView threePPerc1;
-    private TextView twoPPerc1;
+    private FragmentStatsBinding binding;
+
+    private int totalPoints = 0;
+    private int totalGames = 0;
+    private int totalFGM = 0;
+    private int totalFGA = 0;
+    private int total3PM = 0;
+    private int total3PA = 0;
+    private int total2PM = 0;
+    private int total2PA = 0;
 
 
-    private ProgressBar fgProg;
-    private ProgressBar threeProg;
-    private ProgressBar twoProg;
-
-
-    private TextView gamesVal;
-    private TextView pointsVal;
-    private TextView ppgVal;
-
-
-    private TextView fgVal;
-    private TextView threepVal;
-    private TextView twoPVal;
-
-
-    private ArrayList<String> playerNameArr;
+    private ArrayList<Player> players;
     private ArrayList<Integer> pointsArr;
-
     private ArrayList<Integer> gameIdArr;
+    private String teamId;
+
+    private Map<Integer, Integer> playerPointsMap = new HashMap<>();
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_stats, container, false);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentStatsBinding.inflate(inflater, container, false);
 
         mQueue = Volley.newRequestQueue(requireContext());
-        TextView header = view.findViewById(R.id.header);
 
+        teamId = SharedPrefsUtil.getTeamId(requireContext());
+        binding.header.setText(SharedPrefsUtil.getTeamName(getContext()) + " Team Stats");
 
-        header.setText(SharedPrefsUtil.getTeamName(getContext()) + " Team Stats");
+        getPlayers();
 
+        return binding.getRoot();
+    }
 
-        fgPerc1 = view.findViewById(R.id.fgPerc);
-        threePPerc1 = view.findViewById(R.id.threePPerc);
-        twoPPerc1 = view.findViewById(R.id.twoPPerc);
+    private void getPlayers() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray playersArray = response.getJSONArray("players");
+                        players = new ArrayList<>(); // Initialize the players list
+                        for (int i = 0; i < playersArray.length(); i++) {
+                            JSONObject playerJSON = playersArray.getJSONObject(i);
+                            int playerId = playerJSON.getInt("id");
+                            String playerName = playerJSON.getString("playerName");
+                            int playerNumber = playerJSON.getInt("number");
+                            String playerPosition = playerJSON.getString("position");
 
+                            // Initialize Player object and add to the list
+                            Player player = new Player(playerId, playerName, playerNumber, playerPosition);
+                            players.add(player);
+                        }
 
-        fgProg = view.findViewById(R.id.fgprog);
-        threeProg = view.findViewById(R.id.threepprog);
-        twoProg = view.findViewById(R.id.twopprog);
+                        // After players are fetched, proceed to get games
+                        getGames();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> error.printStackTrace()
+        );
+        mQueue.add(request);
+    }
 
+    private void getGames() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/games";
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        gameIdArr = new ArrayList<>();
+                        int savedTeamId = Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()));
+                        for (int j = 0; j < response.length(); j++) {
+                            JSONObject game = response.getJSONObject(j);
+                            JSONObject team = game.getJSONObject("team");
+                            int tid = team.getInt("id");
+                            if (tid == savedTeamId) {
+                                int gid = game.getInt("id");
+                                gameIdArr.add(gid);
+                            }
+                        }
 
-        gamesVal = view.findViewById(R.id.gamesVal);
-        pointsVal = view.findViewById(R.id.pointsVal);
-        ppgVal = view.findViewById(R.id.ppgVal);
+                        // Now that we have all the game IDs, fetch the shots for each game
+                        int gamesCount = gameIdArr.size();
+                        for (Integer gameId : gameIdArr) {
+                            getShotsForGame(gameId, gamesCount);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> error.printStackTrace()
+        );
+        mQueue.add(request);
+    }
 
+    private void getShotsForGame(final int gameId, final int gamesCount) {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/games/" + gameId + "/shots";
+        JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject shot = response.getJSONObject(i);
+                            boolean made = shot.getBoolean("made");
+                            int value = shot.getInt("value");
 
-        fgVal = view.findViewById(R.id.fgVal);
-        threepVal = view.findViewById(R.id.threepVal);
-        twoPVal = view.findViewById(R.id.twoPVal);
+                            // Extract the player JSONObject from the shot JSONObject
+                            JSONObject playerObject = shot.getJSONObject("player");
+                            int playerId = playerObject.getInt("id"); // Get the player ID
 
+                            // Find the player by ID and update their stats
+                            Player player = getPlayerById(playerId);
+                            if (player != null) {
+                                if (value == 3) {
+                                    player.recordThreePointShot(made);
+                                } else {
+                                    player.recordTwoPointShot(made);
+                                }
+                            }
 
-        scroll = view.findViewById(R.id.sv);
-        ll = view.findViewById(R.id.ll);
+                            if (made) {
+                                totalPoints += value;
+                                totalFGM++;
+                            }
+                            totalFGA++;
 
+                            if (value == 3) {
+                                if (made) {
+                                    total3PM++;
+                                }
+                                total3PA++;
+                            } else {
+                                if (made) {
+                                    total2PM++;
+                                }
+                                total2PA++;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    // Increment the totalGames after all shots for a game have been processed
+                    totalGames++;
 
-        getGames2(new TeamIntListCallback() {
-            @Override
-            public void onTeamIntListReceived(ArrayList<Integer> i) {
+                    for (Player player : players) {
+                        int points = player.getThreePointMakes() * 3 + player.getTwoPointMakes() * 2;
+                        playerPointsMap.put(player.getId(), playerPointsMap.getOrDefault(player.getId(), 0) + points);
+                    }
 
-                gameIdArr = i;
-               /* getGames(new TeamStringListAndIntListCallback() {
-                    @Override
-                    public void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i) {
-                        playerNameArr = s;
-                        pointsArr = i;
+                    // Update the UI after all games have been processed
+                    if (totalGames == gamesCount) {
                         findLeaders();
+                        updateUI();
                     }
-                });*/
-            }
-        });
+                },
+                error -> error.printStackTrace()
+        );
+        mQueue.add(shotsRequest);
+    }
 
+    private void updateUI() {
+        // Update the UI components
+        binding.gamesVal.setText(String.valueOf(totalGames));
+        binding.pointsVal.setText(String.valueOf(totalPoints));
+        binding.ppgVal.setText(String.format(Locale.US, "%.2f", totalPoints / (double) totalGames));
 
-        return view;
+        binding.fgPerc.setText(String.format(Locale.US, "FG%%: %.2f%%", totalFGM * 100.0 / totalFGA));
+        binding.fgVal.setText(totalFGM + "/" + totalFGA);
 
+        binding.threePPerc.setText(String.format(Locale.US, "3PT%%: %.2f%%", total3PM * 100.0 / total3PA));
+        binding.threepVal.setText(total3PM + "/" + total3PA);
 
+        binding.twoPPerc.setText(String.format(Locale.US, "2PT%%: %.2f%%", total2PM * 100.0 / total2PA));
+        binding.twoPVal.setText(total2PM + "/" + total2PA);
+
+        // Update ProgressBars
+        binding.fgprog.setProgress((int) (totalFGM * 100.0 / totalFGA));
+        binding.threepprog.setProgress((int) (total3PM * 100.0 / total3PA));
+        binding.twopprog.setProgress((int) (total2PM * 100.0 / total2PA));
     }
 
 
-    private void getGames2(final TeamIntListCallback callback){
-        String url = "http://10.0.2.2:8080/games";
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-
-                           gameIdArr = new ArrayList<>();
-
-
-                            for(int j = 0; j < response.length(); j++) {
-                                JSONObject game = response.getJSONObject(j);
-
-
-                                int tid = game.getInt("team");
-
-
-                                if (tid == Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()))) {
-                                    int gid = game.getInt("id");
-                                    gameIdArr.add(gid);
-                                }
-                            }
-                            callback.onTeamIntListReceived(gameIdArr);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-
-        mQueue.add(request);
-    }
-
-
-
-
-    private void getGames(int gameId, final TeamStringListAndIntListCallback callback){
-        String url = "http://10.0.2.2:8080/games";
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-
-
-                            int gameCount = 0;
-                            int fgCount = 0;
-                            int fgMade = 0;
-                            int threePCount = 0;
-                            int threePMade = 0;
-                            int twoPCount = 0;
-                            int twoPMade = 0;
-                            int totalP = 0;
-
-
-                            ArrayList<String> tempString = new ArrayList<>();
-                            ArrayList<Integer> tempInt = new ArrayList<>();
-
-
-                            for(int j = 0; j < response.length(); j++){
-                                JSONObject game = response.getJSONObject(j);
-
-
-                                int tid = game.getInt("team");
-
-
-                                if(tid == Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()))){
-                                    JSONArray shots = game.getJSONArray("teamShots");
-
-
-                                    for (int i = 0; i < shots.length(); i++) {
-                                        JSONObject shot = shots.getJSONObject(i);
-
-
-                                        JSONObject player = shot.getJSONObject("player");
-
-
-                                        String playerName = player.getString("playerName");
-
-
-                                        int currentPlayerIndex = 0;
-
-
-                                        if(!(tempString.contains(playerName))){
-                                            tempString.add(playerName);
-                                            tempInt.add(0);
-                                            currentPlayerIndex = tempInt.size()-1;
-                                        }
-                                        else{
-                                            currentPlayerIndex = tempString.indexOf(playerName);
-                                        }
-
-
-                                        int makeMiss = shot.getInt("makemiss");
-                                        int value = shot.getInt("value");
-
-
-                                        if (makeMiss == 0) {
-                                            fgCount += 1;
-                                            if (value == 2) {
-                                                twoPCount += 1;
-                                            } else {
-                                                threePCount += 1;
-                                            }
-                                        } else {
-                                            fgCount += 1;
-                                            fgMade += 1;
-                                            if (value == 2) {
-                                                twoPCount += 1;
-                                                twoPMade +=1;
-                                                int originalVal = tempInt.get(currentPlayerIndex);
-                                                int newVal = originalVal +2;
-                                                tempInt.set(currentPlayerIndex, newVal);
-                                            } else {
-                                                threePCount += 1;
-                                                threePMade+=1;
-                                                int originalVal = tempInt.get(currentPlayerIndex);
-                                                int newVal = originalVal +3;
-                                                tempInt.set(currentPlayerIndex, newVal);
-                                            }
-                                        }
-
-
-                                    }
-
-
-
-
-
-
-                                }
-                            }
-
-
-                            playerNameArr = tempString;
-                            pointsArr = tempInt;
-
-
-                            DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                            DecimalFormat decimalFormat2 = new DecimalFormat("#.#");
-
-
-                            totalP = threePMade * 3 + twoPMade * 2;
-
-
-                            float ppg = ((float)totalP/gameCount);
-
-
-                            String ppgString = decimalFormat2.format(ppg);
-
-
-
-
-                            float fgPerc = ((float) fgMade / fgCount) * 100;
-
-
-                            String fgPercString = decimalFormat.format(fgPerc);
-
-
-                            float fgPercFloat = Float.parseFloat(fgPercString);
-
-
-                            int fgPercInt = Math.round(fgPercFloat);
-
-
-                            fgProg.setProgress(fgPercInt);
-
-
-
-
-
-
-                            float threePPerc = ((float) threePMade / threePCount) * 100;
-
-
-                            String threePPercString = decimalFormat.format(threePPerc);
-
-
-                            float threePPercFloat = Float.parseFloat(threePPercString);
-
-
-                            int threePercInt = Math.round(threePPercFloat);
-
-
-                            threeProg.setProgress(threePercInt);
-
-
-
-
-
-
-                            float twoPPerc = ((float) twoPMade / twoPCount) * 100;
-
-
-                            String twoPPercString = decimalFormat.format(twoPPerc);
-
-
-                            float twoPPercFloat = Float.parseFloat(twoPPercString);
-
-
-                            int twoPercInt = Math.round(twoPPercFloat);
-
-
-                            twoProg.setProgress(twoPercInt);
-
-
-                            fgPerc1.setText("FG%: " + twoPPercString + "%");
-                            threePPerc1.setText("3PT%: " + threePPercString + "%");
-                            twoPPerc1.setText("2PT%: " + twoPPercString + "%");
-
-
-                            gamesVal.setText(String.valueOf(gameCount));
-                            pointsVal.setText(String.valueOf(totalP));
-                            ppgVal.setText(ppgString);
-
-
-                            fgVal.setText(fgMade + "/" + fgCount);
-                            threepVal.setText(threePMade + "/" + threePCount);
-                            twoPVal.setText(twoPMade + "/" + twoPCount);
-
-
-                            callback.onTeamStringListAndIntListReceived(playerNameArr, pointsArr);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-
-
-        mQueue.add(request);
-    }
-
-
-   /*private void getGameStats(final TeamStringListAndIntListCallback callback){
-       String url = "http://10.0.2.2:8080/teams/" + SharedPrefsUtil.getTeamId(getContext());
-       JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-               new Response.Listener<JSONObject>() {
-                   @Override
-                   public void onResponse(JSONObject response) {
-                       try {
-                           JSONArray games = response.getJSONArray("games");
-
-
-                           int gameCount = 0;
-                           int fgCount = 0;
-                           int fgMade = 0;
-                           int threePCount = 0;
-                           int threePMade = 0;
-                           int twoPCount = 0;
-                           int twoPMade = 0;
-                           int totalP = 0;
-
-
-                           ArrayList<String> tempString = new ArrayList<>();
-                           ArrayList<Integer> tempInt = new ArrayList<>();
-
-
-                           for (int i = 0; i < games.length(); i++) {
-                               JSONObject game = games.getJSONObject(i);
-                               gameCount += 1;
-
-
-                               JSONArray players = game.getJSONArray("players");
-
-
-                               for(int k = 0; k < players.length(); k++) {
-
-
-                                   JSONObject player = players.getJSONObject(k);
-
-
-                                   int playersPoints = 0;
-                                   JSONArray shots = player.getJSONArray("shots");
-
-
-                                   for (int j = 0; j < shots.length(); j++) {
-                                       JSONObject shot = shots.getJSONObject(j);
-
-
-                                       int makeMiss = shot.getInt("makemiss");
-                                       int value = shot.getInt("value");
-
-
-                                       if (makeMiss == 0) {
-                                           fgCount += 1;
-                                           if (value == 2) {
-                                               twoPCount += 1;
-                                           } else {
-                                               threePCount += 1;
-                                           }
-                                       } else {
-                                           fgCount += 1;
-                                           fgMade += 1;
-                                           if (value == 2) {
-                                               twoPCount += 1;
-                                               twoPMade +=1;
-                                               playersPoints += 2;
-                                           } else {
-                                               threePCount += 1;
-                                               threePMade+=1;
-                                               playersPoints += 3;
-                                           }
-                                       }
-
-
-                                   }
-
-
-                                   String playerName = player.getString("playerName");
-                                   tempString.add(playerName);
-                                   tempInt.add(playersPoints);
-
-
-                               }
-                           }
-
-
-                           playerNameArr = tempString;
-                           pointsArr = tempInt;
-
-
-                           DecimalFormat decimalFormat = new DecimalFormat("#.##");
-                           DecimalFormat decimalFormat2 = new DecimalFormat("#.#");
-
-
-                           totalP = threePMade * 3 + twoPMade * 2;
-
-
-                           float ppg = ((float)totalP/gameCount);
-
-
-                           String ppgString = decimalFormat2.format(ppg);
-
-
-
-
-                           float fgPerc = ((float) fgMade / fgCount) * 100;
-
-
-                           String fgPercString = decimalFormat.format(fgPerc);
-
-
-                           float fgPercFloat = Float.parseFloat(fgPercString);
-
-
-                           int fgPercInt = Math.round(fgPercFloat);
-
-
-                           fgProg.setProgress(fgPercInt);
-
-
-
-
-
-
-                           float threePPerc = ((float) threePMade / threePCount) * 100;
-
-
-                           String threePPercString = decimalFormat.format(threePPerc);
-
-
-                           float threePPercFloat = Float.parseFloat(threePPercString);
-
-
-                           int threePercInt = Math.round(threePPercFloat);
-
-
-                           threeProg.setProgress(threePercInt);
-
-
-
-
-
-
-                           float twoPPerc = ((float) twoPMade / twoPCount) * 100;
-
-
-                           String twoPPercString = decimalFormat.format(twoPPerc);
-
-
-                           float twoPPercFloat = Float.parseFloat(twoPPercString);
-
-
-                           int twoPercInt = Math.round(twoPPercFloat);
-
-
-                           twoProg.setProgress(twoPercInt);
-
-
-                           fgPerc1.setText("FG%: " + twoPPercString + "%");
-                           threePPerc1.setText("3PT%: " + threePPercString + "%");
-                           twoPPerc1.setText("2PT%: " + twoPPercString + "%");
-
-
-                           gamesVal.setText(String.valueOf(gameCount));
-                           pointsVal.setText(String.valueOf(totalP));
-                           ppgVal.setText(ppgString);
-
-
-                           fgVal.setText(fgMade + "/" + fgCount);
-                           threepVal.setText(threePMade + "/" + threePCount);
-                           twoPVal.setText(twoPMade + "/" + twoPCount);
-
-
-                           callback.onTeamStringListAndIntListReceived(playerNameArr, pointsArr);
-                       } catch (JSONException e) {
-                           e.printStackTrace();
-                       }
-                   }
-               }, new Response.ErrorListener() {
-           @Override
-           public void onErrorResponse(VolleyError error) {
-               error.printStackTrace();
-           }
-       });
-
-
-       mQueue.add(request);
-   }*/
-
-
-    private void findLeaders(){
-        if (playerNameArr.size() > 0) {
-            for(int j = 0; j < playerNameArr.size(); j++) {
-                int highestPoints = pointsArr.get(0);
-                String highestScorer = playerNameArr.get(0);
-                int index  = 0;
-
-
-                for (int i = 1; i < pointsArr.size(); i++) {
-                    if (pointsArr.get(i) > highestPoints) {
-                        highestPoints = pointsArr.get(i);
-                        highestScorer = playerNameArr.get(i);
-                        index = i;
-                    }
-                }
-
-
+    private void findLeaders() {
+        // Create a list from elements of HashMap
+        List<Map.Entry<Integer, Integer>> list = new LinkedList<>(playerPointsMap.entrySet());
+
+        // Sort the list
+        list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        for (Map.Entry<Integer, Integer> entry : list) {
+            Player player = getPlayerById(entry.getKey());
+            if (player != null) {
+                String playerDetails = player.getName() + " - " + entry.getValue() + " pts";
                 TextView textView = new TextView(requireContext());
-                textView.setText(j+ ". " + highestScorer + "            " + highestPoints);
-
-
-                ll.addView(textView);
-
-
-                scroll.fullScroll(ScrollView.FOCUS_UP);
-
-
-                playerNameArr.remove(index);
-                pointsArr.remove(index);
-
-
+                textView.setText(playerDetails);
+                binding.ll.addView(textView);
             }
-        } else {
-            Toast.makeText(getContext(), "No shots where taken", Toast.LENGTH_SHORT).show();
-            return;
         }
+        binding.sv.fullScroll(ScrollView.FOCUS_UP);
     }
 
-
-    public interface TeamStringListAndIntListCallback {
-        void onTeamStringListAndIntListReceived(ArrayList<String> s, ArrayList<Integer> i);
-    }
-
-    public interface TeamIntListCallback {
-        void onTeamIntListReceived(ArrayList<Integer> i);
+    private Player getPlayerById(int id) {
+        for (Player player : players) {
+            if (player.getId() == id) {
+                return player;
+            }
+        }
+        return null;
     }
 }
+
+

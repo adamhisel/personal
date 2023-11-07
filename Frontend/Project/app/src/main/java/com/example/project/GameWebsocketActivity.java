@@ -32,7 +32,7 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         String testUrl = "wss://" + "10.0.2.2:8080/game/" + userName;
 
         WebSocketManager.getInstance().setWebSocketListener(this);
-        WebSocketManager.getInstance().connectWebSocket(testUrl);
+        WebSocketManager.getInstance().connectWebSocket(url);
 
         binding.btnExit.setOnClickListener(new View.OnClickListener() {
             @Override

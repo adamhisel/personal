@@ -15,10 +15,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,12 +27,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityGameBinding;
 
-
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +53,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             R.id.tvBtnPlayer1, R.id.tvBtnPlayer2, R.id.tvBtnPlayer3, R.id.tvBtnPlayer4, R.id.tvBtnPlayer5
     };
     private final List<Shots> teamShots = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
     private ActivityGameBinding binding;
     private ImageView imageView;
     private Drawable green, red;
@@ -66,18 +63,13 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
     private int teamPoints = 0;
-    private final List<Player> players = new ArrayList<>();
-
-
     private Player activePlayer;
     private int activePlayerIndex;
 
 
     private int gameId;
 
-
     private String teamId;
-
 
     private String userName;
 
@@ -115,7 +107,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
         WebSocketManager.getInstance().setWebSocketListener(this);
-        WebSocketManager.getInstance().connectWebSocket(testUrl);
+        WebSocketManager.getInstance().connectWebSocket(url);
     }
 
 
@@ -206,12 +198,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             int buttonsTopMargin = imageHeight;
             setViewTopMargin(binding.llButtons, buttonsTopMargin + 10);
 
-
-            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50; // 50 is the space between buttons and players
+            // 50 is the space between buttons and players
+            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50;
             setViewTopMargin(binding.llPlayers, playersTopMargin);
 
 
-            int scrollViewTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 10; // for example
+            int scrollViewTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 10;
             setViewTopMargin(binding.svWebsocket, scrollViewTopMargin);
         });
     }
@@ -233,7 +225,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
         // Create a JsonObjectRequest for a POST request to create a new game
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, testUrl, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
                 response -> {
                     // Handle response
                     gameId = response.optInt("id");
@@ -255,7 +247,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         String testUrl = LOCAL_URL + "teams/" + teamId + "/addGame/" + gameId;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, testUrl, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, null,
                 response -> {
                     // Handle response
                     Log.d(TAG, "Game " + gameId + " added successfully to team " + teamId);
@@ -271,16 +263,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
 
-
-
-
-
     private void loadPlayersForTeam(int teamId) {
         String url = BASE_URL + "teams/" + teamId;
         String testUrl = LOCAL_URL + "teams/" + teamId;
 
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, testUrl, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -497,8 +485,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
 
-
-
     private void updatePlayerButtonLabels() {
         int playerCount = players.size();
         // Limit the button count to 5
@@ -520,8 +506,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             }
         }
     }
-
-
 
 
     private void sendTeamShots(int gameId, List<Shots> teamShots) {
@@ -547,7 +531,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.d(TAG, "Sending team shots: " + shotsArray);
 
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
                     Log.d(TAG, "Team shots sent successfully");
                 },
@@ -583,7 +567,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.d(TAG, "Sending player shots for player " + playerId + ": " + shotsArray);
 
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, testUrl, shotsArray,
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
                 response -> {
                     Log.d(TAG, "Player shots sent successfully");
                 },

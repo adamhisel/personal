@@ -89,7 +89,7 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         String testUrl = LOCAL_URL + "workouts/" + workoutId + "/shots";
 
         // Create a JSON Array request for fetching the shots data
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, testUrl, null, response -> {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
             // Parse the response and add shots to the view
             try {
                 for (int i = 0; i < response.length(); i++) {

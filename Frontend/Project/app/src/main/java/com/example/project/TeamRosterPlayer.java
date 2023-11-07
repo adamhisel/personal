@@ -84,7 +84,7 @@ public class TeamRosterPlayer extends AppCompatActivity {
      * to put them in the table to be generated on screen
      */
     public void findTeam() {
-        String url = "http://10.0.2.2:8080/teams";
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -134,7 +134,7 @@ public class TeamRosterPlayer extends AppCompatActivity {
      */
     public void addPlayerDisplay(int id) {
 
-        String url = "http://10.0.2.2:8080/teams/" + id;
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + id;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
