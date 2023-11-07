@@ -131,8 +131,8 @@ public class AddTeamActivity extends AppCompatActivity {
                             @Override
                             public void onTeamIdReceived(int id) {
                                 coachId = id;
-                                joinTeamCoach();
                                 joinTeamUser();
+                                joinTeamCoach();
                                 Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
                                 startActivity(intent);
                             }
@@ -258,10 +258,10 @@ public class AddTeamActivity extends AppCompatActivity {
 
         String url = "";
         if(isPrivate == true) {
-            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim();
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim() + "/" + SharedPrefsUtil.getUserId(this);
         }
         else{
-            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy";
+            url = "http://10.0.2.2:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
         }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
