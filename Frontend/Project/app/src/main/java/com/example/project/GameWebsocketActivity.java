@@ -28,8 +28,8 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
 
 
         String userName = SharedPrefsUtil.getUserName(this);
-        String url = "wss://BASE_URL" + "game/" + userName;
-        String testUrl = "wss://LOCAL_URL" + "game/" + userName;
+        String url = "wss://" + "coms-309-018.class.las.iastate.edu:8080/game/" + userName;
+        String testUrl = "wss://" + "10.0.2.2:8080/game/" + userName;
 
         WebSocketManager.getInstance().setWebSocketListener(this);
         WebSocketManager.getInstance().connectWebSocket(testUrl);

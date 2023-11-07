@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     android:padding="10dp"
     tools:context=".WorkoutDetailsActivity">
 
@@ -15,56 +16,122 @@
         android:scaleType="fitXY"
         android:src="@drawable/court_image" />
 
-    <!-- This LinearLayout will contain all the shooting stats -->
     <LinearLayout
+        android:id="@+id/llStats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="450dp"
-        android:orientation="vertical"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="400dp"
+        android:orientation="horizontal"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/shootingPercentageTextView"
-            android:layout_width="wrap_content"
+        <!-- Column for labels -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Shooting Percentage: 0%"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/threePointRatioTextView"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvFGPercent"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="FG%"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tvThreePoint"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="3PT"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tvTwoPoint"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="2PT"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tvTotalShots"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="Total Shots"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <!-- Column for values -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="3 Point Ratio: 0/0"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/twoPointRatioTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="2 Point Ratio: 0/0"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/tvFGPercentValue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="0%"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
 
-        <TextView
-            android:id="@+id/totalShotsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Total Shots: 0"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/tvThreePointValue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="0/0"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
 
+            <TextView
+                android:id="@+id/tvTwoPointValue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="0/0"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tvTotalShotsValue"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:text="0"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+        </LinearLayout>
     </LinearLayout>
 
 
     <!-- End Session Button -->
     <Button
-        android:id="@+id/btnBack"
+        android:id="@+id/btnExit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:text="Go Back" />
+        android:backgroundTint="#000000"
+        android:textColor="#FFFFFF"
+        app:icon="?attr/actionModeCloseDrawable"
+        android:text="Exit" />
 
 </FrameLayout>
