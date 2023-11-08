@@ -12,8 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
+ * This class is used to create a password dialog pop up when called upon.
+ *
  * @author Adam Hisel
- * This class is used to create a password dialog pop up when called upon
  */
 public class PasswordInputDialogFragment extends DialogFragment {
 

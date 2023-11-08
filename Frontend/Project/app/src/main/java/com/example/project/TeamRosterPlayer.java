@@ -26,11 +26,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 /**
- * @author Adam Hisel
  * Activity that is opened when a player or fan clicks on a team they play on/follow.
  * Displays a roster with the players, coaches and managers currently on
  * the team.
  *
+ * @author Adam Hisel
  */
 public class TeamRosterPlayer extends AppCompatActivity {
 

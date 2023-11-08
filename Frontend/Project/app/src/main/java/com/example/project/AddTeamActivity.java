@@ -31,10 +31,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * @author Adam Hisel
  * Activity that allows a user to make a team for people to join. Will have to option
  * make their team private or public. Private teams will have to have a password to join
  * where public teams wont.
+ *
+ * @author Adam Hisel
  */
 public class AddTeamActivity extends AppCompatActivity {
 

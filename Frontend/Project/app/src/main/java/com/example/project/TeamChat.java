@@ -19,9 +19,10 @@ import android.widget.TextView;
 import org.java_websocket.handshake.ServerHandshake;
 
 /**
- * @author Adam Hisel
  * Activity that incorporates a team chat that can be accessed in the team roster
  * activity. Uses a websocket to talk to the server.
+ *
+ * @author Adam Hisel
  */
 
 public class TeamChat extends AppCompatActivity implements WebSocketListener{

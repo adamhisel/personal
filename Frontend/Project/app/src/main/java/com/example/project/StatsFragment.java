@@ -58,9 +58,10 @@ import java.util.Map;
 
 
 /**
- * @author Adam Hisel
  * Fragment that displays a teams overall stats from previous games. Also has a
  * leaderboard that displays the teams leading scorers.
+ *
+ * @author Adam Hisel
  */
 public class StatsFragment extends Fragment {
 
@@ -211,7 +212,7 @@ public class StatsFragment extends Fragment {
 
                     for (Player player : players) {
                         int points = player.getThreePointMakes() * 3 + player.getTwoPointMakes() * 2;
-                        playerPointsMap.put(player.getId(), playerPointsMap.getOrDefault(player.getId(), 0) + points);
+                        playerPointsMap.put(player.getId(), points);
                     }
 
                     // Update the UI after all games have been processed
