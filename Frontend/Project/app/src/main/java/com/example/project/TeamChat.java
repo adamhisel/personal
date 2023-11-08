@@ -25,7 +25,7 @@ import org.java_websocket.handshake.ServerHandshake;
  */
 
 public class TeamChat extends AppCompatActivity implements WebSocketListener{
-    private String BASE_URL = "wss://coms-309-018.class.las.iastate.edu:8080/chat/";
+    private String BASE_URL = "ws://coms-309-018.class.las.iastate.edu:8080/chat/";
     private Button sendBtn;
     private EditText msgEtx;
     private TextView msgTv;

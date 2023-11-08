@@ -28,6 +28,8 @@ import java.util.List;
 /**
  * WorkoutFragment is a Fragment class responsible for displaying the workout screen in the application.
  * It handles user interactions on the workout screen and directs the user to the WorkoutActivity when a button is clicked.
+ *
+ * @author Jagger Gourley
  */
 public class WorkoutFragment extends Fragment {
 
@@ -58,12 +60,9 @@ public class WorkoutFragment extends Fragment {
 
 
     private void setupButtonListeners() {
-        binding.btnBegin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.btnBegin.setOnClickListener(view -> {
                 Intent intent = new Intent(requireActivity(), WorkoutActivity.class);
                 startActivity(intent);
-            }
         });
     }
 

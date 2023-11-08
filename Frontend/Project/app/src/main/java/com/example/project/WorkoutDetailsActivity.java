@@ -20,6 +20,12 @@ import com.example.project.databinding.ActivityWorkoutDetailsBinding;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Activity class that details the workout metrics by fetching shot data and visualizing it.
+ * It provides visual representations of shots on a basketball court and displays shooting statistics.
+ *
+ * @author Jagger Gourley
+ */
 public class WorkoutDetailsActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
@@ -50,20 +56,18 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         fetchAndDisplayShots(workoutId);
     }
 
+    // Initializes view components
     private void initializeViews() {
         imageView = binding.courtImageView;
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
 
-
-        binding.btnExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
+        binding.btnExit.setOnClickListener(view -> {
+            finish();
         });
     }
 
+    // Sets up the court image view with correct aspect ratio
     private void setupCourtImageView() {
         imageView.post(() -> {
             int width = imageView.getWidth();
@@ -78,12 +82,14 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         });
     }
 
+    // Sets the top margin of a view
     private void setViewTopMargin(View view, int topMargin) {
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         layoutParams.topMargin = topMargin;
         view.setLayoutParams(layoutParams);
     }
 
+    // Fetches and displays shot data for the given workout
     private void fetchAndDisplayShots(int workoutId) {
         String url = BASE_URL + "workouts/" + workoutId + "/shots";
         String testUrl = LOCAL_URL + "workouts/" + workoutId + "/shots";
@@ -126,6 +132,8 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         mQueue.add(jsonArrayRequest);
     }
 
+    // Sets the drawable icon at the specified x and y coordinates
+
     private void setIconAndPosition(Drawable drawable, float x, float y) {
         // Create a new ImageView instance for each shot
         ImageView imageView = new ImageView(this);
@@ -138,6 +146,7 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         binding.getRoot().addView(imageView);
     }
 
+    // Updates the on-screen statistics based on shot data
     private void updateStats() {
         // Update the TextViews with the new stats
         float shootingPercentage = 0;
