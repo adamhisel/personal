@@ -24,16 +24,15 @@ import org.json.JSONObject;
 /**
  * LoginActivity handles user authentication including login and providing the option
  * to navigate to the registration page.
+ *
+ * @author Jagger Gourley
  */
 public class LoginActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
-
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
-
-    private ActivityLoginBinding binding;
     private static RequestQueue mQueue;
-
+    private ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,31 +45,21 @@ public class LoginActivity extends AppCompatActivity {
         setupButtonListeners();
     }
 
+    //Sets up onClick listeners for the buttons.
     private void setupButtonListeners() {
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginUser();
-            }
-        });
 
-        binding.btnCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-                startActivity(intent);
-            }
+        binding.btnLogin.setOnClickListener(view -> loginUser());
+        binding.btnCreateAccount.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+            startActivity(intent);
         });
-
-        binding.btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        binding.btnTest.setOnClickListener(view -> {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 
+    //Initiates the login process for the user.
     private void loginUser() {
         String userName = binding.etUserName.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
@@ -82,39 +71,30 @@ public class LoginActivity extends AppCompatActivity {
         String url = BASE_URL + "loginUser/" + userName + "/" + password;
         String testUrl = LOCAL_URL + "loginUser/" + userName + "/" + password;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Response", response.toString());
-                        handleLoginResponse(response, userName, password);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginActivity.this, "User does not exist or other error!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Response", response.toString());
+                handleLoginResponse(response, userName, password);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(LoginActivity.this, "User does not exist or other error!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mQueue.add(jsonObjectRequest);
     }
 
+    //Handles the response and updates user information within Shared Preferences.
     private void handleLoginResponse(JSONObject response, String userName, String password) {
         try {
             String retrievedUserName = response.getString("userName");
             String retrievedPassword = response.getString("password");
 
             if (userName.equals(retrievedUserName) && password.equals(retrievedPassword)) {
-                SharedPrefsUtil.saveUserData(
-                        LoginActivity.this,
-                        retrievedUserName,
-                        response.getString("firstName"),
-                        response.getString("lastName"),
-                        response.getString("email"),
-                        response.getString("phoneNumber"),
-                        String.valueOf(response.getInt("id"))
-                );
+                SharedPrefsUtil.saveUserData(LoginActivity.this, retrievedUserName, response.getString("firstName"), response.getString("lastName"), response.getString("email"), response.getString("phoneNumber"), String.valueOf(response.getInt("id")));
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
             } else {
@@ -125,20 +105,24 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Returns true if the provided text is null or whitespace only.
     private boolean isEmpty(String text) {
         return text == null || text.trim().isEmpty();
     }
 
+    // Assigns an error message to the input field and returns false.
     private boolean setFieldError(TextInputLayout field, String errorText) {
         field.setError(errorText);
         return false;
     }
 
+    // Clears any error message from the input field.
     private void clearFieldError(TextInputLayout field) {
         field.setError(null);
         field.setErrorEnabled(false);
     }
 
+    // Validates the username input and triggers error state if empty.
     private boolean validateUserName() {
         String userName = binding.etUserName.getText().toString().trim();
         if (isEmpty(userName)) {
@@ -149,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the password input and triggers error state if empty.
     private boolean validatePassword() {
         String password = binding.etPassword.getText().toString().trim();
         if (isEmpty(password)) {
@@ -158,5 +143,4 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
     }
-
 }

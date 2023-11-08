@@ -24,11 +24,15 @@ import com.example.project.databinding.FragmentProfileBinding;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * ProfileFragment handles user profile display and interactions within the app.
+ * It fetches and displays the user's profile details and provides options to edit
+ * the profile or log out.
+ *
+ * @author Jagger Gourley
+ */
 public class ProfileFragment extends Fragment {
-
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
-
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private static RequestQueue mQueue;
     private FragmentProfileBinding binding;
@@ -46,6 +50,7 @@ public class ProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
+    // Refresh profile details when fragment is resumed.
     @Override
     public void onResume() {
         super.onResume();
@@ -53,59 +58,52 @@ public class ProfileFragment extends Fragment {
         getProfile(userId); // Fetches the profile data again after returning from EditProfileActivity
     }
 
+    //Sets up click listeners for the edit profile and logout buttons.
     private void setupButtonListeners() {
 
-        binding.btnEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(requireActivity(), EditProfileActivity.class);
-                startActivity(intent);
-            }
+        binding.btnEditProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), EditProfileActivity.class);
+            startActivity(intent);
         });
 
-        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleLogout();
-            }
+        binding.btnLogout.setOnClickListener(view -> {
+            handleLogout();
         });
-
-
     }
 
+    // Fetches the user's profile from the server and updates the UI.
     private void getProfile(String userId) {
         String url = BASE_URL + "users/" + userId;
         String testUrl = LOCAL_URL + "users/" + userId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (binding != null) {
-                            try {
-                                String username = response.getString("userName");
-                                String email = response.getString("email");
-                                String phoneNumber = response.getString("phoneNumber");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (binding != null) {
+                    try {
+                        String username = response.getString("userName");
+                        String email = response.getString("email");
+                        String phoneNumber = response.getString("phoneNumber");
 
-                                binding.etUserName.setText(username);
-                                binding.etEmail.setText(email);
-                                binding.etPhoneNumber.setText(phoneNumber);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                        binding.etUserName.setText(username);
+                        binding.etEmail.setText(email);
+                        binding.etPhoneNumber.setText(phoneNumber);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(requireActivity(), "Failed to fetch profile details!", Toast.LENGTH_SHORT).show();
-                        error.printStackTrace();
-                    }
-                });
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(requireActivity(), "Failed to fetch profile details!", Toast.LENGTH_SHORT).show();
+                error.printStackTrace();
+            }
+        });
 
         mQueue.add(jsonObjectRequest);
     }
 
+    // Clears the user's session data and navigates back to the login screen.
     private void handleLogout() {
         SharedPrefsUtil.clearUserData(requireActivity());
         Intent intent = new Intent(requireActivity(), LoginActivity.class);
@@ -113,6 +111,7 @@ public class ProfileFragment extends Fragment {
         requireActivity().finish();
     }
 
+    // Cleanup when the view is destroyed
     @Override
     public void onDestroyView() {
         super.onDestroyView();

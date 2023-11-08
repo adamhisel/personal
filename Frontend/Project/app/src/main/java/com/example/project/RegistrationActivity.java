@@ -24,13 +24,15 @@ import org.json.JSONObject;
 /**
  * The RegistrationActivity class represents the activity in the application where
  * users can sign up for an account.
+ *
+ * @author Jagger Gourley
  */
 public class RegistrationActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
-    private ActivityRegistrationBinding binding;
     private static RequestQueue mQueue;
+    private ActivityRegistrationBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,23 +53,18 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
+        binding.btnLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
-        binding.btnTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        binding.btnTest.setOnClickListener(view -> {
+            Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+            startActivity(intent);
         });
     }
 
+    // Gathers input data and performs validation
     private void handleSignUp() {
         String userName = binding.etUserName.getText().toString().trim();
         String firstName = binding.etFirstName.getText().toString().trim();
@@ -103,25 +100,23 @@ public class RegistrationActivity extends AppCompatActivity {
         String testUrl = LOCAL_URL + "users";
 
         Log.d("PostData", postData.toString());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Response", response.toString());
-                        handleSignUpResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }
-        );
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Response", response.toString());
+                handleSignUpResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
 
         mQueue.add(jsonObjectRequest);
     }
 
+    // Parses the response and saves user data
     private void handleSignUpResponse(JSONObject response) {
         try {
             int id = response.getInt("id");
@@ -146,20 +141,24 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    // Checks if a string is empty
     private boolean isEmpty(String text) {
         return text == null || text.trim().isEmpty();
     }
 
+    // Sets error message on a text field and returns false
     private boolean setFieldError(TextInputLayout field, String errorText) {
         field.setError(errorText);
         return false;
     }
 
+    // Clears the error message on a text field
     private void clearFieldError(TextInputLayout field) {
         field.setError(null);
         field.setErrorEnabled(false);
     }
 
+    // Validates the username input and triggers error state if empty.
     private boolean validateUserName() {
         String userName = binding.etUserName.getText().toString().trim();
         if (isEmpty(userName)) {
@@ -170,6 +169,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the first name input and triggers error state if empty.
     private boolean validateFirstName() {
         String firstName = binding.etFirstName.getText().toString().trim();
         if (isEmpty(firstName)) {
@@ -180,6 +180,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the last name input and triggers error state if empty.
     private boolean validateLastName() {
         String lastName = binding.etLastName.getText().toString().trim();
         if (isEmpty(lastName)) {
@@ -190,6 +191,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the email input and triggers error state if empty or not right format.
     private boolean validateEmail() {
         String email = binding.etEmail.getText().toString().trim();
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -204,6 +206,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the phone number input and triggers error state if empty.
     private boolean validatePhoneNumber() {
         String phoneNumber = binding.etPhoneNumber.getText().toString().trim();
         if (isEmpty(phoneNumber)) {
@@ -214,6 +217,7 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    // Validates the password input and triggers error state if empty.
     private boolean validatePassword() {
         String password = binding.etPassword.getText().toString().trim();
         if (isEmpty(password)) {

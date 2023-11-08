@@ -32,6 +32,8 @@ import java.util.List;
  * WorkoutActivity is an activity that represents a basketball workout session.
  * It allows users to track their basketball shots on a court, marking them as made or missed,
  * and provides feedback on shot types based on the location of the shot.
+ *
+ * @author Jagger Gourley
  */
 public class WorkoutActivity extends AppCompatActivity {
 
@@ -39,6 +41,7 @@ public class WorkoutActivity extends AppCompatActivity {
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
     private static RequestQueue mQueue;
+    private final List<Shots> shotsList = new ArrayList<>();
     private ActivityWorkoutBinding binding;
     private ImageView imageView;
     private Drawable green, red;
@@ -47,7 +50,6 @@ public class WorkoutActivity extends AppCompatActivity {
     private int threePointAttempts = 0;
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
-    private final List<Shots> shotsList = new ArrayList<>();
     private int workoutId;
 
     @Override
@@ -66,6 +68,7 @@ public class WorkoutActivity extends AppCompatActivity {
         createWorkout(userId);
     }
 
+    // Initializes components and sets the user information in the TextView.
     private void initializeViews() {
         imageView = binding.courtImageView;
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
@@ -75,15 +78,13 @@ public class WorkoutActivity extends AppCompatActivity {
 
         hideShotButtons();
 
-        binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendShots(workoutId, shotsList);
-                finish();
-            }
+        binding.btnEndSession.setOnClickListener(view -> {
+            sendShots(workoutId, shotsList);
+            finish();
         });
     }
 
+    // Configures the court ImageView dimensions and sets up the layout parameters.
     private void setupCourtImageView() {
         imageView.post(() -> {
             int width = imageView.getWidth();
@@ -102,13 +103,14 @@ public class WorkoutActivity extends AppCompatActivity {
         });
     }
 
+    // Sets the top margin of a given view.
     private void setViewTopMargin(View view, int topMargin) {
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         layoutParams.topMargin = topMargin;
         view.setLayoutParams(layoutParams);
     }
 
-
+    // Sets up the shot type indicator based on user's touch on the imageView.
     private void setupShotTypeIndicator() {
         imageView.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -119,6 +121,7 @@ public class WorkoutActivity extends AppCompatActivity {
         });
     }
 
+    // Records the basketball shot location and type based on touch coordinates.
     private void recordBasketballShot(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
@@ -158,6 +161,7 @@ public class WorkoutActivity extends AppCompatActivity {
         recordMakeOrMiss(shotType, x, y);
     }
 
+    // Displays buttons to record the basketball shot as a make or miss.
     private void recordMakeOrMiss(String shotType, float x, float y) {
         binding.btnMake.setOnClickListener(v -> {
             int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
@@ -183,6 +187,7 @@ public class WorkoutActivity extends AppCompatActivity {
         });
     }
 
+    // Sets the icon (make or miss) at the touched position on the imageView.
     private void setIconAndPosition(Drawable drawable, float x, float y) {
         // Create a new ImageView instance for each shot
         ImageView imageView = new ImageView(this);
@@ -195,6 +200,7 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.getRoot().addView(imageView);
     }
 
+    // Updates the stats display with the current shooting percentage and counts.
     private void updateStats() {
         // Update the TextViews with the new stats
         float shootingPercentage = 0;
@@ -208,18 +214,18 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.tvTotalShotsValue.setText(String.format("%d/%d", (twoPointMakes + threePointMakes), totalShots));
     }
 
+    // Creates a new workout session for the user by sending a request to the server.
     private void createWorkout(String userId) {
         String url = BASE_URL + "workouts?userId=" + userId;
         String testUrl = LOCAL_URL + "workouts?userId=" + userId;
         Log.d(TAG, "Creating workout for user with id" + userId);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
-                response -> {
-                    // Handle response
-                    workoutId = response.optInt("workoutId");
-                    Log.d(TAG, "Workout created successfully. Received workoutId: " + workoutId);
-                    // Send shots to this workout using workoutId
-                }, error -> {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, response -> {
+            // Handle response
+            workoutId = response.optInt("workoutId");
+            Log.d(TAG, "Workout created successfully. Received workoutId: " + workoutId);
+            // Send shots to this workout using workoutId
+        }, error -> {
             Log.e(TAG, "Failed to create workout. Error: " + error.toString());
             // Handle error
         });
@@ -227,6 +233,7 @@ public class WorkoutActivity extends AppCompatActivity {
         mQueue.add(request);
     }
 
+    // Sends the list of shots to the server to be associated with the current workout session.
     private void sendShots(int workoutId, List<Shots> shotsList) {
         String url = BASE_URL + "workouts/" + workoutId + "/bulk-shots";
         String testUrl = LOCAL_URL + "workouts/" + workoutId + "/bulk-shots";
@@ -247,24 +254,24 @@ public class WorkoutActivity extends AppCompatActivity {
 
         Log.d(TAG, "Sending shots: " + shotsArray);
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray,
-                response -> {
-                    // Log the response
-                    Log.d(TAG, "Response received");
-                },
-                error -> {
-                    Log.e(TAG, "Failed to send shots. Error: " + error.toString());
-                    // Handle error
-                });
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray, response -> {
+            // Log the response
+            Log.d(TAG, "Response received");
+        }, error -> {
+            Log.e(TAG, "Failed to send shots. Error: " + error.toString());
+            // Handle error
+        });
 
         mQueue.add(request);
     }
 
+    // Shows the make and miss buttons on the screen.
     private void showShotButtons() {
         binding.btnMake.setVisibility(View.VISIBLE);
         binding.btnMiss.setVisibility(View.VISIBLE);
     }
 
+    // Hides the make and miss buttons from the screen.
     private void hideShotButtons() {
         binding.btnMake.setVisibility(View.GONE);
         binding.btnMiss.setVisibility(View.GONE);
