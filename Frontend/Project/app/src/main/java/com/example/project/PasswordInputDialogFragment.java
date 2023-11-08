@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * @author Adam Hisel
+ * This class is used to create a password dialog pop up when called upon
+ */
 public class PasswordInputDialogFragment extends DialogFragment {
 
     private EditText passwordEditText;
@@ -40,10 +44,17 @@ public class PasswordInputDialogFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * listens for specific events
+     * @param listener
+     */
     public void setListener(PasswordInputListener listener) {
         this.listener = listener;
     }
 
+    /**
+     * listens for password input
+     */
     public interface PasswordInputListener {
         void onPasswordEntered(String password);
     }

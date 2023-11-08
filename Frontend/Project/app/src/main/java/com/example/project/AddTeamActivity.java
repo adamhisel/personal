@@ -321,6 +321,9 @@ public class AddTeamActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Interface used to callback an id to a global variable where the id is from the database response
+     */
     public interface TeamIdCallback {
         void onTeamIdReceived(int id);
     }

@@ -20,6 +20,16 @@ public class SharedPrefsUtil {
     private static final String KEY_TEAM_ID = "KEY_TEAM_ID";
 
 
+    /**
+     * this method takes in all variables to set the User Preferences when called
+     * @param context
+     * @param userName
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param phoneNumber
+     * @param userId
+     */
     public static void saveUserData(Context context, String userName, String firstName, String lastName, String email, String phoneNumber, String userId) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -32,6 +42,12 @@ public class SharedPrefsUtil {
         editor.apply();
     }
 
+    /**
+     * this method takes in all variables to set the Team Preferences when called
+     * @param context
+     * @param teamName
+     * @param teamId
+     */
     public static void saveTeamData(Context context, String teamName, String teamId){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -80,6 +96,10 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString(KEY_TEAM_ID, "");
     }
 
+    /**
+     * this method clears the user data
+     * @param context
+     */
     public static void clearUserData(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
