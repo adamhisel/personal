@@ -30,9 +30,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * @author Adam Hisel
  * Home fragment in the navigation bar that contains options to create a team, join a team
  * or click into the team a user is on or follows.
+ *
+ * @author Adam Hisel
  */
 public class HomeFragment extends Fragment {
 

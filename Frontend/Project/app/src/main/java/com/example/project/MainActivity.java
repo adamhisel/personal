@@ -13,9 +13,10 @@ import com.example.project.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
- * @author Adam Hisel
- * Activity that manages the navigayion bar at the bottom of the fragements.
+ * Activity that manages the navigation bar at the bottom of the fragments.
  * Sets the default fragment to open to the home page when app is loaded.
+ *
+ * @author Adam Hisel
  */
 public class MainActivity extends AppCompatActivity {
 

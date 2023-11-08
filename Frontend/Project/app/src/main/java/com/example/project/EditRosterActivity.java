@@ -24,10 +24,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @author Adam Hisel
  * Activity that allows a coach to edit their teams roster attributes such as
  * a players position, number or status (player, coach, manager). The coach is also able
  * to change the teams name and settings here as well as remove a player from the team.
+ *
+ * @author Adam Hisel
  */
 public class EditRosterActivity extends AppCompatActivity {
     private RequestQueue mQueue;

@@ -28,12 +28,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * @author Adam Hisel
  * Activity that is opened when a coach clicks on a team they coach.
  * Displays a roster with the players, coaches and managers currently on
  * the team. Gives the coach special options such as the ability
  * to remove players, edit positions and change team settings.
  *
+ * @author Adam Hisel
  */
 public class TeamRosterCoach extends AppCompatActivity {
 
