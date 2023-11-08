@@ -32,12 +32,13 @@ import java.util.ArrayList;
 
 
 /**
- * @author
  * This activity is where the user is able to join a team as a player or fan.
  * The user is able to select a team and then those if they are joining as a player or a fan.
  * If they choose player they will enter their number and position, if they choose fan they
  * instantly join. Teams athat are public have no passwrod dialog pop up teams that are
  * private do.
+ *
+ * @author Adam Hisel
  */
 public class JoinTeamActivity extends AppCompatActivity implements PasswordInputDialogFragment.PasswordInputListener {
 
