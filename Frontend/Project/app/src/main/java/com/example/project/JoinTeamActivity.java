@@ -30,6 +30,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
+/**
+ * @author
+ * This activity is where the user is able to join a team as a player or fan.
+ * The user is able to select a team and then those if they are joining as a player or a fan.
+ * If they choose player they will enter their number and position, if they choose fan they
+ * instantly join. Teams athat are public have no passwrod dialog pop up teams that are
+ * private do.
+ */
 public class JoinTeamActivity extends AppCompatActivity implements PasswordInputDialogFragment.PasswordInputListener {
 
     private RequestQueue mQueue;
@@ -521,17 +530,28 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
         }
     }
 
+    /**
+     * Interface used to callback an list to a global variable where the list is from the database response
+     */
     public interface TeamListCallback {
         void onTeamListReceived(ArrayList<String> teamList);
     }
-
+    /**
+     * Interface used to callback an id to a global variable where the id is from the database response
+     */
     public interface TeamIdCallback {
         void onTeamIdReceived(int id);
     }
 
+    /**
+     * Interface used to callback an strinf and a boolean to a global variable where the string and boolean is from the database response
+     */
     public interface TeamStringAndBooleanCallback {
         void onTeamStringAndBooleanReceived(String s, boolean b);
     }
+    /**
+     * Interface used to callback an boolean to a global variable where the boolean is from the database response
+     */
     public interface TeamBooleanCallback {
         void onTeamBooleanReceived(boolean b);
     }

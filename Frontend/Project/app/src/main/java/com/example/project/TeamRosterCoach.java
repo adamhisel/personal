@@ -93,7 +93,7 @@ public class TeamRosterCoach extends AppCompatActivity {
      * table that shows up on the screen. Calls a JsonObjectRequest and recieves
      * a response with a list of players
      */
-    public void addPlayerDisplay() {
+    private void addPlayerDisplay() {
 
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
 
@@ -181,7 +181,7 @@ public class TeamRosterCoach extends AppCompatActivity {
      * This method makes a table header on screen with Number, Name and Position
      */
 
-    public void makeHeader(){
+    private void makeHeader(){
         android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
         TableRow tableRow = new TableRow(TeamRosterCoach.this);

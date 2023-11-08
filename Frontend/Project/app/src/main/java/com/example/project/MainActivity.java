@@ -55,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method is ued to replace frgaments given a fragment
+     * @param frag
+     */
     public void replaceFrag(Fragment frag){
 
         FragmentManager fragmentManager = getSupportFragmentManager();

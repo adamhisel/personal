@@ -83,7 +83,7 @@ public class TeamRosterPlayer extends AppCompatActivity {
      * This method finds the players on the respective team and calls addPlayerDisplay()
      * to put them in the table to be generated on screen
      */
-    public void findTeam() {
+    private void findTeam() {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
@@ -132,7 +132,7 @@ public class TeamRosterPlayer extends AppCompatActivity {
      * a response with a list of players
      * @param id
      */
-    public void addPlayerDisplay(int id) {
+    private void addPlayerDisplay(int id) {
 
         String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + id;
 
@@ -229,7 +229,7 @@ public class TeamRosterPlayer extends AppCompatActivity {
     /**
      * This method makes a table header on screen with Number, Name and Position
      */
-    public void makeHeader(){
+    private void makeHeader(){
         TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
         TableRow tableRow = new TableRow(TeamRosterPlayer.this);

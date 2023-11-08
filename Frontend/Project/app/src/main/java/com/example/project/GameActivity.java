@@ -543,7 +543,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         WebSocketManager.getInstance().removeWebSocketListener();
     }
 
-    // Interface for callback when team ID is received
+    /**
+     * Interface used to callback an id to a global variable where the id is from the database response
+     */
     public interface TeamIdCallback {
         void onTeamIdReceived(int id);
     }
