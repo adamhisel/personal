@@ -51,6 +51,8 @@ public class EditProfileActivity extends AppCompatActivity {
         String userId = SharedPrefsUtil.getUserId(this);
         // Prepare updated user profile details
         String updatedUserName = binding.etUserName.getText().toString().trim();
+        String updatedFirstName = binding.etFirstName.getText().toString().trim();
+        String updatedLastName = binding.etLastName.getText().toString().trim();
         String updatedEmail = binding.etEmail.getText().toString().trim();
         String updatedPhoneNumber = binding.etPhoneNumber.getText().toString().trim();
         String updatedPassword = binding.etPassword.getText().toString().trim();
@@ -59,6 +61,8 @@ public class EditProfileActivity extends AppCompatActivity {
         JSONObject postData = new JSONObject();
         try {
             postData.put("userName", updatedUserName);
+            postData.put("firstName", updatedFirstName);
+            postData.put("lastName", updatedLastName);
             postData.put("email", updatedEmail);
             postData.put("phoneNumber", updatedPhoneNumber);
             postData.put("password", updatedPassword);
@@ -70,7 +74,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String testUrl = LOCAL_URL + "updateUser/" + userId;
 
         // Create and execute a POST request to update the user's profile
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

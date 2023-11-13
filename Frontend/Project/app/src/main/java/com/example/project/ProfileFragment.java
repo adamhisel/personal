@@ -75,16 +75,20 @@ public class ProfileFragment extends Fragment {
     private void getProfile(String userId) {
         String url = BASE_URL + "users/" + userId;
         String testUrl = LOCAL_URL + "users/" + userId;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (binding != null) {
                     try {
-                        String username = response.getString("userName");
+                        String userName = response.getString("userName");
+                        String firstName = response.getString("firstName");
+                        String lastName = response.getString("lastName");
                         String email = response.getString("email");
                         String phoneNumber = response.getString("phoneNumber");
 
-                        binding.etUserName.setText(username);
+                        binding.etUserName.setText(userName);
+                        binding.etFirstName.setText(firstName);
+                        binding.etLastName.setText(lastName);
                         binding.etEmail.setText(email);
                         binding.etPhoneNumber.setText(phoneNumber);
                     } catch (JSONException e) {
