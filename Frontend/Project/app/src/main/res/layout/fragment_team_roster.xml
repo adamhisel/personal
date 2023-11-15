@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_teamroster">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/layout">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:backgroundTint="#C62C2C"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:id="@+id/layout">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -57,6 +50,17 @@
 
         </LinearLayout>
 
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/editButton"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:backgroundTint="#000"-->
+<!--            android:text="EDIT TEAM ROSTER"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            app:icon="?attr/actionModePasteDrawable" />-->
+
         <TextView
             android:id="@+id/coach"
             android:layout_width="fill_parent"
@@ -67,6 +71,28 @@
             android:textSize="25dp">
 
         </TextView>
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbarStyle="insideInset">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/cardLL">
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+        <!--
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
@@ -89,10 +115,9 @@
 
             </TableLayout>
 
-        </HorizontalScrollView>
+        </HorizontalScrollView>-->
 
 
     </LinearLayout>
 
-    </LinearLayout>
 </FrameLayout>
