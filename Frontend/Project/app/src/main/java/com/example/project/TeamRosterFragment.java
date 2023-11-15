@@ -93,10 +93,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // You can replace getActivity() with the appropriate activity if needed
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                }
+                SharedPrefsUtil.clearTeamData(getContext());
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
 

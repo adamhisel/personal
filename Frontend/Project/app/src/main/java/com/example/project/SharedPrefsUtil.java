@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 public class SharedPrefsUtil {
     // Constants for shared preferences file name and keys
     private static final String PREFS_NAME = "com.example.project.PREFS";
+    private static final String PREFS_TEAM = "com.example.project.PREFS";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_FIRST_NAME = "KEY_FIRST_NAME";
     private static final String KEY_LAST_NAME = "KEY_LAST_NAME";
@@ -49,7 +50,7 @@ public class SharedPrefsUtil {
      * @param teamId
      */
     public static void saveTeamData(Context context, String teamName, String teamId){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_TEAM_NAME, teamName);
         editor.putString(KEY_TEAM_ID, teamId);
@@ -87,12 +88,12 @@ public class SharedPrefsUtil {
     }
 
     public static String getTeamName(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_TEAM_NAME, "");
     }
 
     public static String getTeamId(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_TEAM_ID, "");
     }
 
@@ -102,6 +103,16 @@ public class SharedPrefsUtil {
      */
     public static void clearUserData(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
+    /**
+     * this method clears the team data
+     * @param context
+     */
+    public static void clearTeamData(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
