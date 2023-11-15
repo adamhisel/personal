@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Activity that is opened when a coach clicks on a team they coach.
  * Displays a roster with the players, coaches and managers currently on
@@ -48,11 +51,17 @@ import org.json.JSONObject;
  */
 public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFragment.UpdatePlayerInputListener{
 
-    private TableLayout tl;
     private RequestQueue mQueue;
 
     private TextView coachText;
-    private boolean exists = false;
+
+    private ArrayList<Integer> playerList;
+
+    private ArrayList<String> playerNameList;
+
+    private String playerName;
+
+    private int playerId;
 
     private int teamId;
 
@@ -78,7 +87,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         teamId= Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()));
         teamName= SharedPrefsUtil.getTeamName(getContext());
 
-        //makeHeader();
+
         addPlayerDisplay();
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -99,20 +108,47 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             }
         });
 
-//        edit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                cardView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
 //
-//                    }
-//                });
-//            }
-//        });
 
         return view;
     }
+
+    private void getPlayers(final TeamIdListsCallback callback){
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    JSONArray players = response.getJSONArray("players");
+                    playerList = new ArrayList<>();
+                    playerNameList = new ArrayList<>();
+                    for (int i = 0; i < players.length(); i++) {
+                        JSONObject player = players.getJSONObject(i);
+                        int id = player.getInt("id");
+                        String name = player.getString("playerName");
+                        playerList.add(id);
+                        playerNameList.add(name);
+                    }
+                    callback.onTeamIdListsReceived(playerList, playerNameList);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        }
+        , new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+
 
     /**
      * This method is called by findTeam() and is used to input players from the team data into a
@@ -171,11 +207,23 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                         saveButton.setIcon(getResources().getDrawable(R.drawable.baseline_check_24));
 
                         saveButton.setText("SAVE ROSTER");
-                        saveButton.setVisibility(View.INVISIBLE);
+                        saveButton.setVisibility(View.GONE);
+
+                        TextView textView = new TextView(getContext());
+
+                        textView.setText("Click Player Cards To Update Player Information");
+
+                        textView.setTextSize(20);
+
+                        textView.setGravity(Gravity.CENTER);
+                        textView.setVisibility(View.GONE);
 
                         ll.addView(saveButton);
+                        ll.addView(textView);
 
 
+
+                        int cardId = 0;
                         for (int i= 0; i < players.length(); i++) {
                             JSONObject player = players.getJSONObject(i);
 
@@ -193,6 +241,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             );
                             cardParams.setMargins(8, 8, 8, 8);
                             cardView.setLayoutParams(cardParams);
+                            cardView.setId(cardId);
                             cardView.setCardElevation(4);
 
 
@@ -214,7 +263,6 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             num.setText(number);
                             num.setTextSize(18);
                             num.setTypeface(null, Typeface.BOLD);
-
 
                             TextView namePlayer = new TextView(requireContext());
                             LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(
@@ -238,36 +286,42 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             pos.setText(position);
                             pos.setTextSize(18);
 
-
-
-
                             linearLayout.addView(num);
                             linearLayout.addView(namePlayer);
                             linearLayout.addView(pos);
-
 
                             cardView.addView(linearLayout);
 
                             ll.addView(cardView);
 
-
-
                             editButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    editButton.setVisibility(View.INVISIBLE);
                                     saveButton.setVisibility((View.VISIBLE));
+                                    textView.setVisibility((View.VISIBLE));
                                     for (int l = 0; l < ll.getChildCount(); l++) {
                                         View v = ll.getChildAt(l);
                                         if (v instanceof CardView) {
                                             CardView cv = (CardView) v;
+                                            cv.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.card_foreground));
                                             cv.setClickable(true);
                                             cv.setFocusable(true);
-                                            cv.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.card_foreground));
                                             cv.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-                                                    showUpdatePlayerDialog();
+
+                                                    getPlayers(new TeamIdListsCallback() {
+                                                        @Override
+                                                        public void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList) {
+                                                            playerList = idList;
+                                                            playerNameList = nameList;
+                                                            int id = v.getId();
+                                                            playerId = playerList.get(id);
+                                                            playerName = playerNameList.get(id);
+                                                            showUpdatePlayerDialog();
+
+                                                        }
+                                                    });
                                                 }
                                             });
                                         }
@@ -279,53 +333,23 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                                 @Override
                                 public void onClick(View view) {
                                     editButton.setVisibility(View.VISIBLE);
-                                    saveButton.setVisibility((View.INVISIBLE));
+                                    saveButton.setVisibility((View.GONE));
+                                    textView.setVisibility((View.GONE));
                                     for (int l = 0; l < ll.getChildCount(); l++) {
                                         View v = ll.getChildAt(l);
                                         if (v instanceof CardView) {
                                             CardView cv = (CardView) v;
                                             cv.setClickable(false);
                                             cv.setFocusable(false);
+
                                         }
                                     }
+                                    ll.removeAllViews();
+                                    addPlayerDisplay();
                                 }
                             });
 
-
-//                            android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-//
-//                            TableRow tableRow = new TableRow(requireContext());
-//
-//                            Resources resources = getResources();
-//                            Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
-//
-//                            TextView textView = new TextView(requireContext());
-//                            textView.setPadding(10, 10, 10, 10);
-//                            textView.setLayoutParams(trparams);
-//                            textView.setTextSize(25);
-//                            textView.setBackground(drawable);
-//                            textView.setText(number);
-//                            tableRow.addView(textView);
-//
-//
-//                            TextView textView2 = new TextView(requireContext());
-//                            textView2.setPadding(10, 10, 10, 10);
-//                            textView2.setLayoutParams(trparams);
-//                            textView2.setTextSize(25);
-//                            textView2.setBackground(drawable);
-//                            textView2.setText(name);
-//                            tableRow.addView(textView2);
-//
-//                            TextView textView3 = new TextView(requireContext());
-//                            textView3.setPadding(10, 10, 10, 10);
-//                            textView3.setLayoutParams(trparams);
-//                            textView3.setTextSize(25);
-//                            textView3.setBackground(drawable);
-//                            textView3.setText(position);
-//                            tableRow.addView(textView3);
-
-
-                            //tl.addView(tableRow);
+                            cardId += 1;
                         }
                     }
 
@@ -344,6 +368,10 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(request);
     }
 
+    public interface TeamIdListsCallback {
+        void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList);
+    }
+
     private void showUpdatePlayerDialog() {
         UpdatePlayerDialogFragment updateDialog = new UpdatePlayerDialogFragment();
         updateDialog.setListener((UpdatePlayerDialogFragment.UpdatePlayerInputListener) this);
@@ -351,9 +379,10 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     @Override
-    public void onUpdate(String number, String pos, String playerId) {
+    public void onUpdate(String number, String pos) {
         JSONObject postData = new JSONObject();
         try {
+            postData.put("playerName", playerName);
             postData.put("number", number);
             postData.put("position", pos);
         } catch (JSONException e) {
@@ -372,7 +401,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             if ("success".equals(status)) {
                                 Toast.makeText(requireContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(requireContext(), "Error updating profile!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(requireContext(), "Error pupdating profile!", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             Toast.makeText(requireContext(), "Error parsing response!", Toast.LENGTH_SHORT).show();
@@ -382,7 +411,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(requireContext(), "Error updating profile!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(requireContext(), "Error updating profile!", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 });
@@ -391,50 +420,6 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 }
 
-
-
-    /**
-     * This method makes a table header on screen with Number, Name and Position
-     */
-
-//    public void makeHeader(){
-//        android.widget.TableRow.LayoutParams trparams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
-//
-//        TableRow tableRow = new TableRow(requireContext());
-//
-//        Resources resources = getResources();
-//        Drawable drawable = resources.getDrawable(R.drawable.textbox_borders);
-//
-//        TextView textView = new TextView(requireContext());
-//        textView.setPadding(10, 10, 10, 10);
-//        textView.setLayoutParams(trparams);
-//        textView.setTextSize(25);
-//        textView.setTypeface(null, android.graphics.Typeface.BOLD);
-//        textView.setBackground(drawable);
-//        textView.setText("Number");
-//        tableRow.addView(textView);
-//
-//
-//        TextView textView2 = new TextView(requireContext());
-//        textView2.setPadding(10, 10, 10, 10);
-//        textView2.setLayoutParams(trparams);
-//        textView2.setTextSize(25);
-//        textView2.setTypeface(null, android.graphics.Typeface.BOLD);
-//        textView2.setBackground(drawable);
-//        textView2.setText("Name");
-//        tableRow.addView(textView2);
-//
-//        TextView textView3 = new TextView(requireContext());
-//        textView3.setPadding(10, 10, 10, 10);
-//        textView3.setLayoutParams(trparams);
-//        textView3.setTextSize(25);
-//        textView3.setTypeface(null, android.graphics.Typeface.BOLD);
-//        textView3.setBackground(drawable);
-//        textView3.setText("Position");
-//        tableRow.addView(textView3);
-//
-//        //tl.addView(tableRow);
-//    }
 
 
 

@@ -62,13 +62,56 @@ public class UpdatePlayerDialogFragment extends DialogFragment {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String num = number.getEditText().getText().toString();
-                listener.onUpdate(num, selectedPos, "1");
-                dismiss();
+                if(validateNumber() && validatePos()) {
+                    String num = number.getEditText().getText().toString();
+                    listener.onUpdate(num, selectedPos);
+                    dismiss();
+                }
             }
         });
 
         return view;
+    }
+
+    private boolean validatePos(){
+        if(selectedPos.equals(null)){
+            number.setError("Field cannot be empty");
+            return false;
+        }
+        else{
+            number.setError(null);
+            number.setErrorEnabled(false);
+            return true;
+        }
+    }
+    private Boolean validateNumber() {
+        String tilNumber = number.getEditText().getText().toString().trim();
+
+        if (tilNumber.isEmpty()) {
+            number.setError("Field cannot be empty");
+            return false;
+        }
+        if (!isInteger(tilNumber)){
+            number.setError("Field has to be a number");
+            return false;
+        }
+        else{
+            number.setError(null);
+            number.setErrorEnabled(false);
+            return true;
+        }
+
+    }
+
+    private static boolean isInteger (String str){
+        try {
+            // Attempt to parse the string as an integer
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            // If an exception is thrown, the string is not an integer
+            return false;
+        }
     }
 
     /**
@@ -83,6 +126,6 @@ public class UpdatePlayerDialogFragment extends DialogFragment {
      * listens for password input
      */
     public interface UpdatePlayerInputListener {
-        void onUpdate(String number, String pos, String pid);
+        void onUpdate(String number, String pos);
     }
 }
