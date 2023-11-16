@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.home){
-                if (!SharedPrefsUtil.getTeamId(this).isEmpty()){
+                if (!SharedPrefsTeamUtil.getTeamId(this).isEmpty()){
                     replaceFrag(new TeamRosterFragment());
                 }
                 else{

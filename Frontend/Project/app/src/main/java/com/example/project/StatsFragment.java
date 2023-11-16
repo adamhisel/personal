@@ -93,8 +93,8 @@ public class StatsFragment extends Fragment {
 
         mQueue = Volley.newRequestQueue(requireContext());
 
-        teamId = SharedPrefsUtil.getTeamId(requireContext());
-        binding.header.setText(SharedPrefsUtil.getTeamName(getContext()) + " Team Stats");
+        teamId = SharedPrefsTeamUtil.getTeamId(requireContext());
+        binding.header.setText(SharedPrefsTeamUtil.getTeamName(getContext()) + " Team Stats");
 
         getPlayers();
 
@@ -137,7 +137,7 @@ public class StatsFragment extends Fragment {
                 response -> {
                     try {
                         gameIdArr = new ArrayList<>();
-                        int savedTeamId = Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()));
+                        int savedTeamId = Integer.parseInt(SharedPrefsTeamUtil.getTeamId(getContext()));
                         for (int j = 0; j < response.length(); j++) {
                             JSONObject game = response.getJSONObject(j);
                             JSONObject team = game.getJSONObject("team");

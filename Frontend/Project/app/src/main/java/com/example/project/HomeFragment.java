@@ -99,11 +99,17 @@ public class HomeFragment extends Fragment {
 
                         ArrayList<String> teamList = new ArrayList<>();
                         ArrayList<Integer> teamIds = new ArrayList<>();
+                        ArrayList<Integer> coachUserIds = new ArrayList<>();
 
                         for (int i = 0; i < teams.length(); i++) {
                             JSONObject team = teams.getJSONObject(i);
                             teamList.add(team.getString("teamName"));
                             teamIds.add(Integer.valueOf(team.getString("id")));
+                            JSONArray coaches = team.getJSONArray("coaches");
+                            for(int l = 0; l < coaches.length(); l++){
+                                JSONObject coach = coaches.getJSONObject(l);
+                                coachUserIds.add(coach.getInt("user_id"));
+                            }
                         }
 
                         for(int j =0; j< teamList.size(); j++) {
@@ -112,6 +118,7 @@ public class HomeFragment extends Fragment {
 
                             String teamName = teamList.get(j);
                             int id = teamIds.get(j);
+                            int coachId = coachUserIds.get(j);
 
                             button.setText(teamName);
                             button.setTag(id);
@@ -121,8 +128,16 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(View view) {
                                     if (savedInstance == null) {
+                                        String isCoach = "";
                                         TeamRosterFragment fragment = new TeamRosterFragment();
-                                        SharedPrefsUtil.saveTeamData(getContext(), teamName, String.valueOf(id));
+                                        String p = SharedPrefsUtil.getUserId(getContext());
+                                        if(SharedPrefsUtil.getUserId(getContext()).equals(String.valueOf(coachId))){
+                                            isCoach = "true";
+                                        }
+                                        else{
+                                            isCoach = "false";
+                                        }
+                                        SharedPrefsTeamUtil.saveTeamData(getContext(), teamName, String.valueOf(id), isCoach);
 
                                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                                         FragmentTransaction transaction = fragmentManager.beginTransaction();

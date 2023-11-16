@@ -9,16 +9,12 @@ import android.content.SharedPreferences;
 public class SharedPrefsUtil {
     // Constants for shared preferences file name and keys
     private static final String PREFS_NAME = "com.example.project.PREFS";
-    private static final String PREFS_TEAM = "com.example.project.PREFS";
     private static final String KEY_USER_NAME = "KEY_USER_NAME";
     private static final String KEY_FIRST_NAME = "KEY_FIRST_NAME";
     private static final String KEY_LAST_NAME = "KEY_LAST_NAME";
     private static final String KEY_EMAIL = "KEY_EMAIL";
     private static final String KEY_PHONE_NUMBER = "KEY_PHONE_NUMBER";
     private static final String KEY_USER_ID = "KEY_USER_ID";
-
-    private static final String KEY_TEAM_NAME = "KEY_TEAM_NAME";
-    private static final String KEY_TEAM_ID = "KEY_TEAM_ID";
 
 
     /**
@@ -40,20 +36,6 @@ public class SharedPrefsUtil {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_PHONE_NUMBER, phoneNumber);
         editor.putString(KEY_USER_ID, userId);
-        editor.apply();
-    }
-
-    /**
-     * this method takes in all variables to set the Team Preferences when called
-     * @param context
-     * @param teamName
-     * @param teamId
-     */
-    public static void saveTeamData(Context context, String teamName, String teamId){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_TEAM_NAME, teamName);
-        editor.putString(KEY_TEAM_ID, teamId);
         editor.apply();
     }
 
@@ -87,15 +69,6 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString(KEY_USER_ID, "");
     }
 
-    public static String getTeamName(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_TEAM_NAME, "");
-    }
-
-    public static String getTeamId(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_TEAM_ID, "");
-    }
 
     /**
      * this method clears the user data
@@ -107,14 +80,5 @@ public class SharedPrefsUtil {
         editor.clear();
         editor.apply();
     }
-    /**
-     * this method clears the team data
-     * @param context
-     */
-    public static void clearTeamData(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-    }
+
 }

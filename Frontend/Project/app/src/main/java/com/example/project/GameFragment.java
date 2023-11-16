@@ -34,10 +34,17 @@ public class GameFragment extends Fragment {
 
     // Sets up click listeners for the buttons within the fragment.
     private void setupButtonListeners() {
-        binding.btnBegin.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), GameActivity.class);
-            startActivity(intent);
-        });
+        if (SharedPrefsTeamUtil.getIsCoach(getContext()).equals("true")) {
+            binding.btnBegin.setVisibility(View.VISIBLE);
+            binding.btnBegin.setOnClickListener(v -> {
+                Intent intent = new Intent(requireActivity(), GameActivity.class);
+                startActivity(intent);
+            });
+        }
+        else{
+            binding.btnBegin.setVisibility(View.GONE);
+        }
+
 
         binding.btnView.setOnClickListener(view -> {
             Intent intent = new Intent(requireActivity(), GameWebsocketActivity.class);
