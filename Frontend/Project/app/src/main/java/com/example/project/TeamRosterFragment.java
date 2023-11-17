@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -53,6 +54,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private RequestQueue mQueue;
 
+    private Context mContext;
+
     private TextView coachText;
 
     private ArrayList<Integer> playerList;
@@ -66,6 +69,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     private int teamId;
 
     private String teamName;
+
+    private LinearLayout ll;
 
 
     public TeamRosterFragment() {
@@ -82,23 +87,25 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mQueue = Volley.newRequestQueue(getContext());
+        mQueue = Volley.newRequestQueue(mContext);
         //tl =  view.findViewById(R.id.tableLayout);
         coachText = view.findViewById(R.id.coach);
         Button back = view.findViewById(R.id.backButton);
         Button teamChat = view.findViewById(R.id.chatButton);
+
+        ll = view.findViewById(R.id.cardLL);
         //Button edit = view.findViewById(R.id.editButton);
 
 
-        teamId= Integer.parseInt(SharedPrefsTeamUtil.getTeamId(getContext()));
-        teamName= SharedPrefsTeamUtil.getTeamName(getContext());
+        teamId= Integer.parseInt(SharedPrefsTeamUtil.getTeamId(mContext));
+        teamName= SharedPrefsTeamUtil.getTeamName(mContext);
 
         addPlayerDisplay();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPrefsTeamUtil.clearTeamData(getContext());
-                Intent intent = new Intent(getContext(), MainActivity.class);
+                SharedPrefsTeamUtil.clearTeamData(mContext);
+                Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -106,10 +113,16 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         teamChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), TeamChat.class);
+                Intent intent = new Intent(mContext, TeamChat.class);
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     private void getPlayers(final TeamIdListsCallback callback){
@@ -175,10 +188,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                     if (players.length() > 0) {
 
-                        LinearLayout ll = requireView().findViewById(R.id.cardLL);
-
-                        if(SharedPrefsTeamUtil.getIsCoach(getContext()).equals("true")) {
-                            MaterialButton editButton = new MaterialButton(requireContext(), null);
+                        String k = SharedPrefsTeamUtil.getIsCoach((mContext));
+                        if(SharedPrefsTeamUtil.getIsCoach(mContext).equals("true")) {
+                            MaterialButton editButton = new MaterialButton(mContext, null);
                             editButton.setLayoutParams(new ViewGroup.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
@@ -186,15 +198,15 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                             editButton.setTop(5);
                             editButton.setBottom(5);
-                            editButton.setBackgroundColor(getResources().getColor(R.color.black));
-                            editButton.setTextColor(getResources().getColor(R.color.white));
-                            editButton.setIcon(getResources().getDrawable(R.drawable.baseline_edit_24));
+                            editButton.setBackgroundColor(mContext.getColor(R.color.black));
+                            editButton.setTextColor(mContext.getColor(R.color.white));
+                            editButton.setIcon(mContext.getDrawable(R.drawable.baseline_edit_24));
 
                             editButton.setText("EDIT TEAM ROSTER");
 
                             ll.addView(editButton);
 
-                            MaterialButton saveButton = new MaterialButton(requireContext(), null);
+                            MaterialButton saveButton = new MaterialButton(mContext, null);
                             saveButton.setLayoutParams(new ViewGroup.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
@@ -202,14 +214,14 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                             saveButton.setTop(5);
                             saveButton.setBottom(5);
-                            saveButton.setBackgroundColor(getResources().getColor(R.color.black));
-                            saveButton.setTextColor(getResources().getColor(R.color.white));
-                            saveButton.setIcon(getResources().getDrawable(R.drawable.baseline_check_24));
+                            saveButton.setBackgroundColor(mContext.getColor(R.color.black));
+                            saveButton.setTextColor(mContext.getColor(R.color.white));
+                            saveButton.setIcon(mContext.getDrawable(R.drawable.baseline_check_24));
 
                             saveButton.setText("SAVE ROSTER");
                             saveButton.setVisibility(View.GONE);
 
-                            TextView textView = new TextView(getContext());
+                            TextView textView = new TextView(mContext);
 
                             textView.setText("Click Player Cards To Update Player Information");
 
@@ -231,9 +243,30 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                                         View v = ll.getChildAt(l);
                                         if (v instanceof CardView) {
                                             CardView cv = (CardView) v;
-                                            cv.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.card_foreground));
+                                            cv.setForeground(ContextCompat.getDrawable(mContext, R.drawable.card_foreground));
                                             cv.setClickable(true);
                                             cv.setFocusable(true);
+
+                                            LinearLayout ll2 = (LinearLayout) cv.getChildAt(0);
+
+                                            for (int k = 0; k < ll2.getChildCount(); k++) {
+                                                View b = ll2.getChildAt(k);
+                                                if(b instanceof Button){
+                                                    Button button = (Button) b;
+                                                    button.setVisibility(View.VISIBLE);
+
+                                                    button.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            int id = v.getId();
+                                                            deletePlayer(id);
+                                                        }
+                                                    });
+                                                }
+
+                                            }
+
+
                                             cv.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
@@ -291,7 +324,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                             Log.d("TeamRoster", "Info" + name);
 
-                            CardView cardView = new CardView(requireContext());
+                            CardView cardView = new CardView(mContext);
                             LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -302,7 +335,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             cardView.setCardElevation(4);
 
 
-                            LinearLayout linearLayout = new LinearLayout(requireContext());
+                            LinearLayout linearLayout = new LinearLayout(mContext);
                             linearLayout.setLayoutParams(new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -310,7 +343,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             linearLayout.setOrientation(LinearLayout.VERTICAL);
 
 
-                            TextView num = new TextView(requireContext());
+                            TextView num = new TextView(mContext);
                             LinearLayout.LayoutParams numberParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -321,7 +354,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             num.setTextSize(18);
                             num.setTypeface(null, Typeface.BOLD);
 
-                            TextView namePlayer = new TextView(requireContext());
+                            TextView namePlayer = new TextView(mContext);
                             LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -333,7 +366,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             namePlayer.setTypeface(null, Typeface.BOLD);
 
 
-                            TextView pos = new TextView(requireContext());
+                            TextView pos = new TextView(mContext);
                             LinearLayout.LayoutParams positionParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
@@ -343,9 +376,21 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             pos.setText(position);
                             pos.setTextSize(18);
 
+                            Button delete = new Button(mContext);
+                            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            );
+                            delete.setId(cardId);
+                            delete.setVisibility(View.GONE);
+                            delete.setLayoutParams(btnParams);
+                            delete.setText("REMOVE");
+
+
                             linearLayout.addView(num);
                             linearLayout.addView(namePlayer);
                             linearLayout.addView(pos);
+                            linearLayout.addView(delete);
 
                             cardView.addView(linearLayout);
 
@@ -368,6 +413,32 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         });
 
         mQueue.add(request);
+    }
+
+    private void deletePlayer(int pid) {
+
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + SharedPrefsTeamUtil.getTeamId(mContext);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String message = response.getString("message");
+                            Log.d("DeleteUser", "Response received: " + response.toString());
+                        } catch (JSONException e) {
+                            Log.e("DeleteUser", "JSON parsing error: " + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("DeleteUser", "Error in request: " + error.getMessage());
+                    }
+                });
+
+        mQueue.add(jsonObjectRequest);
     }
 
     public interface TeamIdListsCallback {
@@ -401,19 +472,19 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                         try {
                             String status = response.getString("message");
                             if ("success".equals(status)) {
-                                Toast.makeText(requireContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Profile Updated!", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(requireContext(), "Error pupdating profile!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "Error pupdating profile!", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            Toast.makeText(requireContext(), "Error parsing response!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "Error parsing response!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(requireContext(), "Error updating profile!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "Error updating profile!", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 });
