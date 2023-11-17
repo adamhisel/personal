@@ -1,0 +1,15 @@
+.app-container {
+    padding: 20px; 
+  }
+  
+  .search-bar-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    width: 200px; 
+    margin-left: 5%;
+  }
+  
+  .searchBar {
+    width: 100%; 
+  }
