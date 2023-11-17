@@ -55,7 +55,7 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
             teamName =  intent.getStringExtra("teamName");
         }
 
-        header.setText(SharedPrefsUtil.getTeamName(this) + " Team Chat");
+        header.setText(SharedPrefsTeamUtil.getTeamName(this) + " Team Chat");
 
         String userName = SharedPrefsUtil.getUserName(this);
 

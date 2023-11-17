@@ -78,7 +78,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         mQueue = Volley.newRequestQueue(this);
-        teamId = SharedPrefsUtil.getTeamId(this);
+        teamId = SharedPrefsTeamUtil.getTeamId(this);
         userName = SharedPrefsUtil.getUserName(this);
 
         Log.d("GameActivity", "Team ID retrieved: " + teamId);

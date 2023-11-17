@@ -75,6 +75,12 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_team_roster, container, false);
 
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         mQueue = Volley.newRequestQueue(getContext());
         //tl =  view.findViewById(R.id.tableLayout);
@@ -84,19 +90,16 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         //Button edit = view.findViewById(R.id.editButton);
 
 
-        teamId= Integer.parseInt(SharedPrefsUtil.getTeamId(getContext()));
-        teamName= SharedPrefsUtil.getTeamName(getContext());
-
+        teamId= Integer.parseInt(SharedPrefsTeamUtil.getTeamId(getContext()));
+        teamName= SharedPrefsTeamUtil.getTeamName(getContext());
 
         addPlayerDisplay();
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // You can replace getActivity() with the appropriate activity if needed
-                if (getActivity() != null) {
-                    getActivity().onBackPressed();
-                }
+                SharedPrefsTeamUtil.clearTeamData(getContext());
+                Intent intent = new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -107,10 +110,6 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 startActivity(intent);
             }
         });
-
-//
-
-        return view;
     }
 
     private void getPlayers(final TeamIdListsCallback callback){
@@ -178,48 +177,106 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                         LinearLayout ll = requireView().findViewById(R.id.cardLL);
 
-                        MaterialButton editButton = new MaterialButton(requireContext(), null);
-                        editButton.setLayoutParams(new ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        ));
+                        if(SharedPrefsTeamUtil.getIsCoach(getContext()).equals("true")) {
+                            MaterialButton editButton = new MaterialButton(requireContext(), null);
+                            editButton.setLayoutParams(new ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                            ));
 
-                        editButton.setTop(5);
-                        editButton.setBottom(5);
-                        editButton.setBackgroundColor(getResources().getColor(R.color.black));
-                        editButton.setTextColor(getResources().getColor(R.color.white));
-                        editButton.setIcon(getResources().getDrawable(R.drawable.baseline_edit_24));
+                            editButton.setTop(5);
+                            editButton.setBottom(5);
+                            editButton.setBackgroundColor(getResources().getColor(R.color.black));
+                            editButton.setTextColor(getResources().getColor(R.color.white));
+                            editButton.setIcon(getResources().getDrawable(R.drawable.baseline_edit_24));
 
-                        editButton.setText("EDIT TEAM ROSTER");
+                            editButton.setText("EDIT TEAM ROSTER");
 
-                        ll.addView(editButton);
+                            ll.addView(editButton);
 
-                        MaterialButton saveButton = new MaterialButton(requireContext(), null);
-                        saveButton.setLayoutParams(new ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                        ));
+                            MaterialButton saveButton = new MaterialButton(requireContext(), null);
+                            saveButton.setLayoutParams(new ViewGroup.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                            ));
 
-                        saveButton.setTop(5);
-                        saveButton.setBottom(5);
-                        saveButton.setBackgroundColor(getResources().getColor(R.color.black));
-                        saveButton.setTextColor(getResources().getColor(R.color.white));
-                        saveButton.setIcon(getResources().getDrawable(R.drawable.baseline_check_24));
+                            saveButton.setTop(5);
+                            saveButton.setBottom(5);
+                            saveButton.setBackgroundColor(getResources().getColor(R.color.black));
+                            saveButton.setTextColor(getResources().getColor(R.color.white));
+                            saveButton.setIcon(getResources().getDrawable(R.drawable.baseline_check_24));
 
-                        saveButton.setText("SAVE ROSTER");
-                        saveButton.setVisibility(View.GONE);
+                            saveButton.setText("SAVE ROSTER");
+                            saveButton.setVisibility(View.GONE);
 
-                        TextView textView = new TextView(getContext());
+                            TextView textView = new TextView(getContext());
 
-                        textView.setText("Click Player Cards To Update Player Information");
+                            textView.setText("Click Player Cards To Update Player Information");
 
-                        textView.setTextSize(20);
+                            textView.setTextSize(20);
 
-                        textView.setGravity(Gravity.CENTER);
-                        textView.setVisibility(View.GONE);
+                            textView.setGravity(Gravity.CENTER);
+                            textView.setVisibility(View.GONE);
 
-                        ll.addView(saveButton);
-                        ll.addView(textView);
+                            ll.addView(saveButton);
+                            ll.addView(textView);
+
+
+                            editButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    saveButton.setVisibility((View.VISIBLE));
+                                    textView.setVisibility((View.VISIBLE));
+                                    for (int l = 0; l < ll.getChildCount(); l++) {
+                                        View v = ll.getChildAt(l);
+                                        if (v instanceof CardView) {
+                                            CardView cv = (CardView) v;
+                                            cv.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.card_foreground));
+                                            cv.setClickable(true);
+                                            cv.setFocusable(true);
+                                            cv.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+
+                                                    getPlayers(new TeamIdListsCallback() {
+                                                        @Override
+                                                        public void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList) {
+                                                            playerList = idList;
+                                                            playerNameList = nameList;
+                                                            int id = v.getId();
+                                                            playerId = playerList.get(id);
+                                                            playerName = playerNameList.get(id);
+                                                            showUpdatePlayerDialog();
+
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            });
+
+                            saveButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    editButton.setVisibility(View.VISIBLE);
+                                    saveButton.setVisibility((View.GONE));
+                                    textView.setVisibility((View.GONE));
+                                    for (int l = 0; l < ll.getChildCount(); l++) {
+                                        View v = ll.getChildAt(l);
+                                        if (v instanceof CardView) {
+                                            CardView cv = (CardView) v;
+                                            cv.setClickable(false);
+                                            cv.setFocusable(false);
+
+                                        }
+                                    }
+                                    ll.removeAllViews();
+                                    addPlayerDisplay();
+                                }
+                            });
+                        }
 
 
 
@@ -293,61 +350,6 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             cardView.addView(linearLayout);
 
                             ll.addView(cardView);
-
-                            editButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    saveButton.setVisibility((View.VISIBLE));
-                                    textView.setVisibility((View.VISIBLE));
-                                    for (int l = 0; l < ll.getChildCount(); l++) {
-                                        View v = ll.getChildAt(l);
-                                        if (v instanceof CardView) {
-                                            CardView cv = (CardView) v;
-                                            cv.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.card_foreground));
-                                            cv.setClickable(true);
-                                            cv.setFocusable(true);
-                                            cv.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-
-                                                    getPlayers(new TeamIdListsCallback() {
-                                                        @Override
-                                                        public void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList) {
-                                                            playerList = idList;
-                                                            playerNameList = nameList;
-                                                            int id = v.getId();
-                                                            playerId = playerList.get(id);
-                                                            playerName = playerNameList.get(id);
-                                                            showUpdatePlayerDialog();
-
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            });
-
-                            saveButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    editButton.setVisibility(View.VISIBLE);
-                                    saveButton.setVisibility((View.GONE));
-                                    textView.setVisibility((View.GONE));
-                                    for (int l = 0; l < ll.getChildCount(); l++) {
-                                        View v = ll.getChildAt(l);
-                                        if (v instanceof CardView) {
-                                            CardView cv = (CardView) v;
-                                            cv.setClickable(false);
-                                            cv.setFocusable(false);
-
-                                        }
-                                    }
-                                    ll.removeAllViews();
-                                    addPlayerDisplay();
-                                }
-                            });
 
                             cardId += 1;
                         }

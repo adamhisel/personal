@@ -16,9 +16,6 @@ public class SharedPrefsUtil {
     private static final String KEY_PHONE_NUMBER = "KEY_PHONE_NUMBER";
     private static final String KEY_USER_ID = "KEY_USER_ID";
 
-    private static final String KEY_TEAM_NAME = "KEY_TEAM_NAME";
-    private static final String KEY_TEAM_ID = "KEY_TEAM_ID";
-
 
     /**
      * this method takes in all variables to set the User Preferences when called
@@ -39,20 +36,6 @@ public class SharedPrefsUtil {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_PHONE_NUMBER, phoneNumber);
         editor.putString(KEY_USER_ID, userId);
-        editor.apply();
-    }
-
-    /**
-     * this method takes in all variables to set the Team Preferences when called
-     * @param context
-     * @param teamName
-     * @param teamId
-     */
-    public static void saveTeamData(Context context, String teamName, String teamId){
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_TEAM_NAME, teamName);
-        editor.putString(KEY_TEAM_ID, teamId);
         editor.apply();
     }
 
@@ -86,15 +69,6 @@ public class SharedPrefsUtil {
         return sharedPreferences.getString(KEY_USER_ID, "");
     }
 
-    public static String getTeamName(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_TEAM_NAME, "");
-    }
-
-    public static String getTeamId(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_TEAM_ID, "");
-    }
 
     /**
      * this method clears the user data
@@ -106,4 +80,5 @@ public class SharedPrefsUtil {
         editor.clear();
         editor.apply();
     }
+
 }
