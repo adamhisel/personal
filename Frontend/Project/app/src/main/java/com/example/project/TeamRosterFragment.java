@@ -92,6 +92,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         coachText = view.findViewById(R.id.coach);
         Button back = view.findViewById(R.id.backButton);
         Button teamChat = view.findViewById(R.id.chatButton);
+        Button teamSettings = view.findViewById(R.id.settingsButton);
 
         ll = view.findViewById(R.id.cardLL);
         //Button edit = view.findViewById(R.id.editButton);
@@ -188,8 +189,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                     if (players.length() > 0) {
 
-                        String k = SharedPrefsTeamUtil.getIsCoach((mContext));
                         if(SharedPrefsTeamUtil.getIsCoach(mContext).equals("true")) {
+
+
                             MaterialButton editButton = new MaterialButton(mContext, null);
                             editButton.setLayoutParams(new ViewGroup.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -258,8 +260,16 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                                                     button.setOnClickListener(new View.OnClickListener() {
                                                         @Override
                                                         public void onClick(View v) {
-                                                            int id = v.getId();
-                                                            deletePlayer(id);
+                                                            getPlayers(new TeamIdListsCallback() {
+                                                                @Override
+                                                                public void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList) {
+                                                                    playerList = idList;
+                                                                    int id = v.getId();
+                                                                    playerId = playerList.get(id);
+                                                                    deletePlayer(playerId);
+
+                                                                }
+                                                            });
                                                         }
                                                     });
                                                 }
@@ -416,24 +426,26 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deletePlayer(int pid) {
-
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + SharedPrefsTeamUtil.getTeamId(mContext);
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/players/" + pid;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            String message = response.getString("message");
-                            Log.d("DeleteUser", "Response received: " + response.toString());
-                        } catch (JSONException e) {
-                            Log.e("DeleteUser", "JSON parsing error: " + e.getMessage());
+                            String message = response.optString("message");
+                            Log.d("DeleteUser", "Player deleted successfully");
+                        } catch (Exception e) {
+                            Log.e("DeleteUser", "Error parsing response: " + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            Log.e("DeleteUser", "Error code: " + error.networkResponse.statusCode);
+                        }
                         Log.e("DeleteUser", "Error in request: " + error.getMessage());
                     }
                 });
