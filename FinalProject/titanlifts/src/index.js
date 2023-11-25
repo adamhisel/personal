@@ -1,50 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import Lift from "./demos.js";
-
-const Navbar = () => {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container justify-content-center"> {/* Use justify-content-center to center-align */}
-        <a className="navbar-brand" href="#">Your Logo</a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse justify-content-center" id="navbarNav"> {/* Use justify-content-center */}
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link" href="#">Home</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">About</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Services</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Contact</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  );
-};
+import Demos from "./demos.js";
+import Account from "./account.js";
+import Navbar from "./navbar.js";
+import Authors from "./authors.js";
+import "./index.css";
 
 const App = () => {
+  const [showDemos, setShowDemos] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
+  const [showAuthors, setShowAuthors] = useState(false);
+
   return (
     <div>
-      <Navbar />
-      <Lift />
+      <Navbar
+        setShowDemos={setShowDemos}
+        setShowAccount={setShowAccount}
+        setShowAuthors={setShowAuthors}
+      />
+      {showDemos && <Demos />}
+      {showAccount && <Account />}
+      {showAuthors && <Authors />}
     </div>
   );
 };

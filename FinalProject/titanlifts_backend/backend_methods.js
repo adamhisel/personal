@@ -128,8 +128,7 @@ app.get("/users/:id", async (req, res) => {
     res.status(200);
     res.send(results);
   
-  })
-
+  });
 
 //Workouts
 
