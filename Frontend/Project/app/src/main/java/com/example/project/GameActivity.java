@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -33,7 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * GameActivity facilitates a basketball game session, managing UI interactions, tracking game stats,
@@ -55,6 +59,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private final int[] playerTextViewIds = new int[]{R.id.tvBtnPlayer1, R.id.tvBtnPlayer2, R.id.tvBtnPlayer3, R.id.tvBtnPlayer4, R.id.tvBtnPlayer5};
     private final List<Shots> teamShots = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
+    private Set<Player> courtPlayers = new HashSet<>();
     private ActivityGameBinding binding;
     private ImageView imageView;
     private Drawable green, red;
@@ -85,7 +90,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         loadPlayersForTeam(Integer.parseInt(teamId));
         initializeViews();
         setupCourtImageView();
-        setupShotTypeIndicator();
+        //setupShotTypeIndicator();
         createGame(new TeamIdCallback() {
             @Override
             public void onTeamIdReceived(int id) {
@@ -147,6 +152,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             });
         }
 
+        binding.btnSubstitute.setOnClickListener(view -> showSubstitutionDialog());
+
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,8 +180,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             int buttonsTopMargin = imageHeight;
             setViewTopMargin(binding.llButtons, buttonsTopMargin + 10);
 
-            // 50 is the space between buttons and players
-            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50;
+            // Space between buttons and players
+            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 30;
             setViewTopMargin(binding.llPlayers, playersTopMargin);
 
             int scrollViewTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 10;
@@ -187,6 +194,16 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         layoutParams.topMargin = topMargin;
         view.setLayoutParams(layoutParams);
+    }
+
+    private void updateSubstitutionButtonVisibility() {
+        runOnUiThread(() -> {
+            if (players.size() > 5) {
+                binding.btnSubstitute.setVisibility(View.VISIBLE);
+            } else {
+                binding.btnSubstitute.setVisibility(View.GONE);
+            }
+        });
     }
 
     // Initiate a new game session with the server
@@ -250,8 +267,13 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                         Player player = new Player(playerId, playerName, playerNumber, position);
                         players.add(player);
                         Log.i("GameActivity", "Loaded player: " + playerName); // Logging the loaded player
+                        if (i < 5) {
+                            courtPlayers.add(player); // Add first five players to courtPlayers
+                        }
                     }
-                    updatePlayerButtonLabels();
+                    initializePlayerButtonLabels();
+                    updatePlayerButtonColors(); // To reflect the initial court players
+                    updateSubstitutionButtonVisibility();
                 } catch (JSONException e) {
                 }
             }
@@ -266,145 +288,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         mQueue.add(request);
     }
 
-    // Sets up the shot type indicator on the basketball court image
-    private void setupShotTypeIndicator() {
-        imageView.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                recordBasketballShot(event);
-                return true;
-            }
-            return false;
-        });
-    }
-
-    // Records the location of a basketball shot
-    private void recordBasketballShot(MotionEvent event) {
-        // Check if there is an active player
-        if (activePlayer == null) {
-            Toast.makeText(this, "Please select a player first!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        float x = event.getX();
-        float y = event.getY();
-
-        String shotType = calculateShotType(x, y);
-
-        // Increment attempt counters
-        incrementShotAttempts(shotType);
-
-        // Show shot buttons and then wait for user to record as make or miss
-        showShotButtons();
-        recordMakeOrMiss(shotType, x, y);
-    }
-
-    // Calculates the type of shot based on court coordinates
-    private String calculateShotType(float x, float y) {
-        // Scaling factors
-        float widthScale = 600f / imageView.getWidth();
-        float heightScale = 564f / imageView.getHeight();
-
-        // Real-world coordinates
-        float realX = x * widthScale;
-        float realY = y * heightScale;
-
-        // Calculate the distance to the basket
-        float distanceToBasket = calculateDistanceToBasket(realX, realY);
-
-        // Determine the shot type
-        return (realX <= (300f - 264f) || realX >= (300f + 264f) || distanceToBasket >= 285) ? "Three-Point Shot" : "Two-Point Shot";
-    }
-
-    // Calculates the distance from the shot location to the basketball hoop
-    private float calculateDistanceToBasket(float realX, float realY) {
-        return (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
-    }
-
-    // Increments the attempt counters based on shot type
-    private void incrementShotAttempts(String shotType) {
-        if ("Three-Point Shot".equals(shotType)) {
-            threePointAttempts++;
-            if (activePlayer != null) activePlayer.recordThreePointShot(false);
-        } else {
-            twoPointAttempts++;
-            if (activePlayer != null) activePlayer.recordTwoPointShot(false);
-        }
-    }
-
-    // Records whether the shot was made or missed and updates UI accordingly
-    private void recordMakeOrMiss(String shotType, float x, float y) {
-        // Set click listeners for make and miss buttons
-        binding.btnMake.setOnClickListener(v -> handleShotMade(shotType, x, y));
-        binding.btnMiss.setOnClickListener(v -> handleShotMissed(shotType, x, y));
-    }
-
-    // Handles the event when a shot is made
-    private void handleShotMade(String shotType, float x, float y) {
-        boolean isThreePoint = "Three-Point Shot".equals(shotType);
-        int value = isThreePoint ? 3 : 2;
-        teamPoints += value;
-
-        Shots shot = new Shots(true, value, (int) x, (int) y);
-        teamShots.add(shot); // Add the shot to the team's list
-        Log.d("GameActivity", "Shot made: " + shot + " added to team shot list.");
-
-        // Check if there's an active player selected
-        if (activePlayer != null) {
-            // Add the shot to the active player's list
-            activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
-            Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
-        }
-        int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-        String message = activePlayer.getName() + " made a " + (isThreePoint ? "3" : "2") + " point shot, player's points: " + activePlayerPoints + ", team's points: " + teamPoints;
-        WebSocketManager.getInstance().sendMessage(message);
-
-        setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
-        if (isThreePoint) {
-            threePointMakes++;
-            if (activePlayer != null) activePlayer.recordThreePointShot(true);
-        } else {
-            twoPointMakes++;
-            if (activePlayer != null) activePlayer.recordTwoPointShot(true);
-        }
-        totalShots++;
-        hideShotButtons();
-    }
-
-    // Handles the event when a shot is missed
-    private void handleShotMissed(String shotType, float x, float y) {
-        boolean isThreePoint = "Three-Point Shot".equals(shotType);
-        int value = isThreePoint ? 3 : 2;
-
-        Shots shot = new Shots(false, value, (int) x, (int) y);
-        teamShots.add(shot); // Add the shot to the team's list
-        Log.d("GameActivity", "Shot missed: " + shot + " added to team shot list.");
-
-        if (activePlayer != null) {
-            // Add the shot to the active player's list
-            activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
-            Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
-        }
-
-        int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-        String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") + " point shot, player's points: " + activePlayerPoints + ", team's points: " + teamPoints;
-        WebSocketManager.getInstance().sendMessage(message);
-        setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
-        totalShots++;
-        hideShotButtons();
-    }
-
-    // Sets an icon at the shot location on the basketball court image
-    private void setIconAndPosition(Drawable drawable, float x, float y) {
-        // Create a new ImageView instance for each shot
-        ImageView imageView = new ImageView(this);
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
-        imageView.setImageDrawable(drawable);
-        // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX);
-        imageView.setY(y - ICON_SIZE_PX);
-        // Add the new ImageView to the root layout
-        binding.getRoot().addView(imageView);
-    }
-
     // Sets the active player based on user selection
     private void setActivePlayer(int playerIndex) {
         Log.d(TAG, "setActivePlayer called with playerIndex: " + playerIndex);
@@ -412,21 +295,41 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         activePlayerIndex = playerIndex;
         activePlayer = players.get(playerIndex);
 
-        // Reset background color for all player buttons
-        for (int i = 0; i < playerButtonIds.length; i++) {
-            ImageButton button = findViewById(playerButtonIds[i]);
-            button.setBackgroundColor(Color.TRANSPARENT); // Or any default color
-            Log.d(TAG, "Resetting background color for button at index: " + i);
-        }
-
-        // Set background color for active player's button
-        ImageButton activePlayerButton = findViewById(playerButtonIds[activePlayerIndex]);
-        activePlayerButton.setBackgroundColor(Color.DKGRAY); // Dark color for active player
-        Log.d(TAG, "Setting dark gray background for active player button at index: " + activePlayerIndex);
+        updatePlayerButtonColors();
     }
 
-    // Updates the labels on player buttons to reflect current player information
-    private void updatePlayerButtonLabels() {
+    private void updatePlayerButtonColors() {
+        for (int i = 0; i < playerButtonIds.length; i++) {
+            ImageButton button = findViewById(playerButtonIds[i]);
+            Player player = players.get(i);
+
+            if (player.equals(activePlayer)) {
+                button.setBackgroundColor(Color.DKGRAY);
+            } else if (courtPlayers.contains(player)) {
+                button.setBackgroundColor(Color.LTGRAY);
+            } else {
+                button.setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
+    }
+
+    private void updateButtonForSubstitutedPlayer(Player playerOut, Player playerIn) {
+        for (int i = 0; i < playerButtonIds.length; i++) {
+            ImageButton playerButton = findViewById(playerButtonIds[i]);
+            Player currentPlayer = (Player) playerButton.getTag();
+
+            if (currentPlayer != null && currentPlayer.equals(playerOut)) {
+                // Update the button's tag and text
+                playerButton.setTag(playerIn);
+                TextView playerTextView = findViewById(playerTextViewIds[i]);
+                playerTextView.setText(playerIn.getName());
+                break;
+            }
+        }
+    }
+
+    // Initializes the labels on player buttons to reflect current player information
+    private void initializePlayerButtonLabels() {
         int playerCount = players.size();
         // Limit the button count to 5
         int buttonCount = Math.min(playerButtonIds.length, 5);
@@ -437,6 +340,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             if (i < playerCount) {
                 // There is a player for this button
                 Player player = players.get(i);
+                playerButton.setTag(player);
                 playerTextView.setText(player.getName());
                 enablePlayerButton(playerButton);
             } else {
@@ -445,6 +349,40 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 disablePlayerButton(playerButton);
             }
         }
+    }
+
+    private void showSubstitutionDialog() {
+        if (activePlayer == null || !courtPlayers.contains(activePlayer)) {
+            Toast.makeText(this, "Select an active court player first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<Player> substitutionOptions = getSubstitutionOptions();
+        CharSequence[] playerNames = new CharSequence[substitutionOptions.size()];
+        for (int i = 0; i < substitutionOptions.size(); i++) {
+            playerNames[i] = substitutionOptions.get(i).getName();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose a player to substitute");
+        builder.setItems(playerNames, (dialog, which) -> {
+            Player selectedPlayer = substitutionOptions.get(which);
+            substitutePlayer(activePlayer, selectedPlayer);
+        });
+        builder.show();
+    }
+
+    private List<Player> getSubstitutionOptions() {
+        return players.stream()
+                .filter(player -> !courtPlayers.contains(player))
+                .collect(Collectors.toList());
+    }
+
+    private void substitutePlayer(Player playerOut, Player playerIn) {
+        courtPlayers.remove(playerOut);
+        courtPlayers.add(playerIn);
+        updatePlayerButtonColors();
+        updateButtonForSubstitutedPlayer(playerOut, playerIn);
     }
 
     // Sends the list of shots taken by the team to the server
