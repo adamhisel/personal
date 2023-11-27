@@ -140,8 +140,10 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         imageView = binding.courtImageView;
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
-
         hideShotButtons();
+        binding.btnRecordStat.setOnClickListener(v -> showRecordStatDialog());
+        binding.btnRecordStat.setVisibility(View.GONE);
+        binding.btnSubstitute.setOnClickListener(view -> showSubstitutionDialog());
 
         // Set up player button listeners
         for (int i = 0; i < playerButtonIds.length; i++) {
@@ -159,8 +161,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 playerButton.setEnabled(false); // Disable button if no corresponding player
             }
         }
-
-        binding.btnSubstitute.setOnClickListener(view -> showSubstitutionDialog());
 
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,12 +437,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 
 
-
     // Sets the active player based on user selection
     private void setActivePlayer(Player player) {
         if (player != null) {
             this.activePlayer = player;
             updatePlayerButtonColors();
+            binding.btnRecordStat.setVisibility(View.VISIBLE);
         }
     }
 
@@ -548,6 +548,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         textView.setText(player.getName());
         updatePlayerButtonColors();
     }
+
+    private void showRecordStatDialog() {}
 
     // Sends the list of shots taken by the team to the server
     private void sendTeamShots(int gameId, List<Shots> teamShots) {
