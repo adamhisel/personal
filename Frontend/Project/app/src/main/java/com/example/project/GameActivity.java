@@ -145,23 +145,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         binding.btnRecordStat.setVisibility(View.GONE);
         binding.btnSubstitute.setOnClickListener(view -> showSubstitutionDialog());
 
-        // Set up player button listeners
-        for (int i = 0; i < playerButtonIds.length; i++) {
-            ImageButton playerButton = findViewById(playerButtonIds[i]);
-
-            // Only set listener if there is a corresponding player
-            if (i < players.size()) {
-                playerButton.setOnClickListener(view -> {
-                    Player player = (Player) view.getTag();
-                    if (player != null) {
-                        setActivePlayer(player);
-                    }
-                });
-            } else {
-                playerButton.setEnabled(false); // Disable button if no corresponding player
-            }
-        }
-
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -280,6 +263,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                             courtPlayers.add(player); // Add first five players to courtPlayers
                         }
                     }
+                    // Initialize player buttons after players are loaded
+                    initializePlayerButtons();
                     initializePlayerButtonLabels();
                     updatePlayerButtonColors(); // To reflect the initial court players
                     updateSubstitutionButtonVisibility();
@@ -446,21 +431,16 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         }
     }
 
-    private void updatePlayerButtonColors() {
+    private void initializePlayerButtons() {
         for (int i = 0; i < playerButtonIds.length; i++) {
-            ImageButton button = findViewById(playerButtonIds[i]);
-            Player player = (Player) button.getTag();
-
-            if (player != null) {
-                if (player.equals(activePlayer)) {
-                    button.setBackgroundColor(Color.DKGRAY);
-                } else if (courtPlayers.contains(player)) {
-                    button.setBackgroundColor(Color.LTGRAY);
-                } else {
-                    button.setBackgroundColor(Color.TRANSPARENT);
-                }
+            ImageButton playerButton = findViewById(playerButtonIds[i]);
+            if (i < players.size()) {
+                Player player = players.get(i);
+                playerButton.setTag(player);
+                playerButton.setOnClickListener(view -> setActivePlayer(player));
+                enablePlayerButton(playerButton);
             } else {
-                button.setBackgroundColor(Color.TRANSPARENT);
+                disablePlayerButton(playerButton);
             }
         }
     }
@@ -522,6 +502,10 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         // Find the index of the button associated with the player going out
         int buttonIndexOut = findButtonIndexForPlayer(playerOut);
         if (buttonIndexOut != -1) {
+            ImageButton button = findViewById(playerButtonIds[buttonIndexOut]);
+            button.setTag(playerIn);
+            button.setOnClickListener(view -> setActivePlayer(playerIn));
+
             updateButtonForPlayer(buttonIndexOut, playerIn);
         }
 
@@ -547,6 +531,25 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         button.setTag(player);
         textView.setText(player.getName());
         updatePlayerButtonColors();
+    }
+
+    private void updatePlayerButtonColors() {
+        for (int i = 0; i < playerButtonIds.length; i++) {
+            ImageButton button = findViewById(playerButtonIds[i]);
+            Player player = (Player) button.getTag();
+
+            if (player != null) {
+                if (player.equals(activePlayer)) {
+                    button.setBackgroundColor(Color.DKGRAY);
+                } else if (courtPlayers.contains(player)) {
+                    button.setBackgroundColor(Color.LTGRAY);
+                } else {
+                    button.setBackgroundColor(Color.TRANSPARENT);
+                }
+            } else {
+                button.setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
     }
 
     private void showRecordStatDialog() {}
