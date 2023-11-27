@@ -55,7 +55,7 @@
         android:background="#FFFFFF"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:layout_marginTop="425dp"
+        android:layout_marginTop="400dp"
         android:padding="10dp"
         android:weightSum="5">
 
@@ -77,7 +77,7 @@
             <TextView
                 android:id="@+id/tvBtnPlayer1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:gravity="center"
                 android:text="Player 1" />
         </LinearLayout>
@@ -100,7 +100,7 @@
             <TextView
                 android:id="@+id/tvBtnPlayer2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:gravity="center"
                 android:text="Player 2" />
         </LinearLayout>
@@ -123,7 +123,7 @@
             <TextView
                 android:id="@+id/tvBtnPlayer3"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:gravity="center"
                 android:text="Player 3" />
         </LinearLayout>
@@ -146,7 +146,7 @@
             <TextView
                 android:id="@+id/tvBtnPlayer4"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:gravity="center"
                 android:text="Player 4" />
         </LinearLayout>
@@ -169,19 +169,75 @@
             <TextView
                 android:id="@+id/tvBtnPlayer5"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:gravity="center"
                 android:text="Player 5" />
         </LinearLayout>
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/llLowerInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_marginTop="500dp">
+
+        <!-- Left side for displaying stats -->
+        <FrameLayout
+            android:id="@+id/flLeftText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ScrollView
+                android:id="@+id/svPlayerStats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tvPlayerStats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Player Stats"
+                    android:textSize="16sp" />
+            </ScrollView>
+        </FrameLayout>
+
+        <!-- Right side for buttons -->
+        <LinearLayout
+            android:id="@+id/llRightButtons"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnRecordStat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Record Stat"
+                android:backgroundTint="#000000"
+                android:textColor="#FFFFFF"/>
+
+            <Button
+                android:id="@+id/btnSubstitute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Substitute Player"
+                android:backgroundTint="#000000"
+                android:textColor="#FFFFFF"/>
+        </LinearLayout>
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/svWebsocket"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="150dp">
+        android:layout_marginBottom="50dp">
 
         <TextView
             android:id="@+id/tvWebsocketMessages"
