@@ -19,6 +19,10 @@ public class Player {
     private int threePointAttempts;
     private int twoPointMakes;
     private int twoPointAttempts;
+    private int assists;
+    private int rebounds;
+    private int blocks;
+    private int steals;
 
     /**
      * Constructs a Player instance with initial details.
@@ -38,6 +42,10 @@ public class Player {
         this.threePointAttempts = 0;
         this.twoPointMakes = 0;
         this.twoPointAttempts = 0;
+        this.assists = 0;
+        this.rebounds = 0;
+        this.blocks = 0;
+        this.steals = 0;
     }
 
     /**
@@ -67,6 +75,38 @@ public class Player {
      */
     public void addShot(Shots shot) {
         shotsList.add(shot);
+    }
+
+    public void incrementAssists() {
+        assists++;
+    }
+
+    public void decrementAssists() {
+        assists = Math.max(0, assists - 1);
+    }
+
+    public void incrementRebounds() {
+        rebounds++;
+    }
+
+    public void decrementRebounds() {
+        rebounds = Math.max(0, rebounds - 1);
+    }
+
+    public void incrementBlocks() {
+        blocks++;
+    }
+
+    public void decrementBlocks() {
+        blocks = Math.max(0, blocks - 1);
+    }
+
+    public void incrementSteals() {
+        steals++;
+    }
+
+    public void decrementSteals() {
+        steals = Math.max(0, steals - 1);
     }
 
     // Simple getters and setters
@@ -105,5 +145,13 @@ public class Player {
     public int getId() {
         return id;
     }
+
+    public int getAssists() { return assists; }
+
+    public int getRebounds() { return rebounds; }
+
+    public int getBlocks() { return blocks; }
+
+    public int getSteals() { return steals; }
 }
 
