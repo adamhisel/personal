@@ -515,9 +515,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
             Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
         }
-        int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-        String message = activePlayer.getName() + " made a " + (isThreePoint ? "3" : "2") + " point shot, player's points: " + activePlayerPoints + ", team's points: " + teamPoints;
-        WebSocketManager.getInstance().sendMessage(message);
 
         setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
         if (isThreePoint) {
@@ -528,6 +525,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             if (activePlayer != null) activePlayer.recordTwoPointShot(true);
         }
         totalShots++;
+
+        sendShotMessage(new Shots(true, value, (int) x, (int) y), shotType, true, x, y);
         hideShotButtons();
     }
 
@@ -546,11 +545,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
         }
 
-        int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-        String message = activePlayer.getName() + " missed a " + (isThreePoint ? "3" : "2") + " point shot, player's points: " + activePlayerPoints + ", team's points: " + teamPoints;
-        WebSocketManager.getInstance().sendMessage(message);
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
+        sendShotMessage(new Shots(false, value, (int) x, (int) y), shotType, false, x, y);
         hideShotButtons();
     }
 
@@ -565,6 +562,24 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         imageView.setY(y - ICON_SIZE_PX);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
+    }
+
+    private void sendShotMessage(Shots shot, String shotType, boolean isMade, float x, float y) {
+        try {
+            JSONObject messageObject = new JSONObject();
+            messageObject.put("type", "shot");
+            messageObject.put("playerName", activePlayer.getName());
+            messageObject.put("shotType", shotType);
+            messageObject.put("coordinates", new JSONObject().put("x", (int)x).put("y", (int)y));
+            messageObject.put("made", isMade);
+            messageObject.put("teamPoints", teamPoints);
+            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
+            messageObject.put("playerPoints", activePlayerPoints);
+
+            WebSocketManager.getInstance().sendMessage(messageObject.toString());
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error constructing shot message: " + e.getMessage());
+        }
     }
 
     // Brings up dialog to adjust player stats
