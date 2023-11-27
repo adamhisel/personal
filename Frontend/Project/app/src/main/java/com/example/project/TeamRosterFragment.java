@@ -92,10 +92,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         coachText = view.findViewById(R.id.coach);
         Button back = view.findViewById(R.id.backButton);
         Button teamChat = view.findViewById(R.id.chatButton);
-        Button teamSettings = view.findViewById(R.id.settingsButton);
+        //Button teamSettings = view.findViewById(R.id.settingsButton);
 
         ll = view.findViewById(R.id.cardLL);
-        //Button edit = view.findViewById(R.id.editButton);
 
 
         teamId= Integer.parseInt(SharedPrefsTeamUtil.getTeamId(mContext));
