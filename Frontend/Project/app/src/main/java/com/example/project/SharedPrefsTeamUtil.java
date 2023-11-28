@@ -54,6 +54,7 @@ public class SharedPrefsTeamUtil {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(KEY_TEAM_ID);
         editor.remove(KEY_TEAM_NAME);
+        editor.remove(KEY_IS_COACH);
         editor.apply();
     }
 }
