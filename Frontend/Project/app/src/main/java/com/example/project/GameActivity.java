@@ -159,6 +159,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             // Space between buttons and players
             int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight();
             adjustTopMargin(binding.llPlayers, playersTopMargin);
+
+            int statsTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 50;
+            adjustTopMargin(binding.llStats, statsTopMargin);
         });
     }
 
