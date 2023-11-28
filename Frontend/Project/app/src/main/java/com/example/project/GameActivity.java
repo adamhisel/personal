@@ -36,8 +36,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -155,11 +157,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             adjustTopMargin(binding.llButtons, buttonsTopMargin);
 
             // Space between buttons and players
-            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 15;
+            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight();
             adjustTopMargin(binding.llPlayers, playersTopMargin);
 
             //Space between players and lower info
-            int llLowerInfoTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 15;
+            int llLowerInfoTopMargin = playersTopMargin + binding.llPlayers.getHeight();
             adjustTopMargin(binding.llLowerInfo, llLowerInfoTopMargin);
         });
     }
@@ -526,7 +528,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         }
         totalShots++;
 
-        sendShotMessage(new Shots(true, value, (int) x, (int) y), shotType, true, x, y);
+        sendShotMessage(shotType, true, x, y);
         hideShotButtons();
     }
 
@@ -547,7 +549,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
-        sendShotMessage(new Shots(false, value, (int) x, (int) y), shotType, false, x, y);
+        sendShotMessage(shotType, false, x, y);
         hideShotButtons();
     }
 
@@ -564,7 +566,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         binding.getRoot().addView(imageView);
     }
 
-    private void sendShotMessage(Shots shot, String shotType, boolean isMade, float x, float y) {
+    private void sendShotMessage(String shotType, boolean isMade, float x, float y) {
         try {
             JSONObject messageObject = new JSONObject();
             messageObject.put("type", "shot");
@@ -602,31 +604,58 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         dialogBinding.blocksView.setText(String.valueOf(activePlayer.getBlocks()));
         dialogBinding.stealsView.setText(String.valueOf(activePlayer.getSteals()));
 
-        // Set up button click listeners
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusAssist, dialogBinding.plusAssist, dialogBinding.assistsView, activePlayer::decrementAssists, activePlayer::incrementAssists);
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusRebound, dialogBinding.plusRebound, dialogBinding.reboundsView, activePlayer::decrementRebounds, activePlayer::incrementRebounds);
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusBlock, dialogBinding.plusBlock, dialogBinding.blocksView, activePlayer::decrementBlocks, activePlayer::incrementBlocks);
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusSteal, dialogBinding.plusSteal, dialogBinding.stealsView, activePlayer::decrementSteals, activePlayer::incrementSteals);
+        Map<String, Integer> statChanges = new HashMap<>();
 
-        dialogBinding.btnDone.setOnClickListener(v -> dialog.dismiss());
+        // Set up button click listeners
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusAssist, dialogBinding.plusAssist, dialogBinding.assistsView, activePlayer::decrementAssists, activePlayer::incrementAssists, statChanges, "Assists");
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusRebound, dialogBinding.plusRebound, dialogBinding.reboundsView, activePlayer::decrementRebounds, activePlayer::incrementRebounds, statChanges, "Rebounds");
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusBlock, dialogBinding.plusBlock, dialogBinding.blocksView, activePlayer::decrementBlocks, activePlayer::incrementBlocks, statChanges, "Blocks");
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusSteal, dialogBinding.plusSteal, dialogBinding.stealsView, activePlayer::decrementSteals, activePlayer::incrementSteals, statChanges, "Steals");
+
+        dialogBinding.btnDone.setOnClickListener(v -> {
+            dialog.dismiss();
+            sendStatUpdateMessages(statChanges);
+        });
 
         dialog.show();
     }
 
     // Sets button listeners to properly call functions to update stats and display value for each one
-    private void setUpStatButtonListeners(StatRecordDialogBinding dialogBinding, Button minusButton, Button plusButton, TextView statView, Runnable decrementAction, Runnable incrementAction) {
+    private void setUpStatButtonListeners(StatRecordDialogBinding dialogBinding, Button minusButton, Button plusButton, TextView statView, Runnable decrementAction, Runnable incrementAction, Map<String, Integer> statChanges, String statName) {
         minusButton.setOnClickListener(v -> {
             int currentStat = Integer.parseInt(statView.getText().toString());
             if (currentStat > 0) {
                 decrementAction.run();
-                statView.setText(String.valueOf(currentStat - 1));
+                int newStatValue = currentStat - 1;
+                statView.setText(String.valueOf(newStatValue));
+                statChanges.put(statName, newStatValue);
             }
         });
 
         plusButton.setOnClickListener(v -> {
             incrementAction.run();
-            statView.setText(String.valueOf(Integer.parseInt(statView.getText().toString()) + 1));
+            int newStatValue = Integer.parseInt(statView.getText().toString()) + 1;
+            statView.setText(String.valueOf(newStatValue));
+            statChanges.put(statName, newStatValue);
         });
+    }
+
+    private void sendStatUpdateMessages(Map<String, Integer> statChanges) {
+        for (Map.Entry<String, Integer> entry : statChanges.entrySet()) {
+            String statName = entry.getKey();
+            int newValue = entry.getValue();
+            try {
+                JSONObject messageObject = new JSONObject();
+                messageObject.put("type", "statUpdate");
+                messageObject.put("playerName", activePlayer.getName());
+                messageObject.put("stat", statName);
+                messageObject.put("newValue", newValue);
+
+                WebSocketManager.getInstance().sendMessage(messageObject.toString());
+            } catch (JSONException e) {
+                Log.e("GameActivity", "Error constructing stat update message: " + e.getMessage());
+            }
+        }
     }
 
     // Sends the list of shots taken by the team to the server
