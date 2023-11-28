@@ -23,16 +23,17 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="350dp"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:weightSum="2">
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:weightSum="4">
 
         <Button
             android:id="@+id/btnMake"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="8dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:backgroundTint="#000000"
             android:text="Make"
             android:textColor="#FFFFFF" />
@@ -40,12 +41,35 @@
         <Button
             android:id="@+id/btnMiss"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:backgroundTint="#000000"
             android:text="Miss"
             android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnRecordStat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Stat"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="#000000"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/btnSubstitute"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Sub"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="#000000"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
     <LinearLayout
@@ -56,13 +80,11 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:layout_marginTop="400dp"
-        android:padding="10dp"
         android:weightSum="5">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -72,6 +94,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:src="@drawable/person" />
 
             <TextView
@@ -85,7 +109,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -95,6 +118,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:src="@drawable/person" />
 
             <TextView
@@ -108,7 +133,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -118,6 +142,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:src="@drawable/person" />
 
             <TextView
@@ -131,7 +157,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -141,6 +166,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:src="@drawable/person" />
 
             <TextView
@@ -154,7 +181,6 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
@@ -164,6 +190,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
                 android:src="@drawable/person" />
 
             <TextView
@@ -174,62 +202,6 @@
                 android:text="Player 5" />
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/llLowerInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_marginTop="500dp">
-
-        <!-- Left side for displaying stats -->
-        <FrameLayout
-            android:id="@+id/flLeftText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ScrollView
-                android:id="@+id/svPlayerStats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
-
-                <TextView
-                    android:id="@+id/tvPlayerStats"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Player Stats"
-                    android:textSize="16sp" />
-            </ScrollView>
-        </FrameLayout>
-
-        <!-- Right side for buttons -->
-        <LinearLayout
-            android:id="@+id/llRightButtons"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btnRecordStat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Record Stat"
-                android:backgroundTint="#000000"
-                android:textColor="#FFFFFF"/>
-
-            <Button
-                android:id="@+id/btnSubstitute"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Substitute Player"
-                android:backgroundTint="#000000"
-                android:textColor="#FFFFFF"/>
-        </LinearLayout>
     </LinearLayout>
 
     <ScrollView
@@ -243,10 +215,10 @@
             android:id="@+id/tvWebsocketMessages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#CCCEEE"
+            android:background="#D3D3D3"
             android:padding="10dp"
             android:textColor="#000000"
-            android:textSize="8sp" />
+            android:textSize="10sp" />
     </ScrollView>
 
     <!-- End Game Button -->

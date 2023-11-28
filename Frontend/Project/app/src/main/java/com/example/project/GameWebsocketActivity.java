@@ -27,10 +27,10 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
 
     private static final String BASE_URL = "ws://coms-309-018.class.las.iastate.edu:8080/game/";
     private static final String LOCAL_URL = "ws://10.0.2.2:8080/game/";
+    private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
     private ActivityGameWebsocketBinding binding;
     private String userName;
     private ImageView imageView;
-    private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
     private Drawable green, red;
 
     @Override
@@ -49,6 +49,7 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         initializeWebSocketConnection(url);
         setupButtonListeners();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -112,16 +113,21 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
 
     private void processMessage(String message) {
         try {
-            JSONObject messageObject = new JSONObject(message);
-            String type = messageObject.getString("type");
+            // Check if the message contains the JSON part
+            if (message.contains("{")) {
+                // Extract JSON part from the message
+                String jsonPart = message.substring(message.indexOf("{"));
+                JSONObject messageObject = new JSONObject(jsonPart);
+                String type = messageObject.getString("type");
 
-            switch (type) {
-                case "shot":
-                    handleShotMessage(messageObject);
-                    break;
-                case "statUpdate":
-                    handleStatUpdateMessage(messageObject);
-                    break;
+                switch (type) {
+                    case "shot":
+                        handleShotMessage(messageObject);
+                        break;
+                    case "statUpdate":
+                        handleStatUpdateMessage(messageObject);
+                        break;
+                }
             }
         } catch (JSONException e) {
             Log.e("GameWebsocketActivity", "Error parsing message: " + e.getMessage());
@@ -129,25 +135,46 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
     }
 
     private void handleShotMessage(JSONObject messageObject) {
-        // Extract shot details and update UI
-        // ...
-        String shotDetail = messageObject.getString("playerName") + " " +
-                (messageObject.getBoolean("made") ? "made" : "missed") +
-                " a " + messageObject.getString("shotType");
-        binding.websocketMessages.setText(shotDetail + "\n");
-        // Position the shot icon on the court
-        // ...
+        try {
+            // Extract shot details
+            String playerName = messageObject.getString("playerName");
+            boolean made = messageObject.getBoolean("made");
+            String shotType = messageObject.getString("shotType");
+            JSONObject coordinates = messageObject.getJSONObject("coordinates");
+            float xCoord = (float) coordinates.getDouble("x");
+            float yCoord = (float) coordinates.getDouble("y");
+
+            // Set the latest message
+            String shotDetail = playerName + (made ? " made " : " missed ") + "a " + shotType;
+            binding.websocketMessages.setText(shotDetail);
+
+            // Display the shot icon on the court
+            Drawable drawable = made ? green : red;
+            setIconAndPosition(drawable, xCoord, yCoord);
+        } catch (JSONException e) {
+            Log.e("GameWebsocketActivity", "Error parsing shot message: " + e.getMessage());
+
+            // Update the stats UI
+            // ...
+        }
     }
 
     private void handleStatUpdateMessage(JSONObject messageObject) {
-        // Update stats display
-        // ...
-        String statDetail = messageObject.getString("playerName") + " now has " +
-                messageObject.getInt("newValue") + " " +
-                messageObject.getString("stat");
-        binding.websocketMessages.setText(statDetail + "\n");
-        // Update the stats UI
-        // ...
+        try {
+            String playerName = messageObject.getString("playerName");
+            String stat = messageObject.getString("stat");
+            int newValue = messageObject.getInt("newValue");
+
+            String statDetail = messageObject.getString("playerName") + " now has " +
+                    messageObject.getInt("newValue") + " " +
+                    messageObject.getString("stat");
+            binding.websocketMessages.setText(statDetail);
+        } catch (JSONException e) {
+            Log.e("GameWebsocketActivity", "Error parsing stats message: " + e.getMessage());
+
+            // Update the stats UI
+            // ...
+        }
     }
 
     private void setIconAndPosition(Drawable drawable, float x, float y) {
