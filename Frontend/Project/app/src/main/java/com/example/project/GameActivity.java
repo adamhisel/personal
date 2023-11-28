@@ -127,7 +127,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
         hideShotButtons();
         binding.btnRecordStat.setOnClickListener(v -> showRecordStatDialog());
-        binding.btnRecordStat.setVisibility(View.GONE);
+        binding.btnRecordStat.setVisibility(View.INVISIBLE);
         binding.btnSubstitute.setOnClickListener(view -> showSubstitutionDialog());
 
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +174,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             if (players.size() > 5) {
                 binding.btnSubstitute.setVisibility(View.VISIBLE);
             } else {
-                binding.btnSubstitute.setVisibility(View.GONE);
+                binding.btnSubstitute.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -723,8 +723,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     // Hides the shot recording buttons
     private void hideShotButtons() {
-        binding.btnMake.setVisibility(View.GONE);
-        binding.btnMiss.setVisibility(View.GONE);
+        binding.btnMake.setVisibility(View.INVISIBLE);
+        binding.btnMiss.setVisibility(View.INVISIBLE);
     }
 
     // Enables a player button, making it clickable
