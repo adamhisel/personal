@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import onetoone.Game.Game;
+import onetoone.Stats.Stat;
 import onetoone.Teams.Team;
 
 import java.util.ArrayList;
@@ -54,7 +55,11 @@ public class Player {
     )
     private List<Game> games = new ArrayList<>();
 
-    public Player( String playerName, int number, String position, int user_id) {
+    @OneToMany
+    private List<Stat> stats = new ArrayList<>();
+
+
+    public Player(String playerName, int number, String position, int user_id) {
         this.playerName = playerName;
         this.number = number;
         this.position = position;
@@ -123,5 +128,15 @@ public class Player {
     }
 
 
+    public List<Stat> getStats() {
+        return stats;
+    }
+
+    public void setStats(List<Stat> stats) {
+        this.stats = stats;
+    }
+    public void addStat(Stat stat) {
+        this.stats.add(stat);
+    }
 }
 
