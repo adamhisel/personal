@@ -111,6 +111,16 @@
         </TextView>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/fanLeaveTeamButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/black"
+            android:text="LEAVE TEAM"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/settingsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -208,13 +218,20 @@
 
             </TextView>
 
-
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/leaveTeamButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/black"
+                android:text="LEAVE TEAM" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/deleteTeamButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:backgroundTint="@color/black"
                 android:text="DELETE TEAM" />

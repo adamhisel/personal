@@ -93,6 +93,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
 
 
+
+
     public TeamRosterFragment() {
     }
 
@@ -113,6 +115,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         Button back = view.findViewById(R.id.backButton);
         Button teamChat = view.findViewById(R.id.chatButton);
         Button teamSettings = view.findViewById(R.id.settingsButton);
+        Button leaveButton = view.findViewById(R.id.fanLeaveTeamButton);
 
         settingsLL = view.findViewById(R.id.settingsll);
         publicPrivate = view.findViewById(R.id.publicPrivate);
@@ -124,6 +127,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         updateBackButton = view.findViewById(R.id.backUpdateButton);
 
 
+
+
         ll = view.findViewById(R.id.cardLL);
 
         if(SharedPrefsTeamUtil.getIsCoach(mContext).equals("true")){
@@ -132,6 +137,17 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         else{
             teamSettings.setVisibility(View.GONE);
         }
+
+        if(SharedPrefsTeamUtil.getIsFan(mContext).equals("true")){
+            leaveButton.setVisibility(View.VISIBLE);
+        }
+        else{
+            leaveButton.setVisibility(View.GONE);
+        }
+
+
+
+
 
 
         teamId= Integer.parseInt(SharedPrefsTeamUtil.getTeamId(mContext));

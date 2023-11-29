@@ -12,6 +12,8 @@ public class SharedPrefsTeamUtil {
     private static final String KEY_TEAM_NAME = "KEY_TEAM_NAME";
     private static final String KEY_TEAM_ID = "KEY_TEAM_ID";
     private static final String KEY_IS_COACH = "KEY_IS_COACH";
+    private static final String KEY_IS_FAN = "KEY_IS_FAN";
+
 
 
     /**
@@ -20,12 +22,13 @@ public class SharedPrefsTeamUtil {
      * @param teamName
      * @param teamId
      */
-    public static void saveTeamData(Context context, String teamName, String teamId, String isCoach){
+    public static void saveTeamData(Context context, String teamName, String teamId, String isCoach, String isFan){
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_TEAM_NAME, teamName);
         editor.putString(KEY_TEAM_ID, teamId);
         editor.putString(KEY_IS_COACH, isCoach);
+        editor.putString(KEY_IS_FAN, isFan);
         editor.apply();
     }
 
@@ -44,6 +47,11 @@ public class SharedPrefsTeamUtil {
         return sharedPreferences.getString(KEY_IS_COACH, "");
     }
 
+    public static String getIsFan(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_TEAM, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_IS_FAN, "");
+    }
+
 
     /**
      * this method clears the team data
@@ -55,6 +63,7 @@ public class SharedPrefsTeamUtil {
         editor.remove(KEY_TEAM_ID);
         editor.remove(KEY_TEAM_NAME);
         editor.remove(KEY_IS_COACH);
+        editor.remove(KEY_IS_FAN);
         editor.apply();
     }
 }
