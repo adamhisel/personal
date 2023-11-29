@@ -69,13 +69,13 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
         exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+
                 TeamRosterFragment teamRosterFragment = new TeamRosterFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.frame_layout, teamRosterFragment);
                 fragmentTransaction.commit();
-
+                finish();
             }
         });
 

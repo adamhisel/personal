@@ -67,6 +67,8 @@ public class StatsFragment extends Fragment {
 
 
     private RequestQueue mQueue;
+
+
     private FragmentStatsBinding binding;
 
     private int totalPoints = 0;
