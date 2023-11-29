@@ -617,6 +617,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         dialogBinding.btnDone.setOnClickListener(v -> {
             dialog.dismiss();
+            updateTeamStatistics();
             sendStatUpdateMessages(statChanges);
         });
 
@@ -643,6 +644,20 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         });
     }
 
+    private void updateTeamStatistics() {
+        teamAssists = 0;
+        teamRebounds = 0;
+        teamSteals = 0;
+        teamBlocks = 0;
+
+        for (Player player : players) {
+            teamAssists += player.getAssists();
+            teamRebounds += player.getRebounds();
+            teamSteals += player.getSteals();
+            teamBlocks += player.getBlocks();
+        }
+    }
+
     private void sendStatUpdateMessages(Map<String, Integer> statChanges) {
         for (Map.Entry<String, Integer> entry : statChanges.entrySet()) {
             String statName = entry.getKey();
@@ -653,6 +668,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 messageObject.put("playerName", activePlayer.getName());
                 messageObject.put("stat", statName);
                 messageObject.put("newValue", newValue);
+
+                // Add team statistics
+                messageObject.put("teamAssists", teamAssists);
+                messageObject.put("teamRebounds", teamRebounds);
+                messageObject.put("teamSteals", teamSteals);
+                messageObject.put("teamBlocks", teamBlocks);
 
                 WebSocketManager.getInstance().sendMessage(messageObject.toString());
             } catch (JSONException e) {

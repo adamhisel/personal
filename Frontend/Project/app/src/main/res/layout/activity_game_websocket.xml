@@ -21,9 +21,9 @@
         android:id="@+id/websocketMessages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="550dp"
         android:scrollbars="vertical"
-        android:text=""
+        android:text="message"
         android:textColor="#000000"
         android:textSize="15dp"
         android:textStyle="bold" />
