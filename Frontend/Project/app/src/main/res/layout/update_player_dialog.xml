@@ -43,4 +43,14 @@
         android:backgroundTint="#000"
         android:text="UPDATE"
         android:textColor="#FFFFFF" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancelUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:backgroundTint="#000"
+        android:text="CANCEL"
+        android:textColor="#FFFFFF" />
 </LinearLayout>
