@@ -68,11 +68,16 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private ImageView imageView;
     private Drawable green, red;
     private int totalShots = 0;
+    private int totalMakes = 0;
     private int threePointMakes = 0;
     private int threePointAttempts = 0;
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
     private int teamPoints = 0;
+    private int teamAssists = 0;
+    private int teamRebounds = 0;
+    private int teamSteals = 0;
+    private int teamBlocks = 0;
     private Player activePlayer;
     private int activePlayerIndex;
     private int gameId;
@@ -452,9 +457,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         String shotType = calculateShotType(x, y);
 
-        // Increment attempt counters
-        incrementShotAttempts(shotType);
-
         // Show shot buttons and then wait for user to record as make or miss
         showShotButtons();
         recordMakeOrMiss(shotType, x, y);
@@ -482,17 +484,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         return (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
     }
 
-    // Increments the attempt counters based on shot type
-    private void incrementShotAttempts(String shotType) {
-        if ("Three-Point Shot".equals(shotType)) {
-            threePointAttempts++;
-            if (activePlayer != null) activePlayer.recordThreePointShot(false);
-        } else {
-            twoPointAttempts++;
-            if (activePlayer != null) activePlayer.recordTwoPointShot(false);
-        }
-    }
-
     // Records whether the shot was made or missed and updates UI accordingly
     private void recordMakeOrMiss(String shotType, float x, float y) {
         // Set click listeners for make and miss buttons
@@ -513,18 +504,21 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         // Check if there's an active player selected
         if (activePlayer != null) {
             // Add the shot to the active player's list
-            activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
+            activePlayer.addShot(shot);
             Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
         }
 
         setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
         if (isThreePoint) {
+            threePointAttempts++;
             threePointMakes++;
             if (activePlayer != null) activePlayer.recordThreePointShot(true);
         } else {
+            twoPointAttempts++;
             twoPointMakes++;
             if (activePlayer != null) activePlayer.recordTwoPointShot(true);
         }
+        totalMakes++;
         totalShots++;
 
         sendShotMessage(shotType, true, x, y);
@@ -542,7 +536,14 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         if (activePlayer != null) {
             // Add the shot to the active player's list
-            activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
+            activePlayer.addShot(shot);
+            if (isThreePoint) {
+                threePointAttempts++;
+                activePlayer.recordThreePointShot(false);
+            } else {
+                twoPointAttempts++;
+                activePlayer.recordTwoPointShot(false);
+            }
             Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
         }
 
@@ -574,8 +575,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             messageObject.put("coordinates", new JSONObject().put("x", (int)x).put("y", (int)y));
             messageObject.put("made", isMade);
             messageObject.put("teamPoints", teamPoints);
-            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-            messageObject.put("playerPoints", activePlayerPoints);
+            messageObject.put("teamFGRatio", totalMakes + "/" + totalShots);
+            messageObject.put("teamThreePointRatio", threePointAttempts + "/" + threePointMakes);
+            messageObject.put("playerPoints", activePlayer.getTotalPoints());
+            messageObject.put("playerFGRatio", activePlayer.getTotalShots() + "/" + activePlayer.getTotalMakes());
+            messageObject.put("playerThreePointRatio", activePlayer.getThreePointAttempts() + "/" + activePlayer.getThreePointMakes());
 
             WebSocketManager.getInstance().sendMessage(messageObject.toString());
         } catch (JSONException e) {
@@ -657,36 +661,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         }
     }
 
-    // Sends the list of shots taken by the team to the server
-    private void sendTeamShots(int gameId, List<Shots> teamShots) {
-        String url = BASE_URL + "games/" + gameId + "/team-shots";
-        String testUrl = LOCAL_URL + "games/" + gameId + "/team-shots";
-
-        JSONArray shotsArray = new JSONArray();
-        for (Shots shot : teamShots) {
-            JSONObject shotObject = new JSONObject();
-            try {
-                shotObject.put("made", shot.isMade());
-                shotObject.put("value", shot.getValue());
-                shotObject.put("xCoord", shot.getxCoord());
-                shotObject.put("yCoord", shot.getyCoord());
-                shotsArray.put(shotObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Log.d(TAG, "Sending team shots: " + shotsArray);
-
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray, response -> {
-            Log.d(TAG, "Team shots sent successfully");
-        }, error -> {
-            Log.e(TAG, "Failed to send team shots. Error: " + error.toString());
-        });
-
-        mQueue.add(request);
-    }
-
     // Sends the list of shots taken by a player to the server
     private void sendPlayerShots(int gameId, int playerId, List<Shots> playerShots) {
         String url = BASE_URL + "games/" + gameId + "/players/" + playerId + "/shots";
@@ -751,3 +725,33 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         void onTeamIdReceived(int id);
     }
 }
+
+// Sends the list of shots taken by the team to the server
+//    private void sendTeamShots(int gameId, List<Shots> teamShots) {
+//        String url = BASE_URL + "games/" + gameId + "/team-shots";
+//        String testUrl = LOCAL_URL + "games/" + gameId + "/team-shots";
+//
+//        JSONArray shotsArray = new JSONArray();
+//        for (Shots shot : teamShots) {
+//            JSONObject shotObject = new JSONObject();
+//            try {
+//                shotObject.put("made", shot.isMade());
+//                shotObject.put("value", shot.getValue());
+//                shotObject.put("xCoord", shot.getxCoord());
+//                shotObject.put("yCoord", shot.getyCoord());
+//                shotsArray.put(shotObject);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        Log.d(TAG, "Sending team shots: " + shotsArray);
+//
+//        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray, response -> {
+//            Log.d(TAG, "Team shots sent successfully");
+//        }, error -> {
+//            Log.e(TAG, "Failed to send team shots. Error: " + error.toString());
+//        });
+//
+//        mQueue.add(request);
+//    }
