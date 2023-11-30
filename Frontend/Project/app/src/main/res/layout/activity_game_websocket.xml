@@ -67,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Points"
+                    android:text="PTS"
                     android:textSize="12dp" />
 
                 <TextView
@@ -133,7 +133,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Assists"
+                    android:text="AST"
                     android:textSize="12dp" />
 
                 <TextView
@@ -155,7 +155,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Rebounds"
+                    android:text="REB"
                     android:textSize="12dp" />
 
                 <TextView
@@ -177,7 +177,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Steals"
+                    android:text="STL"
                     android:textSize="12dp" />
 
                 <TextView
@@ -199,7 +199,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Blocks"
+                    android:text="BLK"
                     android:textSize="12dp" />
 
                 <TextView

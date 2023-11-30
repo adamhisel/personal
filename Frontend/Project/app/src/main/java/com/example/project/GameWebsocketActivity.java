@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,15 +33,6 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
     private String userName;
     private ImageView imageView;
     private Drawable green, red;
-    private int points = 0;
-    private int totalShots = 0;
-    private int madeShots = 0;
-    private int threePointAttempts = 0;
-    private int threePointMakes = 0;
-    private int totalAssists = 0;
-    private int totalRebounds = 0;
-    private int totalSteals = 0;
-    private int totalBlocks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +94,14 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
 
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) {
-//        // Request current game state upon connection
-//        try {
-//            JSONObject requestMessage = new JSONObject();
-//            requestMessage.put("type", "requestGameState");
-//            WebSocketManager.getInstance().sendMessage(requestMessage.toString());
-//        } catch (JSONException e) {
-//            Log.e("GameWebsocketActivity", "Error sending game state request: " + e.getMessage());
-//        }
+        // Request current game shots upon connection
+        try {
+            JSONObject requestMessage = new JSONObject();
+            requestMessage.put("type", "requestGameShots");
+            WebSocketManager.getInstance().sendMessage(requestMessage.toString());
+        } catch (JSONException e) {
+            Log.e("GameWebsocketActivity", "Error sending game shots request: " + e.getMessage());
+        }
     }
 
     @Override
@@ -137,9 +129,9 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
                 String type = messageObject.getString("type");
 
                 switch (type) {
-//                    case "gameState":
-//                        updateUIWithGameState(messageObject);
-//                        break;
+                    case "gameShots":
+                        updateUIWithGameShots(messageObject);
+                        break;
                     case "shot":
                         handleShotMessage(messageObject);
                         break;
@@ -153,9 +145,24 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         }
     }
 
-    private void updateUIWithGameState(JSONObject gameState) {
-        // Update UI based on the received game state
-        // Display all shots, update player stats, etc.
+    private void updateUIWithGameShots(JSONObject gameShots) {
+        try {
+            JSONArray shotsArray = gameShots.getJSONArray("shots");
+            for (int i = 0; i < shotsArray.length(); i++) {
+                JSONObject shotObject = shotsArray.getJSONObject(i);
+                boolean made = shotObject.getBoolean("made");
+                float xCoord = (float) shotObject.getDouble("xCoord");
+                float yCoord = (float) shotObject.getDouble("yCoord");
+
+                // Choose the color based on whether the shot was made or missed
+                Drawable drawable = made ? green : red;
+
+                // Place the icon on the UI
+                setIconAndPosition(drawable, xCoord, yCoord);
+            }
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error parsing game shots: " + e.getMessage());
+        }
     }
 
     private void handleShotMessage(JSONObject messageObject) {
@@ -205,35 +212,34 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
             String stat = messageObject.getString("stat");
             int newValue = messageObject.getInt("newValue");
 
+            // Extract team statistics
+            int teamAssists = messageObject.getInt("teamAssists");
+            int teamRebounds = messageObject.getInt("teamRebounds");
+            int teamSteals = messageObject.getInt("teamSteals");
+            int teamBlocks = messageObject.getInt("teamBlocks");
+
+            //Extract player statistics
+            int playerAssists = messageObject.getInt("playerAssists");
+            int playerRebounds = messageObject.getInt("playerRebounds");
+            int playerSteals = messageObject.getInt("playerSteals");
+            int playerBlocks = messageObject.getInt("playerBlocks");
+
             // Update UI based on this information
-            updateStatUI(playerName, stat, newValue);
+            updateStatUI(playerName, stat, newValue, teamAssists, teamRebounds, teamSteals, teamBlocks);
         } catch (JSONException e) {
             Log.e("GameWebsocketActivity", "Error parsing stats message: " + e.getMessage());
         }
     }
 
-    private void updateStatUI(String playerName, String stat, int newValue) {
+    private void updateStatUI(String playerName, String stat, int newValue, int teamAssists, int teamRebounds, int teamSteals, int teamBlocks) {
         String statDetail = playerName + " now has " + newValue + " " + stat;
         binding.websocketMessages.setText(statDetail);
 
-        switch (stat) {
-            case "Assists":
-                totalAssists += newValue;
-                binding.tvTeamAssists.setText(String.valueOf(totalAssists));
-                break;
-            case "Rebounds":
-                totalRebounds += newValue;
-                binding.tvTeamRebounds.setText(String.valueOf(totalRebounds));
-                break;
-            case "Steals":
-                totalSteals += newValue;
-                binding.tvTeamSteals.setText(String.valueOf(totalSteals));
-                break;
-            case "Blocks":
-                totalBlocks += newValue;
-                binding.tvTeamBlocks.setText(String.valueOf(totalBlocks));
-                break;
-        }
+        // Update team stats UI
+        binding.tvTeamAssists.setText(String.valueOf(teamAssists));
+        binding.tvTeamRebounds.setText(String.valueOf(teamRebounds));
+        binding.tvTeamSteals.setText(String.valueOf(teamSteals));
+        binding.tvTeamBlocks.setText(String.valueOf(teamBlocks));
     }
 
     private void setIconAndPosition(Drawable drawable, float x, float y) {

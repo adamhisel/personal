@@ -306,6 +306,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             updatePlayerButtonColors();
             binding.btnRecordStat.setVisibility(View.VISIBLE);
         }
+        updatePlayerStatsViews();
     }
 
     // Set up player buttons to be initially tied to the first 5 players on team
@@ -390,6 +391,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         setActivePlayer(playerIn);
         updatePlayerButtonColors();
+        updatePlayerStatsViews();
     }
 
     // Find which buttons the player is currently associated with
@@ -522,6 +524,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         totalShots++;
 
         sendShotMessage(shotType, true, x, y);
+        updatePlayerStatsViews();
+        updateTeamStatsViews();
         hideShotButtons();
     }
 
@@ -550,6 +554,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
         sendShotMessage(shotType, false, x, y);
+        updatePlayerStatsViews();
+        updateTeamStatsViews();
         hideShotButtons();
     }
 
@@ -619,7 +625,10 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             dialog.dismiss();
             updateTeamStatistics();
             sendStatUpdateMessages(statChanges);
+            updatePlayerStatsViews();
+            updateTeamStatsViews();
         });
+
 
         dialog.show();
     }
@@ -675,12 +684,45 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 messageObject.put("teamSteals", teamSteals);
                 messageObject.put("teamBlocks", teamBlocks);
 
+                // Add complete player statistics
+                messageObject.put("playerAssists", activePlayer.getAssists());
+                messageObject.put("playerRebounds", activePlayer.getRebounds());
+                messageObject.put("playerSteals", activePlayer.getSteals());
+                messageObject.put("playerBlocks", activePlayer.getBlocks());
+
                 WebSocketManager.getInstance().sendMessage(messageObject.toString());
             } catch (JSONException e) {
                 Log.e("GameActivity", "Error constructing stat update message: " + e.getMessage());
             }
         }
     }
+
+    private void updateTeamStatsViews() {
+        String teamFG = totalMakes + "/" + totalShots;
+        String team3PT = threePointMakes + "/" + threePointAttempts;
+
+        binding.tvTeamPoints.setText(String.valueOf(teamPoints));
+        binding.tvTeamFG.setText(teamFG);
+        binding.tvTeam3PT.setText(team3PT);
+        binding.tvTeamAssists.setText(String.valueOf(teamAssists));
+        binding.tvTeamRebounds.setText(String.valueOf(teamRebounds));
+        binding.tvTeamSteals.setText(String.valueOf(teamSteals));
+        binding.tvTeamBlocks.setText(String.valueOf(teamBlocks));
+    }
+
+    private void updatePlayerStatsViews() {
+        String playerFG = activePlayer.getTotalMakes() + "/" + activePlayer.getTotalShots();
+        String player3PT = activePlayer.getThreePointMakes() + "/" + activePlayer.getThreePointAttempts();
+
+        binding.tvPlayerPoints.setText(String.valueOf(activePlayer.getTotalPoints()));
+        binding.tvPlayerFG.setText(playerFG);
+        binding.tvPlayer3PT.setText(player3PT);
+        binding.tvPlayerAssists.setText(String.valueOf(activePlayer.getAssists()));
+        binding.tvPlayerRebounds.setText(String.valueOf(activePlayer.getRebounds()));
+        binding.tvPlayerSteals.setText(String.valueOf(activePlayer.getSteals()));
+        binding.tvPlayerBlocks.setText(String.valueOf(activePlayer.getBlocks()));
+    }
+
 
     // Sends the list of shots taken by a player to the server
     private void sendPlayerShots(int gameId, int playerId, List<Shots> playerShots) {
@@ -747,7 +789,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     }
 }
 
-// Sends the list of shots taken by the team to the server
+//// Sends the list of shots taken by the team to the server
 //    private void sendTeamShots(int gameId, List<Shots> teamShots) {
 //        String url = BASE_URL + "games/" + gameId + "/team-shots";
 //        String testUrl = LOCAL_URL + "games/" + gameId + "/team-shots";
