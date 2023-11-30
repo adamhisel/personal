@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - TitanLifts</title>
+    <script src="login.js" defer></script>
   </head>
   <body>
-    <div class="navbar">
+    <div class="navbar" id="navbar">
         <a href="./login.html">Home</a>
         <a href="./newAccount.html">Account</a>
     </div>
@@ -27,9 +28,6 @@
         <br />
         <div>
           <button type="button" onclick="confirmLogin()">Enter</button>
-        </div>
-        <br />
-        <div>
           <button type="button" onclick="createAccount()">Create Account</button>
         </div>
       </form>
@@ -59,11 +57,11 @@
       }
 
       //checks if password is less than 8 characters long
-      if (password.length < 8) {
-        document.getElementById("error").textContent="Password must be at least 8 characters long";
-        error.style.color ="red";
-        return false;   //prevent form submission
-      }
+      // if (password.length < 8) {
+      //   document.getElementById("error").textContent="Password must be at least 8 characters long";
+      //   error.style.color ="red";
+      //   return false;   //prevent form submission
+      // }
 
       //clears any existing error messages
       document.getElementById("error").textContent="";
