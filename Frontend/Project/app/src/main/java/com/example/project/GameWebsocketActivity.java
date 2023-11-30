@@ -1,15 +1,19 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
@@ -138,11 +142,15 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
                         break;
                     case "teamStats":
                         handleTeamStatsMessage(messageObject);
+                        break;
                     case "shot":
                         handleShotMessage(messageObject);
                         break;
                     case "statUpdate":
                         handleStatUpdateMessage(messageObject);
+                        break;
+                    case "playerStatsUpdate":
+                        handlePlayerStatsUpdateMessage(messageObject);
                         break;
                 }
             }
@@ -205,71 +213,18 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
             float xCoord = (float) coordinates.getDouble("x");
             float yCoord = (float) coordinates.getDouble("y");
 
-            // Extract team and player statistics
-            int teamPoints = messageObject.getInt("teamPoints");
-            String teamFGRatio = messageObject.getString("teamFGRatio");
-            String teamThreePointRatio = messageObject.getString("teamThreePointRatio");
-            int playerPoints = messageObject.getInt("playerPoints");
-            String playerFGRatio = messageObject.getString("playerFGRatio");
-            String playerThreePointRatio = messageObject.getString("playerThreePointRatio");
-
             // Update UI based on this information
-            updateShotUI(playerName, made, shotType, xCoord, yCoord, teamPoints, teamFGRatio, teamThreePointRatio);
+            // Update the latest shot message
+            String shotDetail = playerName + (made ? " made " : " missed ") + "a " + shotType;
+            binding.websocketMessages.setText(shotDetail);
+
+            // Display the shot icon on the court
+            Drawable drawable = made ? green : red;
+            setIconAndPosition(drawable, xCoord, yCoord);
         } catch (JSONException e) {
             Log.e("GameWebsocketActivity", "Error parsing shot message: " + e.getMessage());
 
         }
-    }
-
-    private void updateShotUI(String playerName, boolean made, String shotType, float xCoord, float yCoord, int teamPoints, String teamFGRatio, String teamThreePointRatio) {
-        // Update the latest shot message
-        String shotDetail = playerName + (made ? " made " : " missed ") + "a " + shotType;
-        binding.websocketMessages.setText(shotDetail);
-
-        // Display the shot icon on the court
-        Drawable drawable = made ? green : red;
-        setIconAndPosition(drawable, xCoord, yCoord);
-
-        // Update team shooting stats
-        binding.tvTeamPoints.setText(String.valueOf(teamPoints));
-        binding.tvTeamFG.setText(teamFGRatio);
-        binding.tvTeam3PT.setText(teamThreePointRatio);
-    }
-
-    private void handleStatUpdateMessage(JSONObject messageObject) {
-        try {
-            String playerName = messageObject.getString("playerName");
-            String stat = messageObject.getString("stat");
-            int newValue = messageObject.getInt("newValue");
-
-            // Extract team statistics
-            int teamAssists = messageObject.getInt("teamAssists");
-            int teamRebounds = messageObject.getInt("teamRebounds");
-            int teamSteals = messageObject.getInt("teamSteals");
-            int teamBlocks = messageObject.getInt("teamBlocks");
-
-            //Extract player statistics
-            int playerAssists = messageObject.getInt("playerAssists");
-            int playerRebounds = messageObject.getInt("playerRebounds");
-            int playerSteals = messageObject.getInt("playerSteals");
-            int playerBlocks = messageObject.getInt("playerBlocks");
-
-            // Update UI based on this information
-            updateStatUI(playerName, stat, newValue, teamAssists, teamRebounds, teamSteals, teamBlocks);
-        } catch (JSONException e) {
-            Log.e("GameWebsocketActivity", "Error parsing stats message: " + e.getMessage());
-        }
-    }
-
-    private void updateStatUI(String playerName, String stat, int newValue, int teamAssists, int teamRebounds, int teamSteals, int teamBlocks) {
-        String statDetail = playerName + " now has " + newValue + " " + stat;
-        binding.websocketMessages.setText(statDetail);
-
-        // Update team stats UI
-        binding.tvTeamAssists.setText(String.valueOf(teamAssists));
-        binding.tvTeamRebounds.setText(String.valueOf(teamRebounds));
-        binding.tvTeamSteals.setText(String.valueOf(teamSteals));
-        binding.tvTeamBlocks.setText(String.valueOf(teamBlocks));
     }
 
     private void setIconAndPosition(Drawable drawable, float x, float y) {
@@ -282,6 +237,120 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         imageView.setY(y - ICON_SIZE_PX / 2);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
+    }
+
+    private void handleStatUpdateMessage(JSONObject messageObject) {
+        try {
+            String playerName = messageObject.getString("playerName");
+            String stat = messageObject.getString("stat");
+            int newValue = messageObject.getInt("newValue");
+
+            // Update UI based on this information
+            String statDetail = playerName + " now has " + newValue + " " + stat;
+            binding.websocketMessages.setText(statDetail);
+        } catch (JSONException e) {
+            Log.e("GameWebsocketActivity", "Error parsing stats message: " + e.getMessage());
+        }
+    }
+
+    private void handlePlayerStatsUpdateMessage(JSONObject messageObject) {
+        try {
+            String playerName = messageObject.getString("playerName");
+            int points = messageObject.getInt("points");
+            String fgRatio = messageObject.getString("fgRatio");
+            String threePointRatio = messageObject.getString("threePointRatio");
+            int assists = messageObject.getInt("assists");
+            int rebounds = messageObject.getInt("rebounds");
+            int steals = messageObject.getInt("steals");
+            int blocks = messageObject.getInt("blocks");
+
+            // Update the UI with these stats
+            updatePlayerStats(playerName, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
+        } catch (JSONException e) {
+            Log.e("GameWebsocketActivity", "Error handling player stats update message: " + e.getMessage());
+        }
+    }
+
+    private void updatePlayerStats(String playerName, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
+        LinearLayout container = binding.playerStatsContainer;
+        View playerStatView = container.findViewWithTag(playerName);
+        if (playerStatView == null) {
+            // Create new stat card for this player
+            CardView statCard = createPlayerStatCard(playerName, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
+            container.addView(statCard);
+        } else {
+            // Update existing card
+            updatePlayerStatCard(playerStatView, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
+        }
+    }
+
+    private CardView createPlayerStatCard(String playerName, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
+        // Initialize a new CardView
+        CardView cardView = new CardView(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(8, 8, 8, 8);
+        cardView.setLayoutParams(layoutParams);
+
+        // Create a vertical LinearLayout to hold the stats
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        cardView.addView(linearLayout);
+
+        // Add TextViews for each stat
+        TextView playerNameView = new TextView(this);
+        playerNameView.setText(playerName);
+        linearLayout.addView(playerNameView);
+
+        TextView pointsView = new TextView(this);
+        pointsView.setText("Points: " + points);
+        linearLayout.addView(pointsView);
+
+        TextView fgRatioView = new TextView(this);
+        pointsView.setText("FG: " + fgRatio);
+        linearLayout.addView(fgRatioView);
+
+        TextView threePointView = new TextView(this);
+        pointsView.setText("3PT: " + threePointRatio);
+        linearLayout.addView(threePointView);
+
+        TextView assistsView = new TextView(this);
+        pointsView.setText("AST: " + assists);
+        linearLayout.addView(assistsView);
+
+        TextView reboundsView = new TextView(this);
+        pointsView.setText("REB: " + rebounds);
+        linearLayout.addView(reboundsView);
+
+        TextView stealsView = new TextView(this);
+        pointsView.setText("STL: " + steals);
+        linearLayout.addView(stealsView);
+
+        TextView blocksView = new TextView(this);
+        pointsView.setText("BLK: " + blocks);
+        linearLayout.addView(blocksView);
+
+        // Set the tag for future reference
+        cardView.setTag(playerName);
+
+        return cardView;
+    }
+
+    private void updatePlayerStatCard(View statCard, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
+        if (statCard instanceof CardView) {
+            LinearLayout linearLayout = (LinearLayout) ((CardView) statCard).getChildAt(0);
+            // Update each TextView with new stats
+            // TextViews added in the same order as created
+            ((TextView) linearLayout.getChildAt(1)).setText("Points: " + points);
+            ((TextView) linearLayout.getChildAt(2)).setText("FG: " + fgRatio);
+            ((TextView) linearLayout.getChildAt(3)).setText("3PT: " + threePointRatio);
+            ((TextView) linearLayout.getChildAt(4)).setText("AST: " + assists);
+            ((TextView) linearLayout.getChildAt(5)).setText("REB: " + rebounds);
+            ((TextView) linearLayout.getChildAt(6)).setText("STL: " + steals);
+            ((TextView) linearLayout.getChildAt(7)).setText("BLK: " + blocks);
+        }
     }
 
 }

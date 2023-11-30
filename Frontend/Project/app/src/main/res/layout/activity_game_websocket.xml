@@ -21,7 +21,7 @@
         android:id="@+id/websocketMessages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="550dp"
+        android:layout_marginTop="650dp"
         android:scrollbars="vertical"
         android:text="message"
         android:textColor="#000000"
@@ -213,14 +213,19 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TableLayout
-        android:id="@+id/tablePlayerStats"
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="430dp"
-        android:stretchColumns="*">
-        <!-- Rows added dynamically -->
-    </TableLayout>
+        android:layout_marginTop="425dp">
+
+        <LinearLayout
+            android:id="@+id/playerStatsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Player stat cards added here programmatically -->
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <Button
         android:id="@+id/btnExit"

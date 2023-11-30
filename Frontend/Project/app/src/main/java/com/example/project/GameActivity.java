@@ -211,10 +211,10 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
                     if ("requestGameShots".equals(messageType)) {
                         Log.i("GameActivity", "Processing requestGameShots message");
-                        sendCurrentGameShots();
+                        sendCurrentGameShotsMessage();
                     }  else if ("requestTeamStats".equals(messageType)) {
                         Log.i("GameActivity", "Processing requestTeamStats message");
-                        sendCurrentTeamStats();
+                        sendCurrentTeamStatsMessage();
                     }
                 } else {
                     // Handle non-JSON message (plain text)
@@ -544,6 +544,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         totalShots++;
 
         sendShotMessage(shotType, true, x, y);
+        sendCurrentTeamStatsMessage();
+        sendPlayerStatsMessage();
         updatePlayerStatsViews();
         updateTeamStatsViews();
         hideShotButtons();
@@ -574,6 +576,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
         sendShotMessage(shotType, false, x, y);
+        sendCurrentTeamStatsMessage();
+        sendPlayerStatsMessage();
         updatePlayerStatsViews();
         updateTeamStatsViews();
         hideShotButtons();
@@ -600,20 +604,15 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             messageObject.put("shotType", shotType);
             messageObject.put("coordinates", new JSONObject().put("x", (int)x).put("y", (int)y));
             messageObject.put("made", isMade);
-            messageObject.put("teamPoints", teamPoints);
-            messageObject.put("teamFGRatio", totalMakes + "/" + totalShots);
-            messageObject.put("teamThreePointRatio", threePointAttempts + "/" + threePointMakes);
-            messageObject.put("playerPoints", activePlayer.getTotalPoints());
-            messageObject.put("playerFGRatio", activePlayer.getTotalShots() + "/" + activePlayer.getTotalMakes());
-            messageObject.put("playerThreePointRatio", activePlayer.getThreePointAttempts() + "/" + activePlayer.getThreePointMakes());
 
+            binding.tvWebsocketMessages.append(messageObject.toString());
             WebSocketManager.getInstance().sendMessage(messageObject.toString());
         } catch (JSONException e) {
             Log.e("GameActivity", "Error constructing shot message: " + e.getMessage());
         }
     }
 
-    private void sendCurrentGameShots() {
+    private void sendCurrentGameShotsMessage() {
         try {
             JSONArray shotsArray = new JSONArray();
             for (Shots shot : teamShots) {
@@ -636,7 +635,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         }
     }
 
-    private void sendCurrentTeamStats() {
+    private void sendCurrentTeamStatsMessage() {
         try {
             JSONObject responseMessage = new JSONObject();
             responseMessage.put("type", "teamStats");
@@ -648,6 +647,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             responseMessage.put("teamSteals", teamSteals);
             responseMessage.put("teamBlocks", teamBlocks);
 
+            binding.tvWebsocketMessages.append(responseMessage.toString());
             WebSocketManager.getInstance().sendMessage(responseMessage.toString());
         } catch (JSONException e) {
             Log.e("GameActivity", "Error sending current team stats: " + e.getMessage());
@@ -686,6 +686,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             dialog.dismiss();
             updateTeamStatistics();
             sendStatUpdateMessages(statChanges);
+            sendCurrentTeamStatsMessage();
+            sendPlayerStatsMessage();
             updatePlayerStatsViews();
             updateTeamStatsViews();
         });
@@ -739,22 +741,31 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 messageObject.put("stat", statName);
                 messageObject.put("newValue", newValue);
 
-                // Add team statistics
-                messageObject.put("teamAssists", teamAssists);
-                messageObject.put("teamRebounds", teamRebounds);
-                messageObject.put("teamSteals", teamSteals);
-                messageObject.put("teamBlocks", teamBlocks);
-
-                // Add complete player statistics
-                messageObject.put("playerAssists", activePlayer.getAssists());
-                messageObject.put("playerRebounds", activePlayer.getRebounds());
-                messageObject.put("playerSteals", activePlayer.getSteals());
-                messageObject.put("playerBlocks", activePlayer.getBlocks());
-
+                binding.tvWebsocketMessages.append(messageObject.toString());
                 WebSocketManager.getInstance().sendMessage(messageObject.toString());
             } catch (JSONException e) {
                 Log.e("GameActivity", "Error constructing stat update message: " + e.getMessage());
             }
+        }
+    }
+
+    private void sendPlayerStatsMessage() {
+        try {
+            JSONObject messageObject = new JSONObject();
+            messageObject.put("type", "playerStatsUpdate");
+            messageObject.put("playerName", activePlayer.getName());
+            messageObject.put("points", activePlayer.getTotalPoints());
+            messageObject.put("fgRatio", activePlayer.getTotalMakes() + "/" + activePlayer.getTotalShots());
+            messageObject.put("threePointRatio", activePlayer.getThreePointMakes() + "/" + activePlayer.getThreePointAttempts());
+            messageObject.put("assists", activePlayer.getAssists());
+            messageObject.put("rebounds", activePlayer.getRebounds());
+            messageObject.put("steals", activePlayer.getSteals());
+            messageObject.put("blocks", activePlayer.getBlocks());
+
+            binding.tvWebsocketMessages.append(messageObject.toString());
+            WebSocketManager.getInstance().sendMessage(messageObject.toString());
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error sending player stats message: " + e.getMessage());
         }
     }
 
