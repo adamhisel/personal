@@ -234,8 +234,20 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject team = response.getJSONObject(i);
                                 String name = team.getString("teamName");
-                                //teamId = team.getInt("id");
-                                temp1.add(name);
+                                JSONArray coaches = team.getJSONArray("coaches");
+                                String coachList = " (Coaches: ";
+                                for(int j = 0; j < coaches.length(); j++ ){
+                                    JSONObject coach = coaches.getJSONObject(j);
+                                    String coachName = coach.getString("name");
+                                    coachList += coachName;
+                                    if(!(j == coaches.length()-1)){
+                                        coachList += ", ";
+                                    }
+                                    else{
+                                        coachList += ")";
+                                    }
+                                }
+                                temp1.add(name + coachList);
 
                             }
 
