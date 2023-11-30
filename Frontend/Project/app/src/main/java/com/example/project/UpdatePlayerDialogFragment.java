@@ -39,6 +39,7 @@ public class UpdatePlayerDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.update_player_dialog, container, false);
 
         Button updateButton = view.findViewById(R.id.btnUpdate);
+        Button cancelButton = view.findViewById(R.id.cancelUpdate);
         positionAutoComplete = view.findViewById(R.id.tvPosition);
 
         number = view.findViewById(R.id.number);
@@ -67,6 +68,13 @@ public class UpdatePlayerDialogFragment extends DialogFragment {
                     listener.onUpdate(num, selectedPos);
                     dismiss();
                 }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
             }
         });
 

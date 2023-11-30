@@ -55,7 +55,7 @@ import java.util.ArrayList;
  *
  * @author Adam Hisel
  */
-public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFragment.UpdatePlayerInputListener{
+public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFragment.UpdatePlayerInputListener, ConfirmDialogFragment.ConfirmInputListener{
 
     private RequestQueue mQueue;
 
@@ -91,6 +91,12 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private TextView updateValidation;
 
+    private boolean removeClicked;
+
+    private boolean promoteClicked;
+
+    private boolean deleteTeamClicked;
+
 
 
 
@@ -109,6 +115,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        deleteTeamClicked = false;
         mQueue = Volley.newRequestQueue(mContext);
         topLL = view.findViewById(R.id.topLL);
         coachText = view.findViewById(R.id.coach);
@@ -116,6 +123,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         Button teamChat = view.findViewById(R.id.chatButton);
         Button teamSettings = view.findViewById(R.id.settingsButton);
         Button leaveButton = view.findViewById(R.id.fanLeaveTeamButton);
+        Button deleteTeam = view.findViewById(R.id.deleteTeamButton);
 
         settingsLL = view.findViewById(R.id.settingsll);
         publicPrivate = view.findViewById(R.id.publicPrivate);
@@ -181,6 +189,14 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 teamSettings.setVisibility(View.GONE);
                 fillTeamSettingsBoxes();
 
+            }
+        });
+
+        deleteTeam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteTeamClicked = true;
+                showConfirmDialog();
             }
         });
 
@@ -390,10 +406,19 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                                                                 @Override
                                                                 public void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList) {
                                                                     playerList = idList;
-                                                                    int id = v.getId();
+                                                                    int id = cv.getId();
+                                                                    int buttonId = b.getId();
+                                                                    buttonId = buttonId % 2;
+                                                                    if(buttonId == 0){
+                                                                        removeClicked = true;
+                                                                        promoteClicked = false;
+                                                                    }
+                                                                    else{
+                                                                        removeClicked = false;
+                                                                        promoteClicked = true;
+                                                                    }
                                                                     playerId = playerList.get(id);
-                                                                    deletePlayer(playerId);
-
+                                                                    showConfirmDialog();
                                                                 }
                                                             });
                                                         }
@@ -450,6 +475,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
 
                         int cardId = 0;
+                        int buttonId = 0;
                         for (int i= 0; i < players.length(); i++) {
                             JSONObject player = players.getJSONObject(i);
 
@@ -512,27 +538,48 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             pos.setText(position);
                             pos.setTextSize(18);
 
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            );
+                            LinearLayout buttonLayout = new LinearLayout(mContext);
+                            buttonLayout.setLayoutParams(layoutParams);
+                            buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
+
                             Button delete = new Button(mContext);
                             LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(
                                     LinearLayout.LayoutParams.WRAP_CONTENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT
                             );
-                            delete.setId(cardId);
+                            delete.setId(buttonId);
                             delete.setVisibility(View.GONE);
                             delete.setLayoutParams(btnParams);
-                            delete.setText("REMOVE");
+                            delete.setText("REMOVE PLAYER");
 
+                            buttonId+=1;
+
+                            Button promote = new Button(mContext);
+                            LinearLayout.LayoutParams btnParams2 = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            );
+                            promote.setId(buttonId);
+                            promote.setVisibility(View.GONE);
+                            promote.setLayoutParams(btnParams2);
+                            promote.setText("PROMOTE PLAYER TO COACH");
 
                             linearLayout.addView(num);
                             linearLayout.addView(namePlayer);
                             linearLayout.addView(pos);
                             linearLayout.addView(delete);
+                            linearLayout.addView(promote);
 
                             cardView.addView(linearLayout);
 
                             ll.addView(cardView);
 
                             cardId += 1;
+                            buttonId+=1;
                         }
                     }
 
@@ -551,8 +598,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(request);
     }
 
-    private void deletePlayer(int pid) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/players/" + pid;
+    private void deleteTeam() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -560,9 +607,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     public void onResponse(JSONObject response) {
                         try {
                             String message = response.optString("message");
-                            Log.d("DeleteUser", "Player deleted successfully");
+                            Log.d("DeleteTeam", "Team deleted successfully");
                         } catch (Exception e) {
-                            Log.e("DeleteUser", "Error parsing response: " + e.getMessage());
+                            Log.e("DeleteTeam", "Error parsing response: " + e.getMessage());
                         }
                     }
                 },
@@ -570,13 +617,47 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null) {
-                            Log.e("DeleteUser", "Error code: " + error.networkResponse.statusCode);
+                            Log.e("DeleteTeam", "Error code: " + error.networkResponse.statusCode);
                         }
-                        Log.e("DeleteUser", "Error in request: " + error.getMessage());
+                        Log.e("DeleteTeam", "Error in request: " + error.getMessage());
                     }
                 });
 
         mQueue.add(jsonObjectRequest);
+    }
+
+    private void deletePlayer(int pid) {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/players/" + pid;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        if (response.length() == 0) {
+
+                            Log.d("DeletePlayer", "Player deleted successfully");
+                        } else {
+                            // Unexpected response, handle it accordingly
+                            Log.e("DeletePlayer", "Unexpected response after deletion");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            Log.e("DeletePlayer", "Error code: " + error.networkResponse.statusCode);
+                        }
+                        Log.e("DeletePlayer", "Error in request: " + error.getMessage());
+                    }
+                });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void promotePlayer(int pid){
+        Toast.makeText(mContext, "This is a toast message", Toast.LENGTH_SHORT).show();
     }
 
     private void fillTeamSettingsBoxes() {
@@ -702,6 +783,41 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
         mQueue.add(jsonObjectRequest);
     }
+
+    private void showConfirmDialog() {
+        ConfirmDialogFragment confirmDialog = new ConfirmDialogFragment();
+        confirmDialog.setListener((ConfirmDialogFragment.ConfirmInputListener) this);
+        confirmDialog.show(requireActivity().getSupportFragmentManager(), "confirmDialog");
+    }
+
+    @Override
+    public void onConfirm(boolean confirm) {
+        if(confirm == true){
+            if(removeClicked == true){
+                deletePlayer(playerId);
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+            }
+            else if(promoteClicked == true){
+                promotePlayer(playerId);
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+            }
+            else if(deleteTeamClicked == true){
+                deleteTeam();
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+                SharedPrefsTeamUtil.clearTeamData(mContext);
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
+
+
 
     private Boolean validateTeamName() {
         String tilName = teamName.getEditText().getText().toString().trim();
