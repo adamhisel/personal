@@ -633,11 +633,13 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            String message = response.optString("message");
+
+                        if (response.length() == 0) {
+
                             Log.d("DeletePlayer", "Player deleted successfully");
-                        } catch (Exception e) {
-                            Log.e("DeletePlayer", "Error parsing response: " + e.getMessage());
+                        } else {
+                            // Unexpected response, handle it accordingly
+                            Log.e("DeletePlayer", "Unexpected response after deletion");
                         }
                     }
                 },
