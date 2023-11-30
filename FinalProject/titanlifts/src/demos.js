@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./demos.css";
 
-const Lift = () => {
+const Demos = () => {
   const [query, setQuery] = useState("");
   const [lifts, setLifts] = useState([]);
   const [isLiftFormValid, setIsLiftFormValid] = useState(true);
@@ -28,7 +28,7 @@ const Lift = () => {
     name: "",
     category: "",
     muscles: "",
-    imgLink: "",
+    imgLink: ""
   });
 
   const [idCounter, setIdCounter] = useState(0);
@@ -60,12 +60,14 @@ const Lift = () => {
     
       setShowAddLiftForm(false);
       setShowDemos(true);
+
       
   
   };
 
   const handleLiftReturn = (e) => {
     e.preventDefault();
+
     setShowAddLiftForm(false);
     setShowDemos(true);
   };
@@ -364,4 +366,4 @@ const Lift = () => {
   );
 };
 
-export default Lift;
+export default Demos;
