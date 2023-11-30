@@ -96,9 +96,13 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
     public void onWebSocketOpen(ServerHandshake handshakedata) {
         // Request current game shots upon connection
         try {
-            JSONObject requestMessage = new JSONObject();
-            requestMessage.put("type", "requestGameShots");
-            WebSocketManager.getInstance().sendMessage(requestMessage.toString());
+            JSONObject requestGameShotsMessage = new JSONObject();
+            requestGameShotsMessage.put("type", "requestGameShots");
+            WebSocketManager.getInstance().sendMessage(requestGameShotsMessage.toString());
+            JSONObject requestTeamStatsMessage = new JSONObject();
+
+            requestTeamStatsMessage.put("type", "requestTeamStats");
+            WebSocketManager.getInstance().sendMessage(requestTeamStatsMessage.toString());
         } catch (JSONException e) {
             Log.e("GameWebsocketActivity", "Error sending game shots request: " + e.getMessage());
         }
@@ -132,6 +136,8 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
                     case "gameShots":
                         updateUIWithGameShots(messageObject);
                         break;
+                    case "teamStats":
+                        handleTeamStatsMessage(messageObject);
                     case "shot":
                         handleShotMessage(messageObject);
                         break;
@@ -162,6 +168,30 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
             }
         } catch (JSONException e) {
             Log.e("GameActivity", "Error parsing game shots: " + e.getMessage());
+        }
+    }
+
+    private void handleTeamStatsMessage(JSONObject messageObject) {
+        try {
+            // Extract team statistics from the message
+            int teamPoints = messageObject.getInt("teamPoints");
+            String teamFGRatio = messageObject.getString("teamFGRatio");
+            String teamThreePointRatio = messageObject.getString("teamThreePointRatio");
+            int teamAssists = messageObject.getInt("teamAssists");
+            int teamRebounds = messageObject.getInt("teamRebounds");
+            int teamSteals = messageObject.getInt("teamSteals");
+            int teamBlocks = messageObject.getInt("teamBlocks");
+
+            // Update UI with the extracted statistics
+            binding.tvTeamPoints.setText(String.valueOf(teamPoints));
+            binding.tvTeamFG.setText(teamFGRatio);
+            binding.tvTeam3PT.setText(teamThreePointRatio);
+            binding.tvTeamAssists.setText(String.valueOf(teamAssists));
+            binding.tvTeamRebounds.setText(String.valueOf(teamRebounds));
+            binding.tvTeamSteals.setText(String.valueOf(teamSteals));
+            binding.tvTeamBlocks.setText(String.valueOf(teamBlocks));
+        } catch (JSONException e) {
+            Log.e("GameWebsocketActivity", "Error parsing team stats message: " + e.getMessage());
         }
     }
 

@@ -202,8 +202,28 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.i("GameActivity", "WebSocket Message: " + message);
 
         runOnUiThread(() -> {
-            // Append the new message
-            binding.tvWebsocketMessages.append(message + "\n");
+            try {
+                if (message.contains("{")) {
+                    // Extract JSON part from the message
+                    String jsonPart = message.substring(message.indexOf("{"));
+                    JSONObject messageObject = new JSONObject(jsonPart);
+                    String messageType = messageObject.getString("type");
+
+                    if ("requestGameShots".equals(messageType)) {
+                        Log.i("GameActivity", "Processing requestGameShots message");
+                        sendCurrentGameShots();
+                    }  else if ("requestTeamStats".equals(messageType)) {
+                        Log.i("GameActivity", "Processing requestTeamStats message");
+                        sendCurrentTeamStats();
+                    }
+                } else {
+                    // Handle non-JSON message (plain text)
+                    binding.tvWebsocketMessages.append(message + "\n");
+                }
+            } catch (JSONException e) {
+                Log.e("GameActivity", "Error parsing WebSocket message: " + e.getMessage());
+                // Handle potential JSON parsing error
+            }
 
             // Scroll to the bottom to show the latest message
             binding.svWebsocket.fullScroll(ScrollView.FOCUS_DOWN);
@@ -590,6 +610,47 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             WebSocketManager.getInstance().sendMessage(messageObject.toString());
         } catch (JSONException e) {
             Log.e("GameActivity", "Error constructing shot message: " + e.getMessage());
+        }
+    }
+
+    private void sendCurrentGameShots() {
+        try {
+            JSONArray shotsArray = new JSONArray();
+            for (Shots shot : teamShots) {
+                JSONObject shotObject = new JSONObject();
+                shotObject.put("made", shot.isMade());
+                shotObject.put("value", shot.getValue());
+                shotObject.put("xCoord", shot.getxCoord());
+                shotObject.put("yCoord", shot.getyCoord());
+                shotsArray.put(shotObject);
+            }
+
+            JSONObject responseMessage = new JSONObject();
+            responseMessage.put("type", "gameShots");
+            responseMessage.put("shots", shotsArray);
+
+            WebSocketManager.getInstance().sendMessage(responseMessage.toString());
+            Log.i("GameActivity", "Sent gameShots message: " + responseMessage);
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error sending current game shots: " + e.getMessage());
+        }
+    }
+
+    private void sendCurrentTeamStats() {
+        try {
+            JSONObject responseMessage = new JSONObject();
+            responseMessage.put("type", "teamStats");
+            responseMessage.put("teamPoints", teamPoints);
+            responseMessage.put("teamFGRatio", totalMakes + "/" + totalShots);
+            responseMessage.put("teamThreePointRatio", threePointMakes + "/" + threePointAttempts);
+            responseMessage.put("teamAssists", teamAssists);
+            responseMessage.put("teamRebounds", teamRebounds);
+            responseMessage.put("teamSteals", teamSteals);
+            responseMessage.put("teamBlocks", teamBlocks);
+
+            WebSocketManager.getInstance().sendMessage(responseMessage.toString());
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error sending current team stats: " + e.getMessage());
         }
     }
 
