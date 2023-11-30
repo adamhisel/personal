@@ -69,7 +69,42 @@ app.get("/lifts/:id", async (req, res) => {
     res.status(200);
     res.send(results);
   
-  })
+  });
+
+  app.put("/lifts/:id", async (req, res) => {
+    const liftId = Number(req.params.id);
+    const liftDataToUpdate = req.body;
+  
+    await client.connect();
+  
+    const query = { id: liftId };
+    const updatedValues = { $set: liftDataToUpdate };
+  
+    const result = await db.collection("lifts").updateOne(query, updatedValues);
+  
+    if (result.modifiedCount === 0) {
+      res.status(404).send("Lift not found");
+    } else {
+      res.status(200).send("Lift updated successfully");
+    }
+  });
+
+  app.delete("/lifts/:id", async (req, res) => {
+    const liftId = Number(req.params.id);
+  
+    await client.connect();
+  
+    const query = { id: liftId };
+  
+    const result = await db.collection("lifts").deleteOne(query);
+  
+    if (result.deletedCount === 0) {
+      res.status(404).send("Lift not found");
+    } else {
+      res.status(200).send("Lift deleted successfully");
+    }
+  });
+  
 
 
 //Users
@@ -129,6 +164,39 @@ app.get("/users/:id", async (req, res) => {
     res.send(results);
   
   });
+  app.put("/users/:id", async (req, res) => {
+    const userId = Number(req.params.id);
+    const userDataToUpdate = req.body;
+  
+    await client.connect();
+  
+    const query = { id: userId };
+    const updatedValues = { $set: userDataToUpdate };
+  
+    const result = await db.collection("users").updateOne(query, updatedValues);
+  
+    if (result.modifiedCount === 0) {
+      res.status(404).send("User not found");
+    } else {
+      res.status(200).send("User updated successfully");
+    }
+  });
+
+  app.delete("/users/:id", async (req, res) => {
+    const userId = Number(req.params.id);
+  
+    await client.connect();
+  
+    const query = { id: userId };
+  
+    const result = await db.collection("users").deleteOne(query);
+  
+    if (result.deletedCount === 0) {
+      res.status(404).send("User not found");
+    } else {
+      res.status(200).send("User deleted successfully");
+    }
+  });
 
 //Workouts
 
@@ -176,4 +244,42 @@ app.get("/workouts/:id", async (req, res) => {
     res.status(200);
     res.send(results);
   
-  })
+  });
+
+  app.put("/workouts/:id", async (req, res) => {
+    const workoutId = Number(req.params.id);
+    const workoutDataToUpdate = req.body;
+  
+    await client.connect();
+  
+    const query = { id: workoutId };
+    const updatedValues = { $set: workoutDataToUpdate };
+  
+    const result = await db.collection("workouts").updateOne(query, updatedValues);
+  
+    if (result.modifiedCount === 0) {
+      res.status(404).send("Workout not found");
+    } else {
+      res.status(200).send("Workout updated successfully");
+    }
+  });
+
+  app.delete("/workouts/:id", async (req, res) => {
+    const workoutId = Number(req.params.id);
+  
+    await client.connect();
+  
+    const query = { id: workoutId };
+  
+    const result = await db.collection("workouts").deleteOne(query);
+  
+    if (result.deletedCount === 0) {
+      res.status(404).send("Workout not found");
+    } else {
+      res.status(200).send("Workout deleted successfully");
+    }
+  });
+
+
+  
+  

@@ -44,7 +44,9 @@ const Authors = () => {
           <h2 className="p-3 mb-3">
             SE/ComS319 Construction of User Interfaces, Fall 2023
           </h2>
-          <h2 className="p-3 mb-3">November 25th, 2023</h2>
+          <h2>Dr. Abraham N. Aldaco Gastelum </h2>
+          <h2>Email: aaldaco@iastate.edu</h2>
+          <h2 className="p-3 mb-3">November 29th, 2023</h2>
         </div>
       </div>
     </div>
