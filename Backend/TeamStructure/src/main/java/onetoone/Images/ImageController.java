@@ -35,7 +35,7 @@ public class ImageController {
         return success;
     }
 
-    @GetMapping("/{imageId}")
+    @GetMapping("/getimage/{imageId}")
     public ResponseEntity<byte[]> getImageById(@PathVariable int imageId) {
         Optional<Image> optionalImage = imageRepository.findById(imageId);
 
@@ -47,7 +47,7 @@ public class ImageController {
                 byte[] bytes = blob.getBytes(1, (int) blob.length());
 
                 HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); // Set the content type to image/jpeg
+                headers.setContentType(MediaType.IMAGE_PNG); // Set the content type to image/jpeg
 
                 return ResponseEntity.ok().headers(headers).body(bytes);
             } catch (SQLException e) {
