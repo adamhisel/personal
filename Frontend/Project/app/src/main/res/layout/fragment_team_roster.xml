@@ -2,6 +2,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_teamroster">
@@ -14,7 +15,43 @@
         android:padding="16dp"
         android:id="@+id/layout">
 
+    <LinearLayout
+        android:id="@+id/updateLL"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backUpdateButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#000"
+            android:text="BACK"
+            android:textColor="#FFFFFF"
+            app:icon="?attr/actionModeCloseDrawable" />
+
+        <TextView
+            android:id="@+id/one"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="30dp">
+
+        </TextView>
+        <TextView
+            android:id="@+id/two"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="30dp">
+
+        </TextView>
+    </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/topLL"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -68,16 +105,147 @@
             android:layout_gravity="center"
             android:textAlignment="center"
             android:textColor="#000000"
-            android:textSize="25dp">
+            android:textSize="25dp"
+            android:visibility="visible">
 
         </TextView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fanLeaveTeamButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/black"
+            android:text="LEAVE TEAM"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/settingsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@color/black"
+            app:icon="@drawable/baseline_settings_24"
+            android:text="TEAM SETTINGS"
+            android:visibility="visible"/>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/settingsll"
+            android:visibility="gone">
+
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change Team Information"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="30dp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <Switch
+                android:id="@+id/publicPrivate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="Team Is Private"
+                android:textAlignment="center"
+                android:textSize="30dp"
+                tools:checked="false" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilTeamName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Team Name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTeamName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:inputType="none"
+                    android:textSize="25dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPassword"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:inputType="none"
+                    android:textSize="25dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/black"
+                android:text="SAVE UPDATES" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/validation"
+                android:textSize="25dp"
+                android:layout_gravity="center"
+                android:textAlignment="center">
+
+            </TextView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/leaveTeamButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/black"
+                android:text="LEAVE TEAM" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/deleteTeamButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/black"
+                android:text="DELETE TEAM" />
+
+
+        </LinearLayout>
 
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:scrollbarStyle="insideInset">
+            android:scrollbarStyle="insideInset"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,37 +253,9 @@
                 android:orientation="vertical"
                 android:id="@+id/cardLL">
 
-
         </LinearLayout>
 
     </ScrollView>
-
-
-
-        <!--
-
-        <HorizontalScrollView
-            android:id="@+id/horizontalScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableLayout
-                android:id="@+id/tableLayout"
-                android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:padding="16dp"
-                android:stretchColumns="0,1,2,3"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0">
-
-            </TableLayout>
-
-        </HorizontalScrollView>-->
 
 
     </LinearLayout>
