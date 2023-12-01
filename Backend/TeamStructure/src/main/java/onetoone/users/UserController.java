@@ -49,12 +49,13 @@ public class UserController {
         if (user == null) {
             throw new RuntimeException();
         }
-        User userTemp = userRepository.findByUserName(user.getUserName());
-        if(userTemp == null){
+        User userTempName = userRepository.findByUserName(user.getUserName());
+        User userTempEmail = userRepository.findByEmail(user.getEmail());
+        if(userTempName == null && userTempEmail == null){
             userRepository.save(user);
         }
         else{
-            throw new RuntimeException("wrong");
+            throw new RuntimeException();
         }
         return user;
 
