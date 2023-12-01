@@ -1,6 +1,4 @@
 package onetoone.users;
-import onetoone.Teams.Team;
-import onetoone.Teams.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import onetoone.Players.Player;
 import onetoone.Players.PlayerRepository;
+
+import onetoone.Teams.Team;
+import onetoone.Teams.TeamRepository;
+
+import onetoone.Fans.Fan;
+
+import onetoone.Coaches.Coach;
 
 import java.util.List;
 
@@ -43,6 +48,42 @@ public class UserController {
     User getUserById( @PathVariable int id){
         return userRepository.findById(id);
     }
+
+    @GetMapping(path = "/users/{id}/{team_id}")
+    String getRoleOfUser(@PathVariable int id, @PathVariable int team_id){
+        String result = "";
+        User user = userRepository.findById(id);
+        Team team = teamRepository.findById(team_id);
+
+        List<Player> players = team.getPlayers();
+        List<Fan> fans = team.getFans();
+        List<Coach> coaches = team.getCoaches();
+
+        for(int i = 0; i < players.size(); i++){
+            Player temp = players.get(i);
+            if(temp.getUser_id() == id){
+                result = "player";
+                break;
+            }
+        }
+        for(int i = 0; i < coaches.size(); i++){
+            Coach temp = coaches.get(i);
+            if(temp.getUser_id() == id){
+                result = "coach";
+                break;
+            }
+        }
+        for(int i = 0; i < fans.size(); i++){
+            Fan temp = fans.get(i);
+            if(temp.getUser_id() == id){
+                result = "fan";
+                break;
+            }
+        }
+        return result;
+    }
+
+
 
     @PostMapping(path = "/users")
     User createUser(@RequestBody User user) {
