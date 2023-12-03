@@ -287,50 +287,27 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
     private CardView createPlayerStatCard(String playerName, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
         // Initialize a new CardView
         CardView cardView = new CardView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, // Use MATCH_PARENT for full width
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        layoutParams.setMargins(8, 8, 8, 8);
-        cardView.setLayoutParams(layoutParams);
+        cardLayoutParams.setMargins(8, 8, 8, 8);
+        cardView.setLayoutParams(cardLayoutParams);
 
-        // Create a vertical LinearLayout to hold the stats
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        cardView.addView(linearLayout);
+        // Create a horizontal LinearLayout for the stats inside the CardView
+        LinearLayout horizontalLayout = new LinearLayout(this);
+        horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
+        cardView.addView(horizontalLayout);
 
-        // Add TextViews for each stat
-        TextView playerNameView = new TextView(this);
-        playerNameView.setText(playerName);
-        linearLayout.addView(playerNameView);
-
-        TextView pointsView = new TextView(this);
-        pointsView.setText("Points: " + points);
-        linearLayout.addView(pointsView);
-
-        TextView fgRatioView = new TextView(this);
-        pointsView.setText("FG: " + fgRatio);
-        linearLayout.addView(fgRatioView);
-
-        TextView threePointView = new TextView(this);
-        pointsView.setText("3PT: " + threePointRatio);
-        linearLayout.addView(threePointView);
-
-        TextView assistsView = new TextView(this);
-        pointsView.setText("AST: " + assists);
-        linearLayout.addView(assistsView);
-
-        TextView reboundsView = new TextView(this);
-        pointsView.setText("REB: " + rebounds);
-        linearLayout.addView(reboundsView);
-
-        TextView stealsView = new TextView(this);
-        pointsView.setText("STL: " + steals);
-        linearLayout.addView(stealsView);
-
-        TextView blocksView = new TextView(this);
-        pointsView.setText("BLK: " + blocks);
-        linearLayout.addView(blocksView);
+        // Add a vertical layout for each stat
+        horizontalLayout.addView(createStatLayout("Player", playerName));
+        horizontalLayout.addView(createStatLayout("Points", String.valueOf(points)));
+        horizontalLayout.addView(createStatLayout("FG", fgRatio));
+        horizontalLayout.addView(createStatLayout("3PT", threePointRatio));
+        horizontalLayout.addView(createStatLayout("AST", String.valueOf(assists)));
+        horizontalLayout.addView(createStatLayout("REB", String.valueOf(rebounds)));
+        horizontalLayout.addView(createStatLayout("STL", String.valueOf(steals)));
+        horizontalLayout.addView(createStatLayout("BLK", String.valueOf(blocks)));
 
         // Set the tag for future reference
         cardView.setTag(playerName);
@@ -338,19 +315,54 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         return cardView;
     }
 
+    private LinearLayout createStatLayout(String label, String value) {
+        LinearLayout verticalLayout = new LinearLayout(this);
+        verticalLayout.setOrientation(LinearLayout.VERTICAL);
+        verticalLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f // Weight to distribute each stat evenly
+        ));
+
+        TextView labelView = new TextView(this);
+        labelView.setText(label);
+        verticalLayout.addView(labelView);
+
+        TextView valueView = new TextView(this);
+        valueView.setText(value);
+        verticalLayout.addView(valueView);
+
+        return verticalLayout;
+    }
+
     private void updatePlayerStatCard(View statCard, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
         if (statCard instanceof CardView) {
-            LinearLayout linearLayout = (LinearLayout) ((CardView) statCard).getChildAt(0);
-            // Update each TextView with new stats
-            // TextViews added in the same order as created
-            ((TextView) linearLayout.getChildAt(1)).setText("Points: " + points);
-            ((TextView) linearLayout.getChildAt(2)).setText("FG: " + fgRatio);
-            ((TextView) linearLayout.getChildAt(3)).setText("3PT: " + threePointRatio);
-            ((TextView) linearLayout.getChildAt(4)).setText("AST: " + assists);
-            ((TextView) linearLayout.getChildAt(5)).setText("REB: " + rebounds);
-            ((TextView) linearLayout.getChildAt(6)).setText("STL: " + steals);
-            ((TextView) linearLayout.getChildAt(7)).setText("BLK: " + blocks);
+            // Get the horizontal LinearLayout which contains all stat layouts
+            LinearLayout horizontalLayout = (LinearLayout) ((CardView) statCard).getChildAt(0);
+
+            // Update points
+            updateStatValue(horizontalLayout, 1, String.valueOf(points));
+            // Update FG ratio
+            updateStatValue(horizontalLayout, 2, fgRatio);
+            // Update 3PT ratio
+            updateStatValue(horizontalLayout, 3, threePointRatio);
+            // Update assists
+            updateStatValue(horizontalLayout, 4, String.valueOf(assists));
+            // Update rebounds
+            updateStatValue(horizontalLayout, 5, String.valueOf(rebounds));
+            // Update steals
+            updateStatValue(horizontalLayout, 6, String.valueOf(steals));
+            // Update blocks
+            updateStatValue(horizontalLayout, 7, String.valueOf(blocks));
         }
+    }
+
+    private void updateStatValue(LinearLayout horizontalLayout, int childIndex, String newValue) {
+        // Get the vertical layout for the specific stat
+        LinearLayout statLayout = (LinearLayout) horizontalLayout.getChildAt(childIndex);
+        // The value TextView is the second child in the vertical layout
+        TextView valueView = (TextView) statLayout.getChildAt(1);
+        valueView.setText(newValue);
     }
 
 }

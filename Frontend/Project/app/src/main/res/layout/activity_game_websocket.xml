@@ -213,7 +213,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <HorizontalScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="425dp">
@@ -225,7 +225,7 @@
             android:orientation="horizontal">
             <!-- Player stat cards added here programmatically -->
         </LinearLayout>
-    </HorizontalScrollView>
+    </ScrollView>
 
     <Button
         android:id="@+id/btnExit"
