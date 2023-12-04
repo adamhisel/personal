@@ -2,6 +2,7 @@ package onetoone.Players;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import onetoone.Teams.Team;
 import onetoone.Teams.TeamRepository;
+
+import onetoone.users.User;
+import onetoone.users.UserRepository;
 
 /**
  *
@@ -26,7 +30,7 @@ public class PlayerController {
     PlayerRepository playerRepository;
 
     @Autowired
-    TeamRepository userRepository;
+    UserRepository userRepository;
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -41,6 +45,12 @@ public class PlayerController {
     @GetMapping(path = "/players")
     List<Player> getAllPlayers(){
         return playerRepository.findAll();
+    }
+
+    @GetMapping(path = "/player_user/{player_id}")
+    User getUserFromPlayer(@PathVariable int player_id){
+        Player temp = playerRepository.findById(player_id);
+        return userRepository.findById(temp.getUser_id());
     }
 
 

@@ -1,8 +1,11 @@
 package onetoone.Coaches;
 
 import onetoone.Coaches.CoachRepository;
+import onetoone.Fans.Fan;
 import onetoone.Players.Player;
 import onetoone.Teams.Team;
+import onetoone.users.User;
+import onetoone.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,9 @@ public class CoachController {
     @Autowired
     CoachRepository coachRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
 
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
@@ -33,6 +39,12 @@ public class CoachController {
     @GetMapping(path = "/coach/{id}")
     Coach getCoachById(@PathVariable int id){
         return coachRepository.findById(id);
+    }
+
+    @GetMapping(path = "/coach_user/{coach_id}")
+    User getUserFromCoach(@PathVariable int coach_id){
+        Coach temp = getCoachById(coach_id);
+        return userRepository.findById(temp.getUser_id());
     }
 
     @PostMapping(path = "/coaches")
