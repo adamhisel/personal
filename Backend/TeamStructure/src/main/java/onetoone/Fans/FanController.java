@@ -1,6 +1,8 @@
 package onetoone.Fans;
 
 import onetoone.Players.Player;
+import onetoone.users.User;
+import onetoone.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,9 @@ public class FanController {
     @Autowired
     FanRepository fanRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
@@ -30,6 +35,12 @@ public class FanController {
     @GetMapping(path = "/fan/{id}")
     Fan getFanById(@PathVariable int id){
         return fanRepository.findById(id);
+    }
+
+    @GetMapping(path = "/fan_user/{fan_id}")
+    User getUserFromFan(@PathVariable int fan_id){
+        Fan temp = fanRepository.findById(fan_id);
+        return userRepository.findById(temp.getUser_id());
     }
 
     @PostMapping(path = "/fans")
