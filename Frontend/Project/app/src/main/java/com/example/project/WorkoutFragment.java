@@ -3,6 +3,7 @@ package com.example.project;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -83,6 +84,8 @@ public class WorkoutFragment extends Fragment {
             Intent intent = new Intent(requireActivity(), WorkoutActivity.class);
             startActivity(intent);
         });
+
+        binding.btnCreateCustomWorkout.setOnClickListener(view -> showCustomWorkoutDialog());
     }
 
     // Method to fetch workouts for a specific user
@@ -154,5 +157,33 @@ public class WorkoutFragment extends Fragment {
             // Add the button to the LinearLayout
             workoutsContainer.addView(button);
         }
+    }
+
+    private void showCustomWorkoutDialog() {
+        // Inflate the custom workout dialog layout
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_workout_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(dialogView);
+
+        // Get the custom workout container and button from the dialog
+        LinearLayout llCustomWorkoutsContainer = dialogView.findViewById(R.id.llCustomWorkoutsContainer);
+        Button btnCreateNewWorkout = dialogView.findViewById(R.id.btnCreateNewWorkout);
+
+        // Fetch and display custom workouts for the user
+        fetchAndDisplayCustomWorkouts(llCustomWorkoutsContainer);
+
+        // Set up the button to create a new workout
+        btnCreateNewWorkout.setOnClickListener(v -> {
+            // Handle create new workout logic
+        });
+
+        // Show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void fetchAndDisplayCustomWorkouts(LinearLayout container) {
+        // Fetch custom workouts from the server and populate the container
+        // You can use a similar approach as in the fetchWorkoutsForUser method
     }
 }
