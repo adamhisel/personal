@@ -165,6 +165,9 @@ public class WorkoutFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(dialogView);
 
+        // Create the dialog from the builder
+        AlertDialog dialog = builder.create();
+
         // Get the custom workout container and button from the dialog
         LinearLayout llCustomWorkoutsContainer = dialogView.findViewById(R.id.llCustomWorkoutsContainer);
         Button btnCreateNewWorkout = dialogView.findViewById(R.id.btnCreateNewWorkout);
@@ -174,16 +177,20 @@ public class WorkoutFragment extends Fragment {
 
         // Set up the button to create a new workout
         btnCreateNewWorkout.setOnClickListener(v -> {
-            // Handle create new workout logic
+            // Launch CreateCustomWorkoutActivity
+            Intent intent = new Intent(getActivity(), CreateCustomWorkoutActivity.class);
+            startActivity(intent);
+
+            // Dismiss the dialog after launching the activity
+            dialog.dismiss();
         });
 
         // Show the dialog
-        AlertDialog dialog = builder.create();
         dialog.show();
     }
 
     private void fetchAndDisplayCustomWorkouts(LinearLayout container) {
         // Fetch custom workouts from the server and populate the container
-        // You can use a similar approach as in the fetchWorkoutsForUser method
+        // Use a similar approach as in the fetchWorkoutsForUser method
     }
 }

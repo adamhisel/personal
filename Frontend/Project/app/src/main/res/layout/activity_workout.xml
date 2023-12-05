@@ -47,14 +47,14 @@
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvShotCoordinates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="400dp"
-        android:text="Shot Coordinates: (0,0)"
-        android:textColor="@color/black"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tvShotCoordinates"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textSize="16sp"-->
+<!--        android:layout_marginTop="400dp"-->
+<!--        android:text="Shot Coordinates: (0,0)"-->
+<!--        android:textColor="@color/black"/>-->
 
 
     <LinearLayout

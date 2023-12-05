@@ -101,8 +101,8 @@ public class WorkoutActivity extends AppCompatActivity {
             int statsTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50; // 50 is the space between buttons and stats
             setViewTopMargin(binding.llStats, statsTopMargin);
 
-            int coordsTopMargin = statsTopMargin + binding.llStats.getHeight() + 10;
-            setViewTopMargin(binding.tvShotCoordinates, coordsTopMargin);
+//            int coordsTopMargin = statsTopMargin + binding.llStats.getHeight() + 10;
+//            setViewTopMargin(binding.tvShotCoordinates, coordsTopMargin);
         });
     }
 
@@ -137,7 +137,7 @@ public class WorkoutActivity extends AppCompatActivity {
         float realX = x * widthScale;
         float realY = y * heightScale;
 
-        binding.tvShotCoordinates.setText(String.format("Shot Coordinates: (%.2f, %.2f)", realX, realY));
+//        binding.tvShotCoordinates.setText(String.format("Shot Coordinates: (%.2f, %.2f)", realX, realY));
 
         // Calculate the distance to the basket
         float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
