@@ -1,6 +1,9 @@
 package com.example.project;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.BlendMode;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +12,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -26,12 +31,15 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityMainBinding;
+import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -50,22 +58,11 @@ public class HomeFragment extends Fragment {
 
     private Bundle savedInstance;
 
-    private Map<ToggleButton, LinearLayout> toggleButtonMap = new HashMap<>();
-
-    private int totalPoints = 0;
-    private int totalGames = 0;
-    private int totalFGM = 0;
-    private int totalFGA = 0;
-    private int total3PM = 0;
-    private int total3PA = 0;
-    private int total2PM = 0;
-    private int total2PA = 0;
+    private Map<Switch, LinearLayout> toggleButtonMap = new HashMap<>();
 
     private ArrayList<Integer> gameIdArr;
 
-    private ArrayList<Player> players;
-
-    private Map<Integer, Integer> playerPointsMap = new HashMap<>();
+    private Map<Integer, LinearLayout> teamGamesLLMap = new HashMap<>();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -147,15 +144,6 @@ public class HomeFragment extends Fragment {
 
                         for(int j =0; j< teamList.size(); j++) {
 
-                            totalPoints = 0;
-                            totalGames = 0;
-                            totalFGM = 0;
-                            totalFGA = 0;
-                            total3PM = 0;
-                            total3PA = 0;
-                            total2PM = 0;
-                            total2PA = 0;
-
                             CardView cv = new CardView(requireContext());
 
                             LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
@@ -208,21 +196,23 @@ public class HomeFragment extends Fragment {
 
 
 
-                            Button button = new Button(requireContext());
+                            MaterialButton button = new MaterialButton(requireContext());
 
                             button.setLayoutParams(halfLLVert);
+                            button.setTextColor(Color.WHITE);
+                            button.setBackgroundColor(Color.BLACK);
                             button.setText("View Team");
                             button.setTag(id);
-                            button.setTextSize(25);
+                            button.setTextSize(20);
 
-                            ToggleButton tButton = new ToggleButton(requireContext());
+                            Switch tButton = new Switch(requireContext());
 
                             tButton.setLayoutParams(halfLLVert);
-                            tButton.setText("View Recent Games");
-                            tButton.setTextOff("View Recent Games");
-                            tButton.setTextOn("Hide Recent Games");
+                            tButton.setText("View Recent Game");
+                            tButton.setTextOff("View Recent Game");
+                            tButton.setTextOn("Hide Recent Game");
                             tButton.setId(id);
-                            tButton.setTextSize(15);
+                            tButton.setTextSize(20);
 
 
 
@@ -240,6 +230,8 @@ public class HomeFragment extends Fragment {
                             gamesLL.setOrientation(LinearLayout.HORIZONTAL);
                             gamesLL.setVisibility(View.GONE);
 
+//                            teamGamesLLMap.put(id, gamesLL);
+
                             toggleButtonMap.put(tButton, gamesLL);
 
                             LinearLayout cardContentLayout = new LinearLayout(requireContext());
@@ -249,11 +241,9 @@ public class HomeFragment extends Fragment {
                             ));
                             cardContentLayout.setOrientation(LinearLayout.VERTICAL);
 
-
                             cardContentLayout.addView(linearLayout);
+
                             cardContentLayout.addView(gamesLL);
-
-
 
                             cv.addView(cardContentLayout);
 
@@ -263,27 +253,37 @@ public class HomeFragment extends Fragment {
                                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                                     LinearLayout gamesLL = toggleButtonMap.get(buttonView);
                                     if (isChecked) {
-                                        int teamId = 0;
-                                        for(int j = 0; j < linearLayout.getChildCount(); j++){
-                                            View v = linearLayout.getChildAt(j);
-                                            if(v instanceof LinearLayout){
-                                                for(int l = 0; l < ((LinearLayout) v).getChildCount(); l++) {
-                                                    View b = ((LinearLayout) v).getChildAt(l);
-                                                    if(b instanceof ToggleButton){
-                                                        teamId = b.getId();
-                                                    }
-                                                }
-                                            }
+//                                        int teamId = 0;
+//                                        for(int j = 0; j < linearLayout.getChildCount(); j++){
+//                                            View v = linearLayout.getChildAt(j);
+//                                            if(v instanceof LinearLayout){
+//                                                for(int l = 0; l < ((LinearLayout) v).getChildCount(); l++) {
+//                                                    View b = ((LinearLayout) v).getChildAt(l);
+//                                                    if(b instanceof ToggleButton){
+//                                                        teamId = b.getId();
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                        getGames(teamId, gamesLL, new TeamListCallback() {
+//                                            @Override
+//                                            public void onTeamListReceived(ArrayList<Integer> teamList) {
+//                                                gameIdArr = teamList;
+//                                                for (int i = 0; i < gameIdArr.size(); i++) {
+//                                                    getShotsForGame(gameIdArr.get(i), gamesLL);
+//                                                }
+//                                            }
+//                                        });
+
+                                        getGames(id, gamesLL);
+
+                                        Collection<LinearLayout> values = teamGamesLLMap.values();
+
+
+                                        for (LinearLayout value : values) {
+                                            TextView t = (TextView) value.getChildAt(1);
                                         }
-                                        getGames(teamId, gamesLL, new TeamListCallback() {
-                                            @Override
-                                            public void onTeamListReceived(ArrayList<Integer> teamList) {
-                                                gameIdArr = teamList;
-                                                for (int i = 0; i < gameIdArr.size(); i++) {
-                                                    getShotsForGame(gameIdArr.get(i), gamesLL);
-                                                }
-                                            }
-                                        });
+
 
                                         gamesLL.setVisibility(View.VISIBLE);
 
@@ -352,7 +352,8 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void getGames(int id, LinearLayout gamesLL, final TeamListCallback callback) {
+    private void getGames(int id, LinearLayout parentLL) {
+        parentLL.removeAllViews();
         String url = "http://coms-309-018.class.las.iastate.edu:8080/games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
@@ -367,9 +368,25 @@ public class HomeFragment extends Fragment {
                                 if (tid == savedTeamId) {
                                     int gid = game.getInt("id");
                                     gameIdArr.add(gid);
+
                                 }
                             }
-                            callback.onTeamListReceived(gameIdArr);
+                            for(int i = 0; i < gameIdArr.size(); i++){
+
+                                LinearLayout gameLL = new LinearLayout(requireContext());
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.MATCH_PARENT,
+                                        LinearLayout.LayoutParams.WRAP_CONTENT
+                                );
+                                gameLL.setLayoutParams(layoutParams);
+                                gameLL.setOrientation(LinearLayout.VERTICAL);
+
+                                teamGamesLLMap.put(i, gameLL);
+
+                                if(i == gameIdArr.size()-1){
+                                    getShotsForGame(gameIdArr.get(i), gameLL, parentLL);
+                                }
+                            }
 
                         }
                     } catch (JSONException e) {
@@ -381,7 +398,7 @@ public class HomeFragment extends Fragment {
         mQueue.add(request);
     }
 
-    private void getShotsForGame(int gameId, LinearLayout gamesLL) {
+    private void getShotsForGame(int gameId, LinearLayout gameLL, LinearLayout parentLL) {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/games/" + gameId + "/shots";
         JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
@@ -391,62 +408,79 @@ public class HomeFragment extends Fragment {
                     int game3PA = 0;
                     for (int i = 0; i < response.length(); i++) {
                         try {
-                            JSONObject shot = response.getJSONObject(i);
-                            boolean made = shot.getBoolean("made");
-                            int value = shot.getInt("value");
+                            if(!(response.length() == 0)) {
+                                JSONObject shot = response.getJSONObject(i);
+                                boolean made = shot.getBoolean("made");
+                                int value = shot.getInt("value");
 
-                            if (made) {
-                                totalPoints += value;
-                                gameFGM++;
-                            }
-                            gameFGA++;
-
-                            if (value == 3) {
                                 if (made) {
-                                    game3PM++;
+                                    gameFGM++;
                                 }
-                                game3PA++;
+                                gameFGA++;
+
+                                if (value == 3) {
+                                    if (made) {
+                                        game3PM++;
+                                    }
+                                    game3PA++;
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    displayGame(gamesLL, gameFGM, gameFGA, game3PM, game3PA);
+                    TextView date = new TextView(requireContext());
+                    date.setText("Date: ");
+                    date.setTextSize(25);
+
+                    TextView fgP = new TextView(requireContext());
+                    fgP.setText(String.format(Locale.US, "FG%%: %.2f%%", gameFGM * 100.0 / gameFGA));
+                    fgP.setTextSize(25);
+
+                    ProgressBar progFGP = new ProgressBar(requireContext(), null, android.R.attr.progressBarStyleHorizontal);
+                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+                    progFGP.setLayoutParams(layoutParams);
+                    progFGP.setScaleY(2);
+                    progFGP.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+                    progFGP.setProgress((int) (gameFGM * 100.0 / gameFGA));
+
+                    TextView threeP = new TextView(requireContext());
+                    threeP.setText(String.format(Locale.US, "3PT%%: %.2f%%", game3PM * 100.0 / game3PA));
+                    threeP.setTextSize(25);
+
+                    ProgressBar progTHREEP = new ProgressBar(requireContext(), null, android.R.attr.progressBarStyleHorizontal);
+                    progTHREEP.setLayoutParams(layoutParams);
+                    progTHREEP.setScaleY(2);
+                    progTHREEP.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+                    progTHREEP.setProgress((int) (game3PM * 100.0 / game3PA));
+
+                    if(fgP.getText() == "FG%: NaN%"){
+                        fgP.setText("No Shots Were Shot");
+                        threeP.setText("No Shots Were Taken");
+                    }
+                    else if(threeP.getText() == "3PT%: NaN%"){
+                        threeP.setText(("No Three's Were Shot"));
+                    }
+
+                    gameLL.addView(date);
+                    gameLL.addView(fgP);
+                    gameLL.addView(progFGP);
+                    gameLL.addView(threeP);
+                    gameLL.addView(progTHREEP);
+
+                    parentLL.addView(gameLL);
+
+//                    displayGame(gameLL, gameFGM, gameFGA, game3PM, game3PA);
                 },
                 error -> error.printStackTrace()
         );
         mQueue.add(shotsRequest);
     }
 
-
-    private void displayGame(LinearLayout gamesLL, int totalFGM, int totalFGA, int total3PM, int total3PA) {
-        LinearLayout game = new LinearLayout(requireContext());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        game.setLayoutParams(layoutParams);
-        game.setOrientation(LinearLayout.VERTICAL);
-
-        TextView date = new TextView(requireContext());
-        date.setText("Date: ");
-        date.setTextSize(20);
-
-        TextView fgP = new TextView(requireContext());
-        fgP.setText(String.format(Locale.US, "FG%%: %.2f%%", totalFGM * 100.0 / totalFGA));
-        fgP.setTextSize(20);
-
-        TextView threeP = new TextView(requireContext());
-        threeP.setText(String.format(Locale.US, "3PT%%: %.2f%%", total3PM * 100.0 / total3PA));
-        threeP.setTextSize(20);
-
-        game.addView(date);
-        game.addView(fgP);
-        game.addView(threeP);
-
-        gamesLL.addView(game);
-    }
 
     public interface TeamListCallback {
         void onTeamListReceived(ArrayList<Integer> teamList);
