@@ -82,7 +82,21 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
             int imageHeight = (int) (width * aspectRatio);
             params.height = imageHeight;
             imageView.setLayoutParams(params);
+
+            // Set the top margin of the buttons layout
+            int statsTopMargin = imageHeight + 10;
+            adjustTopMargin(binding.llStats, statsTopMargin);
+
+            int scrollTopMargin = statsTopMargin + binding.llStats.getHeight() + 10;
+            adjustTopMargin(binding.svPlayerStats, scrollTopMargin);
         });
+    }
+
+    // Helper method to set the top margin of a view
+    private void adjustTopMargin(View view, int topMargin) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.topMargin = topMargin;
+        view.setLayoutParams(layoutParams);
     }
 
     // Sets up websocket connection based on url provided.
@@ -264,105 +278,21 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
             int steals = messageObject.getInt("steals");
             int blocks = messageObject.getInt("blocks");
 
-            // Update the UI with these stats
-            updatePlayerStats(playerName, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
+            // Format the stats in a readable string
+            String formattedStats = formatPlayerStats(playerName, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
+
+            // Append the formatted stats to the existing text
+            binding.playerStatsTextView.append(formattedStats + "\n\n");
+
+            binding.svPlayerStats.post(() -> binding.svPlayerStats.fullScroll(ScrollView.FOCUS_DOWN));
         } catch (JSONException e) {
             Log.e("GameWebsocketActivity", "Error handling player stats update message: " + e.getMessage());
         }
     }
 
-    private void updatePlayerStats(String playerName, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
-        LinearLayout container = binding.playerStatsContainer;
-        View playerStatView = container.findViewWithTag(playerName);
-        if (playerStatView == null) {
-            // Create new stat card for this player
-            CardView statCard = createPlayerStatCard(playerName, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
-            container.addView(statCard);
-        } else {
-            // Update existing card
-            updatePlayerStatCard(playerStatView, points, fgRatio, threePointRatio, assists, rebounds, steals, blocks);
-        }
-    }
-
-    private CardView createPlayerStatCard(String playerName, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
-        // Initialize a new CardView
-        CardView cardView = new CardView(this);
-        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, // Use MATCH_PARENT for full width
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardLayoutParams.setMargins(8, 8, 8, 8);
-        cardView.setLayoutParams(cardLayoutParams);
-
-        // Create a horizontal LinearLayout for the stats inside the CardView
-        LinearLayout horizontalLayout = new LinearLayout(this);
-        horizontalLayout.setOrientation(LinearLayout.HORIZONTAL);
-        cardView.addView(horizontalLayout);
-
-        // Add a vertical layout for each stat
-        horizontalLayout.addView(createStatLayout("Player", playerName));
-        horizontalLayout.addView(createStatLayout("Points", String.valueOf(points)));
-        horizontalLayout.addView(createStatLayout("FG", fgRatio));
-        horizontalLayout.addView(createStatLayout("3PT", threePointRatio));
-        horizontalLayout.addView(createStatLayout("AST", String.valueOf(assists)));
-        horizontalLayout.addView(createStatLayout("REB", String.valueOf(rebounds)));
-        horizontalLayout.addView(createStatLayout("STL", String.valueOf(steals)));
-        horizontalLayout.addView(createStatLayout("BLK", String.valueOf(blocks)));
-
-        // Set the tag for future reference
-        cardView.setTag(playerName);
-
-        return cardView;
-    }
-
-    private LinearLayout createStatLayout(String label, String value) {
-        LinearLayout verticalLayout = new LinearLayout(this);
-        verticalLayout.setOrientation(LinearLayout.VERTICAL);
-        verticalLayout.setLayoutParams(new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1.0f // Weight to distribute each stat evenly
-        ));
-
-        TextView labelView = new TextView(this);
-        labelView.setText(label);
-        verticalLayout.addView(labelView);
-
-        TextView valueView = new TextView(this);
-        valueView.setText(value);
-        verticalLayout.addView(valueView);
-
-        return verticalLayout;
-    }
-
-    private void updatePlayerStatCard(View statCard, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
-        if (statCard instanceof CardView) {
-            // Get the horizontal LinearLayout which contains all stat layouts
-            LinearLayout horizontalLayout = (LinearLayout) ((CardView) statCard).getChildAt(0);
-
-            // Update points
-            updateStatValue(horizontalLayout, 1, String.valueOf(points));
-            // Update FG ratio
-            updateStatValue(horizontalLayout, 2, fgRatio);
-            // Update 3PT ratio
-            updateStatValue(horizontalLayout, 3, threePointRatio);
-            // Update assists
-            updateStatValue(horizontalLayout, 4, String.valueOf(assists));
-            // Update rebounds
-            updateStatValue(horizontalLayout, 5, String.valueOf(rebounds));
-            // Update steals
-            updateStatValue(horizontalLayout, 6, String.valueOf(steals));
-            // Update blocks
-            updateStatValue(horizontalLayout, 7, String.valueOf(blocks));
-        }
-    }
-
-    private void updateStatValue(LinearLayout horizontalLayout, int childIndex, String newValue) {
-        // Get the vertical layout for the specific stat
-        LinearLayout statLayout = (LinearLayout) horizontalLayout.getChildAt(childIndex);
-        // The value TextView is the second child in the vertical layout
-        TextView valueView = (TextView) statLayout.getChildAt(1);
-        valueView.setText(newValue);
+    private String formatPlayerStats(String playerName, int points, String fgRatio, String threePointRatio, int assists, int rebounds, int steals, int blocks) {
+        return playerName + " - Pts: " + points + ", FG: " + fgRatio + ", 3PT: " + threePointRatio + "\n" +
+                "AST: " + assists + ", REB: " + rebounds + ", STL: " + steals + ", BLK: " + blocks;
     }
 
 }
