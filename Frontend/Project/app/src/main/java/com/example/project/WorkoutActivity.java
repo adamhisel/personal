@@ -100,6 +100,9 @@ public class WorkoutActivity extends AppCompatActivity {
 
             int statsTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50; // 50 is the space between buttons and stats
             setViewTopMargin(binding.llStats, statsTopMargin);
+
+            int coordsTopMargin = statsTopMargin + binding.llStats.getHeight() + 10;
+            setViewTopMargin(binding.tvShotCoordinates, coordsTopMargin);
         });
     }
 
@@ -134,6 +137,8 @@ public class WorkoutActivity extends AppCompatActivity {
         float realX = x * widthScale;
         float realY = y * heightScale;
 
+        binding.tvShotCoordinates.setText(String.format("Shot Coordinates: (%.2f, %.2f)", realX, realY));
+
         // Calculate the distance to the basket
         float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
 
@@ -166,6 +171,7 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.btnMake.setOnClickListener(v -> {
             int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
             shotsList.add(new Shots(true, value, (int) x, (int) y));
+            Log.d("ShotLog", "Shot added: Made=" + true + ", Value=" + value + ", X=" + x + ", Y=" + y);
             setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
             if ("Three-Point Shot".equals(shotType)) {
                 threePointMakes++;
@@ -180,6 +186,7 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.btnMiss.setOnClickListener(v -> {
             int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
             shotsList.add(new Shots(false, value, (int) x, (int) y));
+            Log.d("ShotLog", "Shot added: Made=" + false + ", Value=" + value + ", X=" + x + ", Y=" + y);
             setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
             totalShots++;
             updateStats();

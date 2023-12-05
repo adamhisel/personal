@@ -1,61 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF"
-    android:padding="20dp"
+    android:orientation="vertical"
+    android:padding="10dp"
     tools:context=".GameWebsocketActivity">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnExit"
-        android:layout_width="125dp"
-        android:layout_height="47dp"
-        android:text="Exit"
-        app:backgroundTint="#000000"
-        app:icon="?attr/actionModeCloseDrawable" />
+    <!-- The court ImageView -->
+    <ImageView
+        android:id="@+id/courtImageView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/court_image" />
 
-    <TextView
-        android:id="@+id/header"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/llStats"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="355dp"
+        android:background="#EEEEEE"
+        android:orientation="vertical">
 
-        android:layout_gravity="center"
-        android:scrollbars="vertical"
-        android:text=""
-        android:textColor="#000000"
-        android:textSize="35dp"
-        android:textStyle="bold" />
-
-
-
-    <ScrollView
-        android:id="@+id/websocketScroll"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbarStyle="insideInset"
-        app:layout_constraintBottom_toTopOf="@+id/et2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-
+        <!-- Team Statistics Header -->
         <TextView
-            android:id="@+id/websocketMessages"
+            android:id="@+id/tvTeamStatsHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            android:text=""
+            android:text="Team Statistics"
             android:textColor="#000000"
-            android:textSize="20dp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
+        <!-- Row for Stat Names -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <!-- Columns for each stat -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="PTS"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeamPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="FG"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeamFG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0/0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="3PT"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeam3PT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0/0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="AST"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeamAssists"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="REB"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeamRebounds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="STL"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeamSteals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="BLK"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/tvTeamBlocks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ScrollView for Player Stats -->
+    <ScrollView
+        android:id="@+id/svPlayerStats"
+        android:layout_width="match_parent"
+        android:layout_marginTop="425dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="60dp"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/playerStatsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="16sp" />
     </ScrollView>
 
+    <!-- Exit Button -->
+    <Button
+        android:id="@+id/btnExit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:backgroundTint="#000000"
+        android:text="Exit"
+        android:textColor="#FFFFFF"
+        app:icon="?attr/actionModeCloseDrawable" />
 
-</LinearLayout>
+    <!-- Websocket Messages TextView -->
+    <TextView
+        android:id="@+id/websocketMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:padding="10dp"
+        android:scrollbars="vertical"
+        android:text="message"
+        android:textColor="#000000"
+        android:textSize="15dp"
+        android:textStyle="bold" />
+
+</FrameLayout>

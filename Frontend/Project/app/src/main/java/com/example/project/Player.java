@@ -15,6 +15,9 @@ public class Player {
     private final List<Shots> shotsList;
     private int number;
     private String position;
+    private int totalPoints;
+    private int totalShots;
+    private int totalMakes;
     private int threePointMakes;
     private int threePointAttempts;
     private int twoPointMakes;
@@ -38,6 +41,9 @@ public class Player {
         this.number = number;
         this.position = position;
         this.shotsList = new ArrayList<>();
+        this.totalPoints = 0;
+        this.totalShots = 0;
+        this.totalMakes = 0;
         this.threePointMakes = 0;
         this.threePointAttempts = 0;
         this.twoPointMakes = 0;
@@ -54,8 +60,13 @@ public class Player {
      * @param made true if the shot was made, false otherwise
      */
     public void recordThreePointShot(boolean made) {
+        this.totalShots++;
         this.threePointAttempts++;
-        if (made) this.threePointMakes++;
+        if (made) {
+            this.totalMakes++;
+            this.threePointMakes++;
+            this.totalPoints += 3;
+        }
     }
 
     /**
@@ -64,8 +75,13 @@ public class Player {
      * @param made true if the shot was made, false otherwise
      */
     public void recordTwoPointShot(boolean made) {
+        this.totalShots++;
         this.twoPointAttempts++;
-        if (made) this.twoPointMakes++;
+        if (made) {
+            this.totalMakes++;
+            this.twoPointMakes++;
+            this.totalPoints += 2;
+        }
     }
 
     /**
@@ -134,6 +150,26 @@ public class Player {
         return shotsList;
     }
 
+    public int getTotalPoints() {
+        return totalPoints;
+    }
+
+    public int getTotalShots() {
+        return totalShots;
+    }
+
+    public int getTotalMakes() {
+        return totalMakes;
+    }
+
+    public int getThreePointAttempts() {
+        return threePointAttempts;
+    }
+
+    public int getTwoPointAttempts() {
+        return twoPointAttempts;
+    }
+
     public int getThreePointMakes() {
         return threePointMakes;
     }
@@ -146,12 +182,20 @@ public class Player {
         return id;
     }
 
-    public int getAssists() { return assists; }
+    public int getAssists() {
+        return assists;
+    }
 
-    public int getRebounds() { return rebounds; }
+    public int getRebounds() {
+        return rebounds;
+    }
 
-    public int getBlocks() { return blocks; }
+    public int getBlocks() {
+        return blocks;
+    }
 
-    public int getSteals() { return steals; }
+    public int getSteals() {
+        return steals;
+    }
 }
 

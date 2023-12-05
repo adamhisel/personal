@@ -36,8 +36,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -66,11 +68,16 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private ImageView imageView;
     private Drawable green, red;
     private int totalShots = 0;
+    private int totalMakes = 0;
     private int threePointMakes = 0;
     private int threePointAttempts = 0;
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
     private int teamPoints = 0;
+    private int teamAssists = 0;
+    private int teamRebounds = 0;
+    private int teamSteals = 0;
+    private int teamBlocks = 0;
     private Player activePlayer;
     private int activePlayerIndex;
     private int gameId;
@@ -125,7 +132,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
         hideShotButtons();
         binding.btnRecordStat.setOnClickListener(v -> showRecordStatDialog());
-        binding.btnRecordStat.setVisibility(View.GONE);
+        binding.btnRecordStat.setVisibility(View.INVISIBLE);
         binding.btnSubstitute.setOnClickListener(view -> showSubstitutionDialog());
 
         binding.btnEndSession.setOnClickListener(new View.OnClickListener() {
@@ -155,12 +162,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             adjustTopMargin(binding.llButtons, buttonsTopMargin);
 
             // Space between buttons and players
-            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 15;
+            int playersTopMargin = buttonsTopMargin + binding.llButtons.getHeight();
             adjustTopMargin(binding.llPlayers, playersTopMargin);
 
-            //Space between players and lower info
-            int llLowerInfoTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 15;
-            adjustTopMargin(binding.llLowerInfo, llLowerInfoTopMargin);
+            int statsTopMargin = playersTopMargin + binding.llPlayers.getHeight() + 50;
+            adjustTopMargin(binding.llStats, statsTopMargin);
         });
     }
 
@@ -176,7 +182,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             if (players.size() > 5) {
                 binding.btnSubstitute.setVisibility(View.VISIBLE);
             } else {
-                binding.btnSubstitute.setVisibility(View.GONE);
+                binding.btnSubstitute.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -196,8 +202,28 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Log.i("GameActivity", "WebSocket Message: " + message);
 
         runOnUiThread(() -> {
-            // Append the new message
-            binding.tvWebsocketMessages.append(message + "\n");
+            try {
+                if (message.contains("{")) {
+                    // Extract JSON part from the message
+                    String jsonPart = message.substring(message.indexOf("{"));
+                    JSONObject messageObject = new JSONObject(jsonPart);
+                    String messageType = messageObject.getString("type");
+
+                    if ("requestGameShots".equals(messageType)) {
+                        Log.i("GameActivity", "Processing requestGameShots message");
+                        sendCurrentGameShotsMessage();
+                    }  else if ("requestTeamStats".equals(messageType)) {
+                        Log.i("GameActivity", "Processing requestTeamStats message");
+                        sendCurrentTeamStatsMessage();
+                    }
+                } else {
+                    // Handle non-JSON message (plain text)
+                    binding.tvWebsocketMessages.append(message + "\n");
+                }
+            } catch (JSONException e) {
+                Log.e("GameActivity", "Error parsing WebSocket message: " + e.getMessage());
+                // Handle potential JSON parsing error
+            }
 
             // Scroll to the bottom to show the latest message
             binding.svWebsocket.fullScroll(ScrollView.FOCUS_DOWN);
@@ -300,6 +326,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             updatePlayerButtonColors();
             binding.btnRecordStat.setVisibility(View.VISIBLE);
         }
+        updatePlayerStatsViews();
     }
 
     // Set up player buttons to be initially tied to the first 5 players on team
@@ -384,6 +411,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         setActivePlayer(playerIn);
         updatePlayerButtonColors();
+        updatePlayerStatsViews();
     }
 
     // Find which buttons the player is currently associated with
@@ -451,9 +479,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         String shotType = calculateShotType(x, y);
 
-        // Increment attempt counters
-        incrementShotAttempts(shotType);
-
         // Show shot buttons and then wait for user to record as make or miss
         showShotButtons();
         recordMakeOrMiss(shotType, x, y);
@@ -481,17 +506,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         return (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
     }
 
-    // Increments the attempt counters based on shot type
-    private void incrementShotAttempts(String shotType) {
-        if ("Three-Point Shot".equals(shotType)) {
-            threePointAttempts++;
-            if (activePlayer != null) activePlayer.recordThreePointShot(false);
-        } else {
-            twoPointAttempts++;
-            if (activePlayer != null) activePlayer.recordTwoPointShot(false);
-        }
-    }
-
     // Records whether the shot was made or missed and updates UI accordingly
     private void recordMakeOrMiss(String shotType, float x, float y) {
         // Set click listeners for make and miss buttons
@@ -512,21 +526,28 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         // Check if there's an active player selected
         if (activePlayer != null) {
             // Add the shot to the active player's list
-            activePlayer.addShot(new Shots(true, value, (int) x, (int) y));
+            activePlayer.addShot(shot);
             Log.d("GameActivity", "Shot made: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
         }
 
         setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
         if (isThreePoint) {
+            threePointAttempts++;
             threePointMakes++;
             if (activePlayer != null) activePlayer.recordThreePointShot(true);
         } else {
+            twoPointAttempts++;
             twoPointMakes++;
             if (activePlayer != null) activePlayer.recordTwoPointShot(true);
         }
+        totalMakes++;
         totalShots++;
 
-        sendShotMessage(new Shots(true, value, (int) x, (int) y), shotType, true, x, y);
+        sendShotMessage(shotType, true, x, y);
+        sendCurrentTeamStatsMessage();
+        sendPlayerStatsMessage();
+        updatePlayerStatsViews();
+        updateTeamStatsViews();
         hideShotButtons();
     }
 
@@ -541,13 +562,24 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
         if (activePlayer != null) {
             // Add the shot to the active player's list
-            activePlayer.addShot(new Shots(false, value, (int) x, (int) y));
+            activePlayer.addShot(shot);
+            if (isThreePoint) {
+                threePointAttempts++;
+                activePlayer.recordThreePointShot(false);
+            } else {
+                twoPointAttempts++;
+                activePlayer.recordTwoPointShot(false);
+            }
             Log.d("GameActivity", "Shot missed: " + shot + " added to " + activePlayer.getName() + "'s shot list.");
         }
 
         setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
         totalShots++;
-        sendShotMessage(new Shots(false, value, (int) x, (int) y), shotType, false, x, y);
+        sendShotMessage(shotType, false, x, y);
+        sendCurrentTeamStatsMessage();
+        sendPlayerStatsMessage();
+        updatePlayerStatsViews();
+        updateTeamStatsViews();
         hideShotButtons();
     }
 
@@ -564,7 +596,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         binding.getRoot().addView(imageView);
     }
 
-    private void sendShotMessage(Shots shot, String shotType, boolean isMade, float x, float y) {
+    private void sendShotMessage(String shotType, boolean isMade, float x, float y) {
         try {
             JSONObject messageObject = new JSONObject();
             messageObject.put("type", "shot");
@@ -572,13 +604,53 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             messageObject.put("shotType", shotType);
             messageObject.put("coordinates", new JSONObject().put("x", (int)x).put("y", (int)y));
             messageObject.put("made", isMade);
-            messageObject.put("teamPoints", teamPoints);
-            int activePlayerPoints = activePlayer.getThreePointMakes() * 3 + activePlayer.getTwoPointMakes() * 2;
-            messageObject.put("playerPoints", activePlayerPoints);
 
+            binding.tvWebsocketMessages.append(messageObject.toString());
             WebSocketManager.getInstance().sendMessage(messageObject.toString());
         } catch (JSONException e) {
             Log.e("GameActivity", "Error constructing shot message: " + e.getMessage());
+        }
+    }
+
+    private void sendCurrentGameShotsMessage() {
+        try {
+            JSONArray shotsArray = new JSONArray();
+            for (Shots shot : teamShots) {
+                JSONObject shotObject = new JSONObject();
+                shotObject.put("made", shot.isMade());
+                shotObject.put("value", shot.getValue());
+                shotObject.put("xCoord", shot.getxCoord());
+                shotObject.put("yCoord", shot.getyCoord());
+                shotsArray.put(shotObject);
+            }
+
+            JSONObject responseMessage = new JSONObject();
+            responseMessage.put("type", "gameShots");
+            responseMessage.put("shots", shotsArray);
+
+            WebSocketManager.getInstance().sendMessage(responseMessage.toString());
+            Log.i("GameActivity", "Sent gameShots message: " + responseMessage);
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error sending current game shots: " + e.getMessage());
+        }
+    }
+
+    private void sendCurrentTeamStatsMessage() {
+        try {
+            JSONObject responseMessage = new JSONObject();
+            responseMessage.put("type", "teamStats");
+            responseMessage.put("teamPoints", teamPoints);
+            responseMessage.put("teamFGRatio", totalMakes + "/" + totalShots);
+            responseMessage.put("teamThreePointRatio", threePointMakes + "/" + threePointAttempts);
+            responseMessage.put("teamAssists", teamAssists);
+            responseMessage.put("teamRebounds", teamRebounds);
+            responseMessage.put("teamSteals", teamSteals);
+            responseMessage.put("teamBlocks", teamBlocks);
+
+            binding.tvWebsocketMessages.append(responseMessage.toString());
+            WebSocketManager.getInstance().sendMessage(responseMessage.toString());
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error sending current team stats: " + e.getMessage());
         }
     }
 
@@ -602,62 +674,127 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         dialogBinding.blocksView.setText(String.valueOf(activePlayer.getBlocks()));
         dialogBinding.stealsView.setText(String.valueOf(activePlayer.getSteals()));
 
-        // Set up button click listeners
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusAssist, dialogBinding.plusAssist, dialogBinding.assistsView, activePlayer::decrementAssists, activePlayer::incrementAssists);
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusRebound, dialogBinding.plusRebound, dialogBinding.reboundsView, activePlayer::decrementRebounds, activePlayer::incrementRebounds);
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusBlock, dialogBinding.plusBlock, dialogBinding.blocksView, activePlayer::decrementBlocks, activePlayer::incrementBlocks);
-        setUpStatButtonListeners(dialogBinding, dialogBinding.minusSteal, dialogBinding.plusSteal, dialogBinding.stealsView, activePlayer::decrementSteals, activePlayer::incrementSteals);
+        Map<String, Integer> statChanges = new HashMap<>();
 
-        dialogBinding.btnDone.setOnClickListener(v -> dialog.dismiss());
+        // Set up button click listeners
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusAssist, dialogBinding.plusAssist, dialogBinding.assistsView, activePlayer::decrementAssists, activePlayer::incrementAssists, statChanges, "Assists");
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusRebound, dialogBinding.plusRebound, dialogBinding.reboundsView, activePlayer::decrementRebounds, activePlayer::incrementRebounds, statChanges, "Rebounds");
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusBlock, dialogBinding.plusBlock, dialogBinding.blocksView, activePlayer::decrementBlocks, activePlayer::incrementBlocks, statChanges, "Blocks");
+        setUpStatButtonListeners(dialogBinding, dialogBinding.minusSteal, dialogBinding.plusSteal, dialogBinding.stealsView, activePlayer::decrementSteals, activePlayer::incrementSteals, statChanges, "Steals");
+
+        dialogBinding.btnDone.setOnClickListener(v -> {
+            dialog.dismiss();
+            updateTeamStatistics();
+            sendStatUpdateMessages(statChanges);
+            sendCurrentTeamStatsMessage();
+            sendPlayerStatsMessage();
+            updatePlayerStatsViews();
+            updateTeamStatsViews();
+        });
+
 
         dialog.show();
     }
 
     // Sets button listeners to properly call functions to update stats and display value for each one
-    private void setUpStatButtonListeners(StatRecordDialogBinding dialogBinding, Button minusButton, Button plusButton, TextView statView, Runnable decrementAction, Runnable incrementAction) {
+    private void setUpStatButtonListeners(StatRecordDialogBinding dialogBinding, Button minusButton, Button plusButton, TextView statView, Runnable decrementAction, Runnable incrementAction, Map<String, Integer> statChanges, String statName) {
         minusButton.setOnClickListener(v -> {
             int currentStat = Integer.parseInt(statView.getText().toString());
             if (currentStat > 0) {
                 decrementAction.run();
-                statView.setText(String.valueOf(currentStat - 1));
+                int newStatValue = currentStat - 1;
+                statView.setText(String.valueOf(newStatValue));
+                statChanges.put(statName, newStatValue);
             }
         });
 
         plusButton.setOnClickListener(v -> {
             incrementAction.run();
-            statView.setText(String.valueOf(Integer.parseInt(statView.getText().toString()) + 1));
+            int newStatValue = Integer.parseInt(statView.getText().toString()) + 1;
+            statView.setText(String.valueOf(newStatValue));
+            statChanges.put(statName, newStatValue);
         });
     }
 
-    // Sends the list of shots taken by the team to the server
-    private void sendTeamShots(int gameId, List<Shots> teamShots) {
-        String url = BASE_URL + "games/" + gameId + "/team-shots";
-        String testUrl = LOCAL_URL + "games/" + gameId + "/team-shots";
+    private void updateTeamStatistics() {
+        teamAssists = 0;
+        teamRebounds = 0;
+        teamSteals = 0;
+        teamBlocks = 0;
 
-        JSONArray shotsArray = new JSONArray();
-        for (Shots shot : teamShots) {
-            JSONObject shotObject = new JSONObject();
+        for (Player player : players) {
+            teamAssists += player.getAssists();
+            teamRebounds += player.getRebounds();
+            teamSteals += player.getSteals();
+            teamBlocks += player.getBlocks();
+        }
+    }
+
+    private void sendStatUpdateMessages(Map<String, Integer> statChanges) {
+        for (Map.Entry<String, Integer> entry : statChanges.entrySet()) {
+            String statName = entry.getKey();
+            int newValue = entry.getValue();
             try {
-                shotObject.put("made", shot.isMade());
-                shotObject.put("value", shot.getValue());
-                shotObject.put("xCoord", shot.getxCoord());
-                shotObject.put("yCoord", shot.getyCoord());
-                shotsArray.put(shotObject);
+                JSONObject messageObject = new JSONObject();
+                messageObject.put("type", "statUpdate");
+                messageObject.put("playerName", activePlayer.getName());
+                messageObject.put("stat", statName);
+                messageObject.put("newValue", newValue);
+
+                binding.tvWebsocketMessages.append(messageObject.toString());
+                WebSocketManager.getInstance().sendMessage(messageObject.toString());
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e("GameActivity", "Error constructing stat update message: " + e.getMessage());
             }
         }
-
-        Log.d(TAG, "Sending team shots: " + shotsArray);
-
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray, response -> {
-            Log.d(TAG, "Team shots sent successfully");
-        }, error -> {
-            Log.e(TAG, "Failed to send team shots. Error: " + error.toString());
-        });
-
-        mQueue.add(request);
     }
+
+    private void sendPlayerStatsMessage() {
+        try {
+            JSONObject messageObject = new JSONObject();
+            messageObject.put("type", "playerStatsUpdate");
+            messageObject.put("playerName", activePlayer.getName());
+            messageObject.put("points", activePlayer.getTotalPoints());
+            messageObject.put("fgRatio", activePlayer.getTotalMakes() + "/" + activePlayer.getTotalShots());
+            messageObject.put("threePointRatio", activePlayer.getThreePointMakes() + "/" + activePlayer.getThreePointAttempts());
+            messageObject.put("assists", activePlayer.getAssists());
+            messageObject.put("rebounds", activePlayer.getRebounds());
+            messageObject.put("steals", activePlayer.getSteals());
+            messageObject.put("blocks", activePlayer.getBlocks());
+
+            binding.tvWebsocketMessages.append(messageObject.toString());
+            WebSocketManager.getInstance().sendMessage(messageObject.toString());
+        } catch (JSONException e) {
+            Log.e("GameActivity", "Error sending player stats message: " + e.getMessage());
+        }
+    }
+
+    private void updateTeamStatsViews() {
+        String teamFG = totalMakes + "/" + totalShots;
+        String team3PT = threePointMakes + "/" + threePointAttempts;
+
+        binding.tvTeamPoints.setText(String.valueOf(teamPoints));
+        binding.tvTeamFG.setText(teamFG);
+        binding.tvTeam3PT.setText(team3PT);
+        binding.tvTeamAssists.setText(String.valueOf(teamAssists));
+        binding.tvTeamRebounds.setText(String.valueOf(teamRebounds));
+        binding.tvTeamSteals.setText(String.valueOf(teamSteals));
+        binding.tvTeamBlocks.setText(String.valueOf(teamBlocks));
+    }
+
+    private void updatePlayerStatsViews() {
+        String playerFG = activePlayer.getTotalMakes() + "/" + activePlayer.getTotalShots();
+        String player3PT = activePlayer.getThreePointMakes() + "/" + activePlayer.getThreePointAttempts();
+
+        binding.tvPlayerPoints.setText(String.valueOf(activePlayer.getTotalPoints()));
+        binding.tvPlayerFG.setText(playerFG);
+        binding.tvPlayer3PT.setText(player3PT);
+        binding.tvPlayerAssists.setText(String.valueOf(activePlayer.getAssists()));
+        binding.tvPlayerRebounds.setText(String.valueOf(activePlayer.getRebounds()));
+        binding.tvPlayerSteals.setText(String.valueOf(activePlayer.getSteals()));
+        binding.tvPlayerBlocks.setText(String.valueOf(activePlayer.getBlocks()));
+    }
+
 
     // Sends the list of shots taken by a player to the server
     private void sendPlayerShots(int gameId, int playerId, List<Shots> playerShots) {
@@ -698,8 +835,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     // Hides the shot recording buttons
     private void hideShotButtons() {
-        binding.btnMake.setVisibility(View.GONE);
-        binding.btnMiss.setVisibility(View.GONE);
+        binding.btnMake.setVisibility(View.INVISIBLE);
+        binding.btnMiss.setVisibility(View.INVISIBLE);
     }
 
     // Enables a player button, making it clickable
@@ -723,3 +860,33 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         void onTeamIdReceived(int id);
     }
 }
+
+//// Sends the list of shots taken by the team to the server
+//    private void sendTeamShots(int gameId, List<Shots> teamShots) {
+//        String url = BASE_URL + "games/" + gameId + "/team-shots";
+//        String testUrl = LOCAL_URL + "games/" + gameId + "/team-shots";
+//
+//        JSONArray shotsArray = new JSONArray();
+//        for (Shots shot : teamShots) {
+//            JSONObject shotObject = new JSONObject();
+//            try {
+//                shotObject.put("made", shot.isMade());
+//                shotObject.put("value", shot.getValue());
+//                shotObject.put("xCoord", shot.getxCoord());
+//                shotObject.put("yCoord", shot.getyCoord());
+//                shotsArray.put(shotObject);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        Log.d(TAG, "Sending team shots: " + shotsArray);
+//
+//        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, shotsArray, response -> {
+//            Log.d(TAG, "Team shots sent successfully");
+//        }, error -> {
+//            Log.e(TAG, "Failed to send team shots. Error: " + error.toString());
+//        });
+//
+//        mQueue.add(request);
+//    }
