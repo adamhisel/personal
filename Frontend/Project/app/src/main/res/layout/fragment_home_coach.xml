@@ -1,124 +1,130 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/fragment_home">
-
+    android:id="@+id/fragment_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id = "@+id/linear"
-        android:orientation="horizontal">
-
-        <!--<LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="sans-serif-black"
-                android:text=""
-                android:textColor="@color/black"
-                android:textSize="40sp" />
-        </LinearLayout>-->
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/linearLayout"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:orientation="vertical"
             tools:context=".HomeFragment">
 
+            <TextView
+                android:id="@+id/welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/teamHeader"
-                android:layout_width="fill_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
                 android:text="My Teams:"
                 android:textAlignment="center"
                 android:textColor="#000000"
                 android:textSize="25sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/scroll">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/cardLL">
+
+                </LinearLayout>
+
+
+            </ScrollView>
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             tools:context=".HomeFragment">
 
-            <TextView
-                android:id="@+id/addTeam"
-                android:layout_marginTop="13dp"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Create A Team"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/linearLayout3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:context=".HomeFragment">
 
+                <TextView
+                    android:id="@+id/addTeam"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create A Team"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <ImageButton
-                android:id="@+id/plus"
-                android:layout_width="116dp"
-                android:layout_height="106dp"
-                android:layout_gravity="center"
-                android:backgroundTint="#FFFFFF"
-                android:paddingLeft="25dp"
-                android:paddingTop="25dp"
-                android:paddingRight="25dp"
-                android:paddingBottom="25dp"
-                android:scaleType="centerInside"
-                android:scrollIndicators="none"
-                android:src="@drawable/plusicon" />
+                <ImageButton
+                    android:id="@+id/plus"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/plusicon" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/joinTeam"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Join A Team"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/linearLayout4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                tools:context=".HomeFragment">
 
-            <ImageButton
-                android:id="@+id/join"
-                android:layout_width="116dp"
-                android:layout_height="106dp"
-                android:layout_gravity="center"
-                android:backgroundTint="#FFFFFF"
-                android:paddingLeft="25dp"
-                android:paddingTop="25dp"
-                android:paddingRight="25dp"
-                android:paddingBottom="25dp"
-                android:scaleType="centerInside"
-                android:scrollIndicators="none"
-                android:src="@drawable/join" />
+                <TextView
+                    android:id="@+id/joinTeam"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Join A Team"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-
+                <ImageButton
+                    android:id="@+id/join"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/join" />
+            </LinearLayout>
         </LinearLayout>
-
-
-
     </LinearLayout>
-
 </FrameLayout>
-
-
-
