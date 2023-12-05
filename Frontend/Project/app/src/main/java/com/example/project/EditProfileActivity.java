@@ -44,6 +44,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setupButtonListeners() {
         binding.btnSave.setOnClickListener(view -> handleSave());
         binding.btnCancel.setOnClickListener(view -> finish());
+//        binding.selectBtn.setOnClickListener(view -> {ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment();
+//            uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");});
     }
 
     // Handles the save button click by attempting to update the user's profile.

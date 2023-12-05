@@ -211,6 +211,8 @@ public class HomeFragment extends Fragment {
                             tButton.setText("View Recent Game");
                             tButton.setTextOff("View Recent Game");
                             tButton.setTextOn("Hide Recent Game");
+                            tButton.setTrackTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+                            tButton.setThumbTintList(ColorStateList.valueOf(Color.BLACK));
                             tButton.setId(id);
                             tButton.setTextSize(20);
 
