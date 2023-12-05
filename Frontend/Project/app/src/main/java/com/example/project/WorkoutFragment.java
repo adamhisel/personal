@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -35,6 +37,7 @@ public class WorkoutFragment extends Fragment {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+    private static final String[] PRESET_WORKOUTS = {"3PT Workout", "Mid-Range Workout", "Short-Range Workout"};
     private static RequestQueue mQueue;
     private FragmentWorkoutBinding binding;
 
@@ -47,6 +50,17 @@ public class WorkoutFragment extends Fragment {
         String userId = SharedPrefsUtil.getUserId(requireActivity());
         fetchWorkoutsForUser(userId);
 
+        AutoCompleteTextView autoCompleteTextView = binding.actvPresetWorkouts;
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, PRESET_WORKOUTS);
+        autoCompleteTextView.setAdapter(adapter);
+
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedWorkout = (String) parent.getItemAtPosition(position);
+            Intent intent = new Intent(getActivity(), PresetWorkoutActivity.class);
+            intent.putExtra("selectedWorkout", selectedWorkout);
+            startActivity(intent);
+        });
+
         return binding.getRoot();
     }
 
@@ -58,11 +72,16 @@ public class WorkoutFragment extends Fragment {
         fetchWorkoutsForUser(userId);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 
     private void setupButtonListeners() {
         binding.btnBegin.setOnClickListener(view -> {
-                Intent intent = new Intent(requireActivity(), WorkoutActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(requireActivity(), WorkoutActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -111,6 +130,10 @@ public class WorkoutFragment extends Fragment {
 
     // Method to display the workouts in the UI
     private void displayWorkouts(List<Workout> workouts) {
+        if (binding == null) {
+            // Fragment view is destroyed, no need to update UI
+            return;
+        }
         LinearLayout workoutsContainer = binding.llWorkoutsContainer;
         workoutsContainer.removeAllViews(); // Clear any existing views
 
@@ -131,11 +154,5 @@ public class WorkoutFragment extends Fragment {
             // Add the button to the LinearLayout
             workoutsContainer.addView(button);
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
     }
 }

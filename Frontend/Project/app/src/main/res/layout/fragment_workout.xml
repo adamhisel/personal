@@ -22,20 +22,37 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="150dp"
         app:layout_constraintBottom_toTopOf="@+id/btnBegin"
-        app:layout_constraintTop_toBottomOf="@+id/tvWorkout">
+        app:layout_constraintTop_toBottomOf="@+id/tvWorkout"
+        tools:layout_editor_absoluteX="20dp">
 
         <LinearLayout
             android:id="@+id/llWorkoutsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="10dp">
-        </LinearLayout>
+            android:padding="10dp"></LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPresetWorkouts"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select Preset Workout"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        tools:layout_editor_absoluteX="20dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/actvPresetWorkouts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.button.MaterialButton
