@@ -11,43 +11,75 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ImageUploader {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
     public void uploadImage(Context context, int userId, Bitmap imageBitmap) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
-        Map<String, DataPart> params = new HashMap<>();
-        params.put("file", new DataPart("image.png", getFileDataFromBitmap(imageBitmap), "image/png"));
+        File imageFile = bitmapToFile(context, imageBitmap, "image.png");
 
-        MultipartRequest multipartRequest = new MultipartRequest(
-                LOCAL_URL + userId + "/upload",
-                null,
-                params,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+        if (imageFile != null && imageFile.exists()) {
+            Map<String, String> stringParams = new HashMap<>();
+            stringParams.put("userId", String.valueOf(userId));
 
-                        Toast.makeText(context, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+            MultipartRequest multipartRequest = new MultipartRequest(
+                    LOCAL_URL + userId + "/upload",
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(context, "Error uploading image", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(context, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    imageFile,
+                    stringParams
+            );
 
-                        Toast.makeText(context, "Error uploading image", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        requestQueue.add(multipartRequest);
+            requestQueue.add(multipartRequest);
+        } else {
+            Toast.makeText(context, "Image file not found!", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private byte[] getFileDataFromBitmap(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
+    public static File bitmapToFile(Context context, Bitmap bitmap, String fileName) {
+
+        File imagesDir = getImagesDirectory(context);
+
+
+        File imageFile = new File(imagesDir, fileName);
+
+
+        try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            return imageFile;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static File getImagesDirectory(Context context) {
+        File mediaStorageDir = new File(context.getFilesDir(), "images");
+
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        return mediaStorageDir;
     }
 }

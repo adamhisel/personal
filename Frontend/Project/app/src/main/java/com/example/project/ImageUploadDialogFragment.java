@@ -78,7 +78,8 @@ public class ImageUploadDialogFragment extends DialogFragment {
                         if (result != null) {
                             try {
                                 bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), result);
-                                imageView.setImageBitmap(bitmap);
+                                Bitmap circularBitmap = ImageHelper.getCircularBitmap(bitmap);
+                                imageView.setImageBitmap(circularBitmap);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

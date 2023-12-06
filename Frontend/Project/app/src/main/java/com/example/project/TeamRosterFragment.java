@@ -666,7 +666,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deletePlayer(int pid) {
-        String url = "http://10.0.2.2:8080/players/" + pid;
+        String url = "http://10.0.2.2:8080/players/" + pid +"/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
