@@ -41,6 +41,7 @@ public class WorkoutFragment extends Fragment {
     private static final String[] PRESET_WORKOUTS = {"3PT Workout", "Mid-Range Workout", "Short-Range Workout"};
     private static RequestQueue mQueue;
     private FragmentWorkoutBinding binding;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class WorkoutFragment extends Fragment {
 
         setupButtonListeners();
 
-        String userId = SharedPrefsUtil.getUserId(requireActivity());
+        userId = SharedPrefsUtil.getUserId(requireActivity());
         fetchWorkoutsForUser(userId);
 
         AutoCompleteTextView autoCompleteTextView = binding.actvPresetWorkouts;
@@ -173,7 +174,7 @@ public class WorkoutFragment extends Fragment {
         Button btnCreateNewWorkout = dialogView.findViewById(R.id.btnCreateNewWorkout);
 
         // Fetch and display custom workouts for the user
-        fetchAndDisplayCustomWorkouts(llCustomWorkoutsContainer);
+        fetchCustomWorkoutsForUser(userId, llCustomWorkoutsContainer);
 
         // Set up the button to create a new workout
         btnCreateNewWorkout.setOnClickListener(v -> {
@@ -189,8 +190,52 @@ public class WorkoutFragment extends Fragment {
         dialog.show();
     }
 
-    private void fetchAndDisplayCustomWorkouts(LinearLayout container) {
-        // Fetch custom workouts from the server and populate the container
-        // Use a similar approach as in the fetchWorkoutsForUser method
+    private void fetchCustomWorkoutsForUser(String userId, LinearLayout container) {
+        String url = BASE_URL + "getCustomWorkout/" + userId;
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+            List<CustomWorkout> customWorkouts = parseCustomWorkouts(response);
+            displayCustomWorkouts(customWorkouts, container);
+        }, error -> {
+            Log.e("WorkoutFragment", "Error fetching custom workouts: " + error.getMessage());
+        });
+
+        mQueue.add(request);
     }
+
+    private List<CustomWorkout> parseCustomWorkouts(JSONArray response) {
+        List<CustomWorkout> customWorkouts = new ArrayList<>();
+        try {
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject workoutJson = response.getJSONObject(i);
+                int customWorkoutId = workoutJson.getInt("customWoutId");
+                String workoutName = workoutJson.getString("workoutName");
+
+                CustomWorkout customWorkout = new CustomWorkout(customWorkoutId, workoutName);
+                customWorkouts.add(customWorkout);
+            }
+        } catch (JSONException e) {
+            Log.e("WorkoutFragment", "Error parsing custom workouts JSON", e);
+        }
+        return customWorkouts;
+    }
+
+    private void displayCustomWorkouts(List<CustomWorkout> customWorkouts, LinearLayout container) {
+        container.removeAllViews();
+
+        for (CustomWorkout workout : customWorkouts) {
+            Button button = new Button(getContext());
+            button.setText(workout.getWorkoutName());
+            button.setOnClickListener(v -> {
+                // Pass the selected workout ID to CustomWorkoutActivity
+                Intent intent = new Intent(getActivity(), CustomWorkoutActivity.class);
+                intent.putExtra("CUSTOM_WORKOUT_ID", workout.getCustomWorkoutId());
+                startActivity(intent);
+            });
+
+            container.addView(button);
+        }
+    }
+
+
 }

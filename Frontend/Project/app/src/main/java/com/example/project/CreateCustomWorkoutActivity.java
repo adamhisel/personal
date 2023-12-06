@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.databinding.ActivityCreateCustomWorkoutBinding;
@@ -124,49 +125,84 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX/2);
-        imageView.setY(y - ICON_SIZE_PX/2);
+        imageView.setX(x - ICON_SIZE_PX / 2);
+        imageView.setY(y - ICON_SIZE_PX / 2);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
 
         // Log the icon position for debugging
-        Log.d("CustomWorkout", "Icon placed at: X=" + (x - ICON_SIZE_PX/2) + ", Y=" + (y - ICON_SIZE_PX/2));
+        Log.d("CustomWorkout", "Icon placed at: X=" + (x - ICON_SIZE_PX / 2) + ", Y=" + (y - ICON_SIZE_PX / 2));
     }
 
     private void sendCustomWorkoutToServer() {
-        String url = BASE_URL + "uploadworkout"; // URL for your custom workout endpoint
+        // First, create the CustomWorkout
+        String createWorkoutUrl = BASE_URL + "uploadworkout";
+        JSONObject workoutJson = new JSONObject();
+        try {
+            workoutJson.put("workoutName", workoutName);
+            workoutJson.put("userId", SharedPrefsUtil.getUserId(this));
+            // Log for debugging
+            Log.d("CreateCustomWorkout", "Creating workout: " + workoutJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        JSONArray coordinatesArray = new JSONArray();
+        // Create the CustomWorkout
+        JsonObjectRequest createWorkoutRequest = new JsonObjectRequest(Request.Method.POST, createWorkoutUrl, workoutJson,
+                response -> {
+                    Log.d("CreateCustomWorkout", "Response for workout creation: " + response.toString());
+                    // Fetch the created workout ID from the response
+                    int customWorkoutId = response.optInt("customWoutId");
+                    Log.d("CreateCustomWorkout", "Workout created with ID: " + customWorkoutId);
+                    // Now send the coordinates (points) for this workout
+                    sendPointsForWorkout(customWorkoutId);
+                },
+                error -> {
+                    Log.e("CreateCustomWorkout", "Error creating workout: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("CreateCustomWorkout", "Error details: " + new String(error.networkResponse.data));
+                    }
+                }
+        );
+
+        mQueue.add(createWorkoutRequest);
+    }
+
+    private void sendPointsForWorkout(int customWorkoutId) {
+        // URL to add points to the created workout
+        String addPointsUrl = BASE_URL + customWorkoutId + "/addPoints";
+
+        // Create JSON array of points
+        JSONArray pointsArray = new JSONArray();
         for (Coordinate coord : customWorkoutCoordinates) {
-            JSONObject coordJson = new JSONObject();
+            JSONObject pointJson = new JSONObject();
             try {
-                coordJson.put("xCoord", coord.getX());
-                coordJson.put("yCoord", coord.getY());
-                coordinatesArray.put(coordJson);
+                pointJson.put("xCoord", coord.getX());
+                pointJson.put("yCoord", coord.getY());
+                pointsArray.put(pointJson);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        JSONObject workoutJson = new JSONObject();
-        try {
-            workoutJson.put("coords", coordinatesArray);
-            workoutJson.put("workoutName", workoutName);
-            workoutJson.put("userId", SharedPrefsUtil.getUserId(this));
-
-            // Log the JSON object to be sent
-            Log.d("CreateCustomWorkout", "Sending workout JSON: " + workoutJson.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, workoutJson,
-                response -> Log.d("CreateCustomWorkout", "Workout sent successfully"),
-                error -> Log.e("CreateCustomWorkout", "Error sending workout: " + error.getMessage())
+        // Send the points
+        JsonArrayRequest addPointsRequest = new JsonArrayRequest(Request.Method.POST, addPointsUrl, pointsArray,
+                response -> Log.d("CreateCustomWorkout", "Points added successfully to workout ID: " + customWorkoutId),
+                error -> {
+                    Log.e("CreateCustomWorkout", "Error adding points to workout: " + error.toString());
+                    if (error.networkResponse != null) {
+                        Log.e("CreateCustomWorkout", "Error details: " + new String(error.networkResponse.data));
+                    }
+                }
         );
 
-        mQueue.add(request);
+        // Log the JSON array of points being sent
+        Log.d("CreateCustomWorkout", "Sending points JSON: " + pointsArray.toString());
+
+
+        mQueue.add(addPointsRequest);
     }
+
 
     // Inner class for Coordinates
     public class Coordinate {
