@@ -34,6 +34,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.project.R;
 import com.example.project.TeamRosterCoach;
@@ -59,6 +60,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private RequestQueue mQueue;
 
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
     private Context mContext;
 
     private TextView coachText;
@@ -70,6 +73,18 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     private String playerName;
 
     private int playerId;
+
+    private int newCoachId;
+
+    private String newCoachName;
+
+    private boolean isPrivate;
+
+    private String teamPassword;
+
+    private int newCoachUserId;
+
+    private boolean teamHasMoreThanOneCoach;
 
     private int teamId;
 
@@ -122,8 +137,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         Button back = view.findViewById(R.id.backButton);
         Button teamChat = view.findViewById(R.id.chatButton);
         Button teamSettings = view.findViewById(R.id.settingsButton);
-        Button leaveButton = view.findViewById(R.id.fanLeaveTeamButton);
+        Button fanLeaveButton = view.findViewById(R.id.fanLeaveTeamButton);
         Button deleteTeam = view.findViewById(R.id.deleteTeamButton);
+        Button coachLeaveButton = view.findViewById(R.id.coachLeaveTeamButton);
 
         settingsLL = view.findViewById(R.id.settingsll);
         publicPrivate = view.findViewById(R.id.publicPrivate);
@@ -147,10 +163,10 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         }
 
         if(SharedPrefsTeamUtil.getIsFan(mContext).equals("true")){
-            leaveButton.setVisibility(View.VISIBLE);
+            fanLeaveButton.setVisibility(View.VISIBLE);
         }
         else{
-            leaveButton.setVisibility(View.GONE);
+            fanLeaveButton.setVisibility(View.GONE);
         }
 
 
@@ -260,6 +276,29 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 teamSettings.setVisibility(View.VISIBLE);
             }
         });
+
+        fanLeaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int fanId = Integer.parseInt(SharedPrefsTeamUtil.getFanId(getContext()));
+                deleteFan(fanId);
+            }
+        });
+
+        coachLeaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int coachId = Integer.parseInt(SharedPrefsTeamUtil.getCoachId(getContext()));
+                checkIfTeamHasCoach();
+                if(teamHasMoreThanOneCoach == true){
+                    deleteCoach(coachId);
+                }
+                else{
+                    Toast.makeText(mContext, "Must Promote a Player to Coach Before Leaving", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     @Override
@@ -269,7 +308,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void getPlayers(final TeamIdListsCallback callback){
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+        String url = LOCAL_URL + "/teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -312,7 +351,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
      */
     public void addPlayerDisplay() {
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+        String url = LOCAL_URL + "/teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -599,7 +638,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteTeam() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+        String url = LOCAL_URL + "/teams/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -627,7 +666,67 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deletePlayer(int pid) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/players/" + pid;
+        String url = "http://10.0.2.2:8080/players/" + pid;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        if (response.length() == 0) {
+
+                            Log.d("DeletePlayer", "Player deleted successfully");
+                        } else {
+                            // Unexpected response, handle it accordingly
+                            Log.e("DeletePlayer", "Unexpected response after deletion");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            Log.e("DeletePlayer", "Error code: " + error.networkResponse.statusCode);
+                        }
+                        Log.e("DeletePlayer", "Error in request: " + error.getMessage());
+                    }
+                });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void deleteFan(int fid) {
+        String url = "http://10.0.2.2:8080/fans/" + fid;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        if (response.length() == 0) {
+
+                            Log.d("DeletePlayer", "Player deleted successfully");
+                        } else {
+                            // Unexpected response, handle it accordingly
+                            Log.e("DeletePlayer", "Unexpected response after deletion");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            Log.e("DeletePlayer", "Error code: " + error.networkResponse.statusCode);
+                        }
+                        Log.e("DeletePlayer", "Error in request: " + error.getMessage());
+                    }
+                });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void deleteCoach(int cid) {
+        String url = "http://10.0.2.2:8080/coaches/" + cid;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -657,11 +756,133 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void promotePlayer(int pid){
-        Toast.makeText(mContext, "This is a toast message", Toast.LENGTH_SHORT).show();
+        getPlayerInfo(pid);
+        getTeamInfo();
+        deletePlayer(pid);
+        postCoach();
+        joinTeamCoach();
+    }
+
+    private void getPlayerInfo(int pid){
+        String url = LOCAL_URL + "/player/" + pid;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            newCoachName = response.getString("playerName");
+                            newCoachUserId = response.getInt("user_id");
+
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
+    private void getTeamInfo(){
+            String url = LOCAL_URL + "/teams/" + teamId;
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                isPrivate = response.getBoolean("teamIsPrivate");
+                                teamPassword = response.getString("password");
+
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+
+            mQueue.add(request);
+        }
+
+
+
+    private void postCoach() {
+        String url = "http://coms-309-018.class.las.iastate.edu:8080/coaches";
+
+        JSONObject postData = new JSONObject();
+        try {
+
+            postData.put("name", newCoachName);
+            postData.put("user_id", newCoachUserId);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            newCoachId = response.getInt("id");
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        Log.d("PostCoach", "Response received: " + response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Handle the error, e.g., display an error message
+                Log.e("PostCoach", "Error in request: " + error.getMessage());
+            }
+        });
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void joinTeamCoach(){
+
+        String url = "";
+        if(isPrivate == true) {
+            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + newCoachId + "/" + teamPassword + "/" + newCoachUserId;
+        }
+        else{
+            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + newCoachId + "/dummy" + "/" + newCoachUserId;
+        }
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                response -> {
+                    if ("success".equals(response)) {
+
+                    } else if ("failure".equals(response)) {
+                    }
+                },
+                error -> {
+
+                    if (error.networkResponse != null) {
+                        String errorMessage = new String(error.networkResponse.data);
+                        Log.e("JoinTeam", "Error in request: " + errorMessage);
+                    }
+                }
+        );
+
+        mQueue.add(putRequest);
+
+
     }
 
     private void fillTeamSettingsBoxes() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+        String url = LOCAL_URL + "/teams/" + teamId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -703,7 +924,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             e.printStackTrace();
         }
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/updateTeam/" + teamId;
+        String url = LOCAL_URL + "/updateTeam/" + teamId;
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
@@ -733,6 +954,39 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(jsonObjectRequest);
     }
 
+    private void checkIfTeamHasCoach(){
+
+        String url = LOCAL_URL + "/teams/" + teamId;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+
+                    JSONArray coaches = response.getJSONArray("coaches");
+                    teamHasMoreThanOneCoach = false;
+                    if(coaches.length() <= 1){
+                        teamHasMoreThanOneCoach = false;
+                    }
+                    else{
+                        teamHasMoreThanOneCoach = true;
+                    }
+
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        mQueue.add(request);
+    }
+
     public interface TeamIdListsCallback {
         void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList);
     }
@@ -754,7 +1008,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             e.printStackTrace();
         }
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/updatePlayer/" + playerId;
+        String url = LOCAL_URL + "/updatePlayer/" + playerId;
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
@@ -829,6 +1083,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             teamName.setError(null);
             teamName.setErrorEnabled(false);
             return true;
+
         }
     }
 

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ImageUploader {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
-
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     public void uploadImage(Context context, int userId, Bitmap imageBitmap) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
@@ -24,7 +24,7 @@ public class ImageUploader {
         params.put("file", new DataPart("image.png", getFileDataFromBitmap(imageBitmap), "image/png"));
 
         MultipartRequest multipartRequest = new MultipartRequest(
-                BASE_URL + userId + "/upload",
+                LOCAL_URL + userId + "/upload",
                 null,
                 params,
                 new Response.Listener<String>() {
