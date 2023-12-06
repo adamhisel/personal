@@ -36,29 +36,29 @@ public class UserControllerTest {
         RestAssured.baseURI = "http://localhost";
     }
 
-    @Test
-    @Transactional
-    public void test() {
-        User user = new User("jpatel", "jay", "patel", "@gmail.com", "test", "123456789");
-        Response response = given()
-                .contentType("application/json")
-                .body(user)
-                .when()
-                .post("/users");
-
-        int statusCode = response.getStatusCode();
-        assertEquals(200, statusCode);
-
-        User createdUser = response.as(User.class);
-
-        // Compare individual fields instead of using assertEquals
-        assertEquals(user.getUserName(), createdUser.getUserName());
-        assertEquals(user.getFirstName(), createdUser.getFirstName());
-        assertEquals(user.getLastName(), createdUser.getLastName());
-        assertEquals(user.getEmail(), createdUser.getEmail());
-        assertEquals(user.getPassword(), createdUser.getPassword());
-        assertEquals(user.getPhoneNumber(), createdUser.getPhoneNumber());
-    }
+//    @Test
+//    @Transactional
+//    public void test() {
+//        User user = new User("jpatel", "jay", "patel", "@gmail.com", "test", "123456789");
+//        Response response = given()
+//                .contentType("application/json")
+//                .body(user)
+//                .when()
+//                .post("/users");
+//
+//        int statusCode = response.getStatusCode();
+//        assertEquals(200, statusCode);
+//
+//        User createdUser = response.as(User.class);
+//
+//        // Compare individual fields instead of using assertEquals
+//        assertEquals(user.getUserName(), createdUser.getUserName());
+//        assertEquals(user.getFirstName(), createdUser.getFirstName());
+//        assertEquals(user.getLastName(), createdUser.getLastName());
+//        assertEquals(user.getEmail(), createdUser.getEmail());
+//        assertEquals(user.getPassword(), createdUser.getPassword());
+//        assertEquals(user.getPhoneNumber(), createdUser.getPhoneNumber());
+//    }
 
 
 

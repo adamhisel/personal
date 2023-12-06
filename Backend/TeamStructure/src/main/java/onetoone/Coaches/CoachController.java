@@ -4,6 +4,7 @@ import onetoone.Coaches.CoachRepository;
 import onetoone.Fans.Fan;
 import onetoone.Players.Player;
 import onetoone.Teams.Team;
+import onetoone.Teams.TeamRepository;
 import onetoone.users.User;
 import onetoone.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class CoachController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
 
     private String success = "{\"message\":\"success\"}";
@@ -64,6 +68,14 @@ public class CoachController {
     @DeleteMapping(path = "/coaches/{id}")
     String deleteCoach(@PathVariable int id) {
         coachRepository.deleteById(id);
+        return success;
+    }
+
+    @DeleteMapping(path = "/coaches/{coach_id}/{team_id}")
+    String deleteCoachFromTeam(@PathVariable int coach_id, @PathVariable int team_id) {
+        Team temp = teamRepository.findById(team_id);
+        temp.deleteCoach(coachRepository.findById(coach_id));
+        coachRepository.deleteById(coach_id);
         return success;
     }
 
