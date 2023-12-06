@@ -13,8 +13,8 @@ import onetoone.Points.Points;
 
 @Entity
 public class CustomWorkout {
-   @GeneratedValue(strategy = GenerationType.AUTO)
    @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
    private int customWoutId;
    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
    @JsonIgnoreProperties("workout") // Add this line
@@ -31,6 +31,7 @@ public CustomWorkout (List<Points> coords, String workoutName, int userId){
    this.coords = coords;
    this.userId = userId;
    this.workoutName = workoutName;
+   this.customWoutId = customWoutId;
 }
 
    public List<Points> getCoords() {
@@ -55,5 +56,9 @@ public CustomWorkout (List<Points> coords, String workoutName, int userId){
 
    public void setUserId(int userId) {
       this.userId = userId;
+   }
+
+   public int getCustomWoutId() {
+      return customWoutId;
    }
 }
