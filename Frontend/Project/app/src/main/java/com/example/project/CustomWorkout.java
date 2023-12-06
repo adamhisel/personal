@@ -1,5 +1,7 @@
 package com.example.project;
 
+import java.util.List;
+
 public class CustomWorkout {
     private int customWoutId;
     private List<Coordinate> coords; // Change Points to Coordinate to match your frontend structure

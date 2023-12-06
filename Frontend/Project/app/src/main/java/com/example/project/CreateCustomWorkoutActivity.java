@@ -177,8 +177,8 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
         for (Coordinate coord : customWorkoutCoordinates) {
             JSONObject pointJson = new JSONObject();
             try {
-                pointJson.put("xCoord", coord.getX());
-                pointJson.put("yCoord", coord.getY());
+                pointJson.put("xCoord", coord.getXCoord());
+                pointJson.put("yCoord", coord.getYCoord());
                 pointsArray.put(pointJson);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -201,25 +201,5 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
 
 
         mQueue.add(addPointsRequest);
-    }
-
-
-    // Inner class for Coordinates
-    public class Coordinate {
-        private float x;
-        private float y;
-
-        public Coordinate(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public float getX() {
-            return x;
-        }
-
-        public float getY() {
-            return y;
-        }
     }
 }

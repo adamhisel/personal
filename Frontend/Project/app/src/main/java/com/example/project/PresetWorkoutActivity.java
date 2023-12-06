@@ -142,7 +142,7 @@ public class PresetWorkoutActivity extends AppCompatActivity {
         Log.d("Debug", "In displayNextShot, currentShotIndex: " + currentShotIndex);
         if (currentShotIndex < currentWorkoutCoordinates.size()) {
             Coordinate currentShot = currentWorkoutCoordinates.get(currentShotIndex);
-            setIconAndPosition(green, currentShot.getX(), currentShot.getY());
+            setIconAndPosition(green, currentShot.getXCoord(), currentShot.getYCoord());
         } else {
             hideShotButtons();
             Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show();
@@ -177,11 +177,11 @@ public class PresetWorkoutActivity extends AppCompatActivity {
 
     private void recordMakeOrMiss(boolean isMade) {
         Coordinate currentShot = currentWorkoutCoordinates.get(currentShotIndex);
-        String shotType = determineShotType(currentShot.getX(), currentShot.getY());
+        String shotType = determineShotType(currentShot.getXCoord(), currentShot.getYCoord());
 
         // Calculate the scaled real-world coordinates
-        float realX = currentShot.getX() / (600f / imageView.getWidth());
-        float realY = currentShot.getY() / (564f / imageView.getHeight());
+        float realX = currentShot.getXCoord() / (600f / imageView.getWidth());
+        float realY = currentShot.getYCoord() / (564f / imageView.getHeight());
 
         int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
 
@@ -189,7 +189,7 @@ public class PresetWorkoutActivity extends AppCompatActivity {
         shotsList.add(new Shots(isMade, value, (int) realX, (int) realY));
         Log.d("ShotLog", "Preset Shot added: Made=" + isMade + ", Value=" + value + ", X=" + realX + ", Y=" + realY);
 
-        setIconAndPosition(grey, currentShot.getX(), currentShot.getY());
+        setIconAndPosition(grey, currentShot.getXCoord(), currentShot.getYCoord());
 
         if (isMade) {
             if ("Three-Point Shot".equals(shotType)) {
@@ -358,25 +358,6 @@ public class PresetWorkoutActivity extends AppCompatActivity {
         coordinates.add(new Coordinate(395, 90));
         coordinates.add(new Coordinate(395, 90));
         return coordinates;
-    }
-
-    // Inner class for Coordinates
-    public class Coordinate {
-        private float x;
-        private float y;
-
-        public Coordinate(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public float getX() {
-            return x;
-        }
-
-        public float getY() {
-            return y;
-        }
     }
 }
 
