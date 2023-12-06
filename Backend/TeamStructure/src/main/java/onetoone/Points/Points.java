@@ -1,16 +1,19 @@
 package onetoone.Points;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import onetoone.CustomWorkout.CustomWorkout;
+
+import javax.persistence.*;
 
 @Entity
 public class Points {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
+    @ManyToOne
+    @JoinColumn(name = "customWoutId")
+    @JsonBackReference(value = "customworkout")
+    private CustomWorkout workout;
     private int xCoord;
     private int yCoord;
 
@@ -34,5 +37,13 @@ public class Points {
 
     public void setxCoord(int xCoord) {
         this.xCoord = xCoord;
+    }
+
+    public CustomWorkout getWorkout() {
+        return workout;
+    }
+
+    public void setWorkout(CustomWorkout workout) {
+        this.workout = workout;
     }
 }

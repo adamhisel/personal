@@ -2,7 +2,9 @@ package onetoone.CustomWorkout;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CustomWorkoutRepository extends JpaRepository<CustomWorkout, Long> {
+import java.util.List;
 
-    CustomWorkout findByUserId(int userId);
+public interface CustomWorkoutRepository extends JpaRepository<CustomWorkout, Integer> {
+
+    List<CustomWorkout> findByUserId(int userId);
 }
