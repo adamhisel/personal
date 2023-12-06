@@ -19,11 +19,20 @@ public class CustomWorkoutController {
     PointsRepository pointsRepository;
 
     @PostMapping(path = "/uploadworkout")
-    public CustomWorkout createNewWorkout(@RequestBody CustomWorkout customWorkout) {
+    public CustomWorkoutResponse createNewWorkout(@RequestBody CustomWorkout customWorkout) {
         // Save the custom workout to generate its ID
         customWorkoutRepository.save(customWorkout);
-        // Return the saved custom workout
-        return customWorkout;
+
+        // Create a DTO to represent the response body
+        CustomWorkoutResponse response = new CustomWorkoutResponse(
+                customWorkout.getCustomWoutId(),
+                customWorkout.getCoords(),
+                customWorkout.getWorkoutName(),
+                customWorkout.getUserId()
+        );
+
+        // Return the DTO
+        return response;
     }
     @PostMapping("/{workoutId}/addPoints")
     public ResponseEntity<String> addPointsToWorkout(
