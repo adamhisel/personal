@@ -23,21 +23,54 @@ public class ImageController {
     ImageRepository imageRepository;
     String success = "Successfully added an image!";
 
-    @PostMapping(path = "/{userId}/upload")
-    public String addImage(@PathVariable int userId,  @RequestParam("file") MultipartFile file) throws SQLException, IOException {
+    @PostMapping(path = "user/{userId}/upload")
+    public String addUserImage(@PathVariable int userId,  @RequestParam("file") MultipartFile file) throws SQLException, IOException {
         byte[] bytes = file.getBytes();
         Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
 
         Image image = new Image();
-        image.setId(userId);
+        image.setUserId(userId);
+        image.setImage(blob);
+        imageRepository.save(image);
+        return success;
+    }
+    @PostMapping(path = "team/{teamId}/upload")
+    public String addTeamImage(@PathVariable int teamId,  @RequestParam("file") MultipartFile file) throws SQLException, IOException {
+        byte[] bytes = file.getBytes();
+        Blob blob = new javax.sql.rowset.serial.SerialBlob(bytes);
+
+        Image image = new Image();
+        image.setTeamId(teamId);
         image.setImage(blob);
         imageRepository.save(image);
         return success;
     }
 
-    @GetMapping("/getimage/{imageId}")
-    public ResponseEntity<byte[]> getImageById(@PathVariable int imageId) {
-        Optional<Image> optionalImage = imageRepository.findById(imageId);
+    @GetMapping("/getimage/user/{userId}")
+    public ResponseEntity<byte[]> getUserImageById(@PathVariable int userId) {
+        Optional<Image> optionalImage = imageRepository.findByUserId(userId);
+
+        if (optionalImage.isPresent()) {
+            Image image = optionalImage.get();
+
+            try {
+                Blob blob = image.getImage();
+                byte[] bytes = blob.getBytes(1, (int) blob.length());
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.IMAGE_PNG); // Set the content type to image/jpeg
+
+                return ResponseEntity.ok().headers(headers).body(bytes);
+            } catch (SQLException e) {
+                return ResponseEntity.status(500).body("Error retrieving the image".getBytes());
+            }
+        } else {
+            return ResponseEntity.status(404).body("Image not found".getBytes());
+        }
+    }
+    @GetMapping("/getimage/team/{teamId}")
+    public ResponseEntity<byte[]> getTeamImageById(@PathVariable int teamId) {
+        Optional<Image> optionalImage = imageRepository.findByTeamId(teamId);
 
         if (optionalImage.isPresent()) {
             Image image = optionalImage.get();

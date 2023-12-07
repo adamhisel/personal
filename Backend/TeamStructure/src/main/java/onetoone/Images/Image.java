@@ -9,13 +9,17 @@ import java.util.Date;
 @Entity
 public class Image {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Lob
     private Blob image;
 
     private Date date = new Date();
+
+    private int userId;
+    private int teamId;
+
 
     public long getId() {
         return id;
@@ -35,5 +39,21 @@ public class Image {
 
     public Date getDate() {
         return date;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 }
