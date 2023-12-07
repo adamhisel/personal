@@ -253,7 +253,6 @@ public class StatsFragment extends Fragment {
     private void findLeaders() {
         // Create a list from elements of HashMap
         List<Map.Entry<Integer, Integer>> list = new LinkedList<>(playerPointsMap.entrySet());
-
         // Sort the list
         list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
@@ -262,6 +261,7 @@ public class StatsFragment extends Fragment {
             if (player != null) {
                 String playerDetails = player.getName() + " - " + entry.getValue() + " pts";
                 TextView textView = new TextView(requireContext());
+                textView.setTextSize(15);
                 textView.setText(playerDetails);
                 binding.ll.addView(textView);
             }

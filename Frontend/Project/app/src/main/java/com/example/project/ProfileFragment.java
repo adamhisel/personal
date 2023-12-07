@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,6 +36,7 @@ public class ProfileFragment extends Fragment {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private static RequestQueue mQueue;
+    private ImageDownloader imageDownloader;
     private FragmentProfileBinding binding;
 
     @Override
@@ -43,11 +45,19 @@ public class ProfileFragment extends Fragment {
 
         mQueue = Volley.newRequestQueue(requireActivity());
 
+        imageDownloader = new ImageDownloader();
+
+
         String userId = SharedPrefsUtil.getUserId(requireActivity());
+        downloadAndSetImage(0);
         getProfile(userId);
         setupButtonListeners();
 
         return binding.getRoot();
+    }
+
+    private void downloadAndSetImage(int imageId) {
+        imageDownloader.downloadImage(getContext(), imageId, binding.imageView);
     }
 
     // Refresh profile details when fragment is resumed.
