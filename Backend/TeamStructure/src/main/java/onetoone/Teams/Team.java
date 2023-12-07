@@ -151,6 +151,11 @@ public class Team {
 
     public void addUser(User user){ users.add(user);}
 
+    public void deleteUser(User user){
+        this.users.remove(user);
+    }
+
+
     public String getPassword(){
         return password;
     }
