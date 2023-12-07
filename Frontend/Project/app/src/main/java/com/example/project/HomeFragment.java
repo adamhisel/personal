@@ -214,7 +214,7 @@ public class HomeFragment extends Fragment {
                             button.setLayoutParams(halfLLVert);
                             button.setTextColor(Color.WHITE);
                             button.setBackgroundColor(Color.BLACK);
-                            button.setText("View Team");
+                            button.setText("View " + teamName);
                             button.setTag(id);
                             button.setTextSize(20);
 
@@ -386,7 +386,6 @@ public class HomeFragment extends Fragment {
         params.height = displayMetrics.heightPixels / 5;
         iv.setLayoutParams(params);
     }
-
 
     private void getGames(int id, LinearLayout parentLL) {
         parentLL.removeAllViews();

@@ -116,7 +116,13 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private boolean deleteTeamClicked;
 
+    private boolean leavingCoachClicked;
 
+    private boolean leavingFanClicked;
+
+    private int leavingCoachId;
+
+    private int leavingFanId;
 
 
 
@@ -284,22 +290,30 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         fanLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int fanId = Integer.parseInt(SharedPrefsTeamUtil.getFanId(getContext()));
-                deleteFan(fanId);
+                leavingFanId = Integer.parseInt(SharedPrefsTeamUtil.getFanId(getContext()));
+                leavingFanClicked = true;
+                showConfirmDialog();
             }
         });
 
         coachLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int coachId = Integer.parseInt(SharedPrefsTeamUtil.getCoachId(getContext()));
-                checkIfTeamHasCoach();
-                if(teamHasMoreThanOneCoach == true){
-                    deleteCoach(coachId);
-                }
-                else{
-                    Toast.makeText(mContext, "Must Promote a Player to Coach Before Leaving", Toast.LENGTH_SHORT).show();
-                }
+                leavingCoachId = Integer.parseInt(SharedPrefsTeamUtil.getCoachId(getContext()));
+                checkIfTeamHasCoach(new BooleanCallback() {
+                    @Override
+                    public void onBoolanReceived(boolean hasCoach) {
+                        teamHasMoreThanOneCoach = hasCoach;
+                        if(teamHasMoreThanOneCoach == true){
+                            leavingCoachClicked = true;
+                            showConfirmDialog();
+                        }
+                        else{
+                            Toast.makeText(mContext, "Must Promote a Player to Coach Before Leaving", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
 
             }
         });
@@ -366,7 +380,12 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     String text = "Coached by:";
                     for(int j = 0; j < coaches.length(); j++){
                         JSONObject coach = coaches.getJSONObject(j);
-                        text +=  " " + coach.getString("name");
+                        if(coaches.length()-1 == j) {
+                            text += " " + coach.getString("name");
+                        }
+                        else{
+                            text += " " + coach.getString("name") + ",";
+                        }
                     }
                     coachText.setText(text);
 
@@ -795,8 +814,14 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             public void onCoachIdAndNameReceived(int cid, String name) {
                 getTeamInfo();
                 deletePlayer(pid);
-                postCoach(cid, name);
-                joinTeamCoach(cid);
+                postCoach(cid, name, new CoachIdCallback() {
+                    @Override
+                    public void onCoachIdReceived(int cid) {
+                        newCoachId = cid;
+                        joinTeamCoach(cid);
+                    }
+                });
+
             }
         });
 
@@ -856,7 +881,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
 
 
-    private void postCoach(int userId, String name) {
+    private void postCoach(int userId, String name, final CoachIdCallback callback) {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/coaches";
 
         JSONObject postData = new JSONObject();
@@ -875,6 +900,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     public void onResponse(JSONObject response) {
                         try {
                             newCoachId = response.getInt("id");
+
+                            callback.onCoachIdReceived(newCoachId);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -995,7 +1022,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(jsonObjectRequest);
     }
 
-    private void checkIfTeamHasCoach(){
+    private void checkIfTeamHasCoach(final BooleanCallback callback){
 
         String url = BASE_URL + "teams/" + teamId;
 
@@ -1005,13 +1032,15 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 try {
 
                     JSONArray coaches = response.getJSONArray("coaches");
-                    teamHasMoreThanOneCoach = false;
+
                     if(coaches.length() <= 1){
                         teamHasMoreThanOneCoach = false;
+
                     }
                     else{
                         teamHasMoreThanOneCoach = true;
                     }
+                    callback.onBoolanReceived(teamHasMoreThanOneCoach);
 
 
                         } catch (JSONException e) {
@@ -1034,6 +1063,14 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     public interface CoachIdAndNameCallback {
         void onCoachIdAndNameReceived(int cid, String name);
+    }
+
+    public interface CoachIdCallback {
+        void onCoachIdReceived(int cid);
+    }
+
+    public interface BooleanCallback {
+        void onBoolanReceived(boolean hasCoach);
     }
 
     private void showUpdatePlayerDialog() {
@@ -1101,6 +1138,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                         removeClicked = false;
                         promoteClicked = false;
                         deleteTeamClicked = false;
+                        leavingCoachClicked = false;
                     }
                 });
             }
@@ -1109,16 +1147,43 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 removeClicked = false;
                 promoteClicked = false;
                 deleteTeamClicked = false;
+                leavingFanClicked = false;
+                leavingCoachClicked = false;
             }
             else if(deleteTeamClicked == true){
                 deleteTeam();
                 removeClicked = false;
                 promoteClicked = false;
                 deleteTeamClicked = false;
+                leavingFanClicked = false;
+                leavingCoachClicked = false;
                 SharedPrefsTeamUtil.clearTeamData(mContext);
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
+            else if(leavingCoachClicked == true){
+                deleteCoach(leavingCoachId);
+                deleteUserFromTeam(Integer.parseInt(SharedPrefsUtil.getUserId(mContext)));
+                leavingCoachClicked = false;
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+                leavingFanClicked = false;
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            }
+            else if(leavingFanClicked == true){
+                deleteFan(leavingFanId);
+                deleteUserFromTeam(Integer.parseInt(SharedPrefsUtil.getUserId(mContext)));
+                leavingCoachClicked = false;
+                leavingFanClicked = false;
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 
