@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Points {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private int id;
     @ManyToOne
     @JoinColumn(name = "customWoutId")
     @JsonBackReference(value = "customworkout")

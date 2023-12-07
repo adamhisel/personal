@@ -219,7 +219,7 @@
             </TextView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/leaveTeamButton"
+                android:id="@+id/coachLeaveTeamButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
