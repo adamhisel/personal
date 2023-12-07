@@ -64,8 +64,6 @@ public class RegistrationActivity extends AppCompatActivity implements ImageUplo
             startActivity(intent);
         });
 
-//        binding.selectBtn.setOnClickListener(view -> {ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment();
-//            uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");});
     }
 
     // Gathers input data and performs validation
@@ -135,7 +133,7 @@ public class RegistrationActivity extends AppCompatActivity implements ImageUplo
 
             Toast.makeText(RegistrationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
-            ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment();
+            ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(true, 0);
             uploadFragment.setImageUploadListener(RegistrationActivity.this);
             uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
 

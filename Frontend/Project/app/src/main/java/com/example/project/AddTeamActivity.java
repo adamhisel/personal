@@ -1,6 +1,7 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,8 +38,11 @@ import java.util.ArrayList;
  *
  * @author Adam Hisel
  */
-public class AddTeamActivity extends AppCompatActivity {
+public class AddTeamActivity extends AppCompatActivity implements ImageUploadDialogFragment.ImageUploadListener{
 
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private TextInputLayout teamName;
 
     private TextInputLayout password;
@@ -63,6 +67,8 @@ public class AddTeamActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_team);
+
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         mQueue = Volley.newRequestQueue(this);
 
@@ -134,8 +140,11 @@ public class AddTeamActivity extends AppCompatActivity {
                                 coachId = id;
                                 joinTeamUser();
                                 joinTeamCoach();
-                                Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
-                                startActivity(intent);
+
+                                ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(false, teamId);
+                                uploadFragment.setImageUploadListener(AddTeamActivity.this);
+                                uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
+
                             }
                         });
                     }
@@ -153,7 +162,7 @@ public class AddTeamActivity extends AppCompatActivity {
 
     }
     private void postTeam(final TeamIdCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
+        String url = BASE_URL +"teams";
 
         JSONObject postData = new JSONObject();
 
@@ -196,7 +205,7 @@ public class AddTeamActivity extends AppCompatActivity {
     }
 
     private void postCoach(final TeamIdCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/coaches";
+        String url = BASE_URL +"coaches";
 
         JSONObject postData = new JSONObject();
         try {
@@ -234,7 +243,7 @@ public class AddTeamActivity extends AppCompatActivity {
     private void joinTeamUser(){
         String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/User/" + userId + "/teams/" + teamId;
+        String url = BASE_URL +"User/" + userId + "/teams/" + teamId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -259,10 +268,10 @@ public class AddTeamActivity extends AppCompatActivity {
 
         String url = "";
         if(isPrivate == true) {
-            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim() + "/" + SharedPrefsUtil.getUserId(this);
+            url = BASE_URL +"teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim() + "/" + SharedPrefsUtil.getUserId(this);
         }
         else{
-            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + coachId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
+            url = BASE_URL +"teams/" + teamId + "/coaches/" + coachId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
         }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -320,6 +329,12 @@ public class AddTeamActivity extends AppCompatActivity {
             password.setError(null);
             return true;
         }
+    }
+
+    @Override
+    public void onImageUploadDismissed() {
+        Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     /**

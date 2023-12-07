@@ -43,7 +43,7 @@ public class GameWebsocketActivity extends AppCompatActivity implements WebSocke
         super.onCreate(savedInstanceState);
         binding = ActivityGameWebsocketBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         userName = SharedPrefsUtil.getUserName(this);
         String url = BASE_URL + userName;
         String testUrl = LOCAL_URL + userName;

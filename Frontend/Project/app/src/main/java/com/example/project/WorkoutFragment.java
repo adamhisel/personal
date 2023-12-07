@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -51,7 +52,7 @@ public class WorkoutFragment extends Fragment {
 
         userId = SharedPrefsUtil.getUserId(requireActivity());
         fetchWorkoutsForUser(userId);
-
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         AutoCompleteTextView autoCompleteTextView = binding.actvPresetWorkouts;
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, PRESET_WORKOUTS);
         autoCompleteTextView.setAdapter(adapter);

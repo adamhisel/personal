@@ -15,17 +15,43 @@ public class ImageDownloader {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
 
-    public void downloadImage(Context context, int imageId, ImageView imageView) {
+    public void downloadUserImage(Context context, int userId, ImageView imageView) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
-        String imageUrl = BASE_URL + "getimage/" + imageId;
+        String imageUrl = BASE_URL + "getimage/user/" + userId;
 
         ImageRequest imageRequest = new ImageRequest(
                 imageUrl,
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap response) {
-                        imageView.setImageBitmap(response); // Set the downloaded image to ImageView
+                        imageView.setImageBitmap(response);
+                    }
+                },
+                0, 0,
+                null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error downloading image", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        requestQueue.add(imageRequest);
+    }
+
+    public void downloadTeamImage(Context context, int teamId, ImageView imageView) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        String imageUrl = BASE_URL + "getimage/team/" + teamId;
+
+        ImageRequest imageRequest = new ImageRequest(
+                imageUrl,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        imageView.setImageBitmap(response);
                     }
                 },
                 0, 0,

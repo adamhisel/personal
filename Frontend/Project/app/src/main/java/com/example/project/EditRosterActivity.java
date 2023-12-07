@@ -1,6 +1,7 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -63,7 +64,7 @@ public class EditRosterActivity extends AppCompatActivity {
         Button back = findViewById(R.id.backButton);
         TextView success = findViewById(R.id.fillText);
 
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         name = findViewById(R.id.name);
         number = findViewById(R.id.number);
         position = findViewById(R.id.position);

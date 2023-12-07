@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -86,6 +87,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private int newCoachUserId;
 
+    private int removeUserId;
     private boolean teamHasMoreThanOneCoach;
 
     private int teamId;
@@ -114,7 +116,13 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private boolean deleteTeamClicked;
 
+    private boolean leavingCoachClicked;
 
+    private boolean leavingFanClicked;
+
+    private int leavingCoachId;
+
+    private int leavingFanId;
 
 
 
@@ -131,7 +139,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         deleteTeamClicked = false;
         mQueue = Volley.newRequestQueue(mContext);
         topLL = view.findViewById(R.id.topLL);
@@ -282,22 +290,30 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         fanLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int fanId = Integer.parseInt(SharedPrefsTeamUtil.getFanId(getContext()));
-                deleteFan(fanId);
+                leavingFanId = Integer.parseInt(SharedPrefsTeamUtil.getFanId(getContext()));
+                leavingFanClicked = true;
+                showConfirmDialog();
             }
         });
 
         coachLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int coachId = Integer.parseInt(SharedPrefsTeamUtil.getCoachId(getContext()));
-                checkIfTeamHasCoach();
-                if(teamHasMoreThanOneCoach == true){
-                    deleteCoach(coachId);
-                }
-                else{
-                    Toast.makeText(mContext, "Must Promote a Player to Coach Before Leaving", Toast.LENGTH_SHORT).show();
-                }
+                leavingCoachId = Integer.parseInt(SharedPrefsTeamUtil.getCoachId(getContext()));
+                checkIfTeamHasCoach(new BooleanCallback() {
+                    @Override
+                    public void onBoolanReceived(boolean hasCoach) {
+                        teamHasMoreThanOneCoach = hasCoach;
+                        if(teamHasMoreThanOneCoach == true){
+                            leavingCoachClicked = true;
+                            showConfirmDialog();
+                        }
+                        else{
+                            Toast.makeText(mContext, "Must Promote a Player to Coach Before Leaving", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
 
             }
         });
@@ -364,7 +380,12 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     String text = "Coached by:";
                     for(int j = 0; j < coaches.length(); j++){
                         JSONObject coach = coaches.getJSONObject(j);
-                        text +=  " " + coach.getString("name");
+                        if(coaches.length()-1 == j) {
+                            text += " " + coach.getString("name");
+                        }
+                        else{
+                            text += " " + coach.getString("name") + ",";
+                        }
                     }
                     coachText.setText(text);
 
@@ -667,8 +688,38 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(jsonObjectRequest);
     }
 
+    private void deleteUserFromTeam(int userId) {
+        String url = BASE_URL + "users/" + userId +"/" + teamId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        if (response.equals("success")) {
+
+                            Log.d("DeleteUser", "Player deleted successfully");
+                        } else {
+                            // Unexpected response, handle it accordingly
+                            Log.e("DeleteUser", "Unexpected response after deletion");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null) {
+                            Log.e("DeleteUserFromTeam", "Error code: " + error.networkResponse.statusCode);
+                        }
+                        Log.e("DeleteUserFromTeam", "Error in request: " + error.getMessage());
+                    }
+                });
+
+        mQueue.add(jsonObjectRequest);
+    }
+
     private void deletePlayer(int pid) {
-        String url = "http://10.0.2.2:8080/players/" + pid +"/" + teamId;
+        String url = BASE_URL + "players/" + pid +"/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -698,7 +749,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteFan(int fid) {
-        String url = "http://10.0.2.2:8080/fans/" + fid + "/" + teamId;
+        String url = BASE_URL + "fans/" + fid + "/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -707,10 +758,10 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                         if (response.length() == 0) {
 
-                            Log.d("DeletePlayer", "Player deleted successfully");
+                            Log.d("DeleteFan", "Player deleted successfully");
                         } else {
                             // Unexpected response, handle it accordingly
-                            Log.e("DeletePlayer", "Unexpected response after deletion");
+                            Log.e("DeleteFan", "Unexpected response after deletion");
                         }
                     }
                 },
@@ -718,9 +769,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null) {
-                            Log.e("DeletePlayer", "Error code: " + error.networkResponse.statusCode);
+                            Log.e("DeleteFan", "Error code: " + error.networkResponse.statusCode);
                         }
-                        Log.e("DeletePlayer", "Error in request: " + error.getMessage());
+                        Log.e("DeleteFan", "Error in request: " + error.getMessage());
                     }
                 });
 
@@ -728,7 +779,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteCoach(int cid) {
-        String url = "http://10.0.2.2:8080/coaches/" + cid + "/" + teamId;
+        String url = BASE_URL + "coaches/" + cid + "/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -737,10 +788,10 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
                         if (response.length() == 0) {
 
-                            Log.d("DeletePlayer", "Player deleted successfully");
+                            Log.d("DeleteCoach", "Player deleted successfully");
                         } else {
                             // Unexpected response, handle it accordingly
-                            Log.e("DeletePlayer", "Unexpected response after deletion");
+                            Log.e("DeleteCoach", "Unexpected response after deletion");
                         }
                     }
                 },
@@ -748,9 +799,9 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null) {
-                            Log.e("DeletePlayer", "Error code: " + error.networkResponse.statusCode);
+                            Log.e("DeleteCoach", "Error code: " + error.networkResponse.statusCode);
                         }
-                        Log.e("DeletePlayer", "Error in request: " + error.getMessage());
+                        Log.e("DeleteCoach", "Error in request: " + error.getMessage());
                     }
                 });
 
@@ -758,14 +809,25 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void promotePlayer(int pid){
-        getPlayerInfo(pid);
-        getTeamInfo();
-        deletePlayer(pid);
-        postCoach();
-        joinTeamCoach();
+        getPlayerInfo(pid, new CoachIdAndNameCallback() {
+            @Override
+            public void onCoachIdAndNameReceived(int cid, String name) {
+                getTeamInfo();
+                deletePlayer(pid);
+                postCoach(cid, name, new CoachIdCallback() {
+                    @Override
+                    public void onCoachIdReceived(int cid) {
+                        newCoachId = cid;
+                        joinTeamCoach(cid);
+                    }
+                });
+
+            }
+        });
+
     }
 
-    private void getPlayerInfo(int pid){
+    private void getPlayerInfo(int pid, final CoachIdAndNameCallback callback){
         String url = BASE_URL + "player/" + pid;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -776,6 +838,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                             newCoachName = response.getString("playerName");
                             newCoachUserId = response.getInt("user_id");
 
+                            callback.onCoachIdAndNameReceived(newCoachUserId, newCoachName);
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -790,6 +853,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
         mQueue.add(request);
     }
+
 
     private void getTeamInfo(){
             String url = BASE_URL + "teams/" + teamId;
@@ -817,14 +881,14 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
 
 
-    private void postCoach() {
+    private void postCoach(int userId, String name, final CoachIdCallback callback) {
         String url = "http://coms-309-018.class.las.iastate.edu:8080/coaches";
 
         JSONObject postData = new JSONObject();
         try {
 
-            postData.put("name", newCoachName);
-            postData.put("user_id", newCoachUserId);
+            postData.put("name", name);
+            postData.put("user_id", userId);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -836,6 +900,8 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                     public void onResponse(JSONObject response) {
                         try {
                             newCoachId = response.getInt("id");
+
+                            callback.onCoachIdReceived(newCoachId);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -853,14 +919,14 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(jsonObjectRequest);
     }
 
-    private void joinTeamCoach(){
+    private void joinTeamCoach(int userId){
 
         String url = "";
         if(isPrivate == true) {
-            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + newCoachId + "/" + teamPassword + "/" + newCoachUserId;
+            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + newCoachId + "/" + teamPassword + "/" + userId;
         }
         else{
-            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + newCoachId + "/dummy" + "/" + newCoachUserId;
+            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/coaches/" + newCoachId + "/dummy" + "/" + userId;
         }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -956,7 +1022,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
         mQueue.add(jsonObjectRequest);
     }
 
-    private void checkIfTeamHasCoach(){
+    private void checkIfTeamHasCoach(final BooleanCallback callback){
 
         String url = BASE_URL + "teams/" + teamId;
 
@@ -966,13 +1032,15 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
                 try {
 
                     JSONArray coaches = response.getJSONArray("coaches");
-                    teamHasMoreThanOneCoach = false;
+
                     if(coaches.length() <= 1){
                         teamHasMoreThanOneCoach = false;
+
                     }
                     else{
                         teamHasMoreThanOneCoach = true;
                     }
+                    callback.onBoolanReceived(teamHasMoreThanOneCoach);
 
 
                         } catch (JSONException e) {
@@ -991,6 +1059,18 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     public interface TeamIdListsCallback {
         void onTeamIdListsReceived(ArrayList<Integer> idList, ArrayList<String> nameList);
+    }
+
+    public interface CoachIdAndNameCallback {
+        void onCoachIdAndNameReceived(int cid, String name);
+    }
+
+    public interface CoachIdCallback {
+        void onCoachIdReceived(int cid);
+    }
+
+    public interface BooleanCallback {
+        void onBoolanReceived(boolean hasCoach);
     }
 
     private void showUpdatePlayerDialog() {
@@ -1050,26 +1130,60 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     public void onConfirm(boolean confirm) {
         if(confirm == true){
             if(removeClicked == true){
-                deletePlayer(playerId);
-                removeClicked = false;
-                promoteClicked = false;
-                deleteTeamClicked = false;
+                getPlayerInfo(playerId, new CoachIdAndNameCallback() {
+                    @Override
+                    public void onCoachIdAndNameReceived(int cid, String name) {
+                        deletePlayer(playerId);
+                        deleteUserFromTeam(cid);
+                        removeClicked = false;
+                        promoteClicked = false;
+                        deleteTeamClicked = false;
+                        leavingCoachClicked = false;
+                    }
+                });
             }
             else if(promoteClicked == true){
                 promotePlayer(playerId);
                 removeClicked = false;
                 promoteClicked = false;
                 deleteTeamClicked = false;
+                leavingFanClicked = false;
+                leavingCoachClicked = false;
             }
             else if(deleteTeamClicked == true){
                 deleteTeam();
                 removeClicked = false;
                 promoteClicked = false;
                 deleteTeamClicked = false;
+                leavingFanClicked = false;
+                leavingCoachClicked = false;
                 SharedPrefsTeamUtil.clearTeamData(mContext);
                 Intent intent = new Intent(mContext, MainActivity.class);
                 startActivity(intent);
             }
+            else if(leavingCoachClicked == true){
+                deleteCoach(leavingCoachId);
+                deleteUserFromTeam(Integer.parseInt(SharedPrefsUtil.getUserId(mContext)));
+                leavingCoachClicked = false;
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+                leavingFanClicked = false;
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            }
+            else if(leavingFanClicked == true){
+                deleteFan(leavingFanId);
+                deleteUserFromTeam(Integer.parseInt(SharedPrefsUtil.getUserId(mContext)));
+                leavingCoachClicked = false;
+                leavingFanClicked = false;
+                removeClicked = false;
+                promoteClicked = false;
+                deleteTeamClicked = false;
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 

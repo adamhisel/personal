@@ -35,14 +35,19 @@ public class ImageUploadDialogFragment extends DialogFragment {
     private Bitmap bitmap;
     private int userId;
 
+    private int teamId;
+
+    private boolean isUser;
+
     private ImageUploadListener uploadListener;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private ActivityResultLauncher<String> mGetContent;
 
-    public ImageUploadDialogFragment() {
-
+    public ImageUploadDialogFragment(boolean isUser, int teamId) {
+        this.isUser = isUser;
+        this.teamId = teamId;
     }
 
 
@@ -111,7 +116,13 @@ public class ImageUploadDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 userId = Integer.parseInt(SharedPrefsUtil.getUserId(getContext()));
                 ImageUploader uploadManager = new ImageUploader();
-                uploadManager.uploadImage(getContext(), userId, bitmap);
+
+                if(isUser == true) {
+                    uploadManager.uploadUserImage(getContext(), userId, bitmap);
+                }
+                else{
+                    uploadManager.uploadTeamImage(getContext(), teamId, bitmap);
+                }
 
                 dismiss();
 
