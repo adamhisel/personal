@@ -135,27 +135,29 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
     }
 
     private void sendCustomWorkoutToServer() {
-        // First, create the CustomWorkout
         String createWorkoutUrl = BASE_URL + "uploadworkout";
         JSONObject workoutJson = new JSONObject();
         try {
             workoutJson.put("workoutName", workoutName);
             workoutJson.put("userId", SharedPrefsUtil.getUserId(this));
-            // Log for debugging
             Log.d("CreateCustomWorkout", "Creating workout: " + workoutJson.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // Create the CustomWorkout
         JsonObjectRequest createWorkoutRequest = new JsonObjectRequest(Request.Method.POST, createWorkoutUrl, workoutJson,
                 response -> {
-                    Log.d("CreateCustomWorkout", "Response for workout creation: " + response.toString());
-                    // Fetch the created workout ID from the response
-                    int customWorkoutId = response.optInt("customWoutId");
-                    Log.d("CreateCustomWorkout", "Workout created with ID: " + customWorkoutId);
-                    // Now send the coordinates (points) for this workout
-                    sendPointsForWorkout(customWorkoutId);
+                    try {
+                        // Parse the DTO response
+                        JSONObject workoutResponseJson = new JSONObject(response.toString());
+                        int customWorkoutId = workoutResponseJson.getInt("customWoutId");
+                        Log.d("CreateCustomWorkout", "Workout created with ID: " + customWorkoutId);
+
+                        // Send coordinates for the created workout
+                        sendPointsForWorkout(customWorkoutId);
+                    } catch (JSONException e) {
+                        Log.e("CreateCustomWorkout", "Error parsing workout creation response: " + e.getMessage());
+                    }
                 },
                 error -> {
                     Log.e("CreateCustomWorkout", "Error creating workout: " + error.toString());
@@ -198,7 +200,6 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
 
         // Log the JSON array of points being sent
         Log.d("CreateCustomWorkout", "Sending points JSON: " + pointsArray.toString());
-
 
         mQueue.add(addPointsRequest);
     }

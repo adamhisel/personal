@@ -6,9 +6,10 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="250dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:maxHeight="250dp">
 
         <LinearLayout
             android:id="@+id/llCustomWorkoutsContainer"
@@ -25,4 +26,13 @@
         android:backgroundTint="#000"
         android:textColor="#FFFFFF"
         android:text="Create New Workout" />
+
+    <!-- Cancel Button -->
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:backgroundTint="#000"
+        android:textColor="#FFFFFF" />
 </LinearLayout>

@@ -169,9 +169,10 @@ public class WorkoutFragment extends Fragment {
         // Create the dialog from the builder
         AlertDialog dialog = builder.create();
 
-        // Get the custom workout container and button from the dialog
+        // Get the custom workout container and buttons from the dialog
         LinearLayout llCustomWorkoutsContainer = dialogView.findViewById(R.id.llCustomWorkoutsContainer);
         Button btnCreateNewWorkout = dialogView.findViewById(R.id.btnCreateNewWorkout);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
         // Fetch and display custom workouts for the user
         fetchCustomWorkoutsForUser(userId, llCustomWorkoutsContainer);
@@ -181,14 +182,16 @@ public class WorkoutFragment extends Fragment {
             // Launch CreateCustomWorkoutActivity
             Intent intent = new Intent(getActivity(), CreateCustomWorkoutActivity.class);
             startActivity(intent);
-
-            // Dismiss the dialog after launching the activity
             dialog.dismiss();
         });
+
+        // Set up the back/cancel button
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         // Show the dialog
         dialog.show();
     }
+
 
     private void fetchCustomWorkoutsForUser(String userId, LinearLayout container) {
         String url = BASE_URL + "getCustomWorkout/" + userId;
@@ -203,6 +206,7 @@ public class WorkoutFragment extends Fragment {
         mQueue.add(request);
     }
 
+
     private List<CustomWorkout> parseCustomWorkouts(JSONArray response) {
         List<CustomWorkout> customWorkouts = new ArrayList<>();
         try {
@@ -210,9 +214,17 @@ public class WorkoutFragment extends Fragment {
                 JSONObject workoutJson = response.getJSONObject(i);
                 int customWorkoutId = workoutJson.getInt("customWoutId");
                 String workoutName = workoutJson.getString("workoutName");
+                JSONArray coordsJson = workoutJson.getJSONArray("coords");
 
-                CustomWorkout customWorkout = new CustomWorkout(customWorkoutId, workoutName);
-                customWorkouts.add(customWorkout);
+                List<Coordinate> coords = new ArrayList<>();
+                for (int j = 0; j < coordsJson.length(); j++) {
+                    JSONObject coordJson = coordsJson.getJSONObject(j);
+                    int x = coordJson.getInt("xCoord");
+                    int y = coordJson.getInt("yCoord");
+                    coords.add(new Coordinate(x, y));
+                }
+
+                customWorkouts.add(new CustomWorkout(customWorkoutId, workoutName, coords));
             }
         } catch (JSONException e) {
             Log.e("WorkoutFragment", "Error parsing custom workouts JSON", e);
@@ -220,22 +232,23 @@ public class WorkoutFragment extends Fragment {
         return customWorkouts;
     }
 
+
     private void displayCustomWorkouts(List<CustomWorkout> customWorkouts, LinearLayout container) {
-        container.removeAllViews();
+        container.removeAllViews(); // Clear previous views
 
         for (CustomWorkout workout : customWorkouts) {
             Button button = new Button(getContext());
             button.setText(workout.getWorkoutName());
             button.setOnClickListener(v -> {
-                // Pass the selected workout ID to CustomWorkoutActivity
+                // Launch CustomWorkoutActivity with the selected workout ID
                 Intent intent = new Intent(getActivity(), CustomWorkoutActivity.class);
-                intent.putExtra("CUSTOM_WORKOUT_ID", workout.getCustomWorkoutId());
+                intent.putExtra("CUSTOM_WORKOUT_ID", workout.getCustomWoutId());
                 startActivity(intent);
             });
 
+            // Add each button to the container
             container.addView(button);
         }
     }
-
 
 }
