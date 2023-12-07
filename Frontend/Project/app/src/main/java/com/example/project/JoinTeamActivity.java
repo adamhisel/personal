@@ -227,7 +227,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
 
     private void fillTeamList(final TeamListCallback callback) {
-        String url = LOCAL_URL + "teams";
+        String url = BASE_URL + "teams";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -271,7 +271,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void fillIdList(final TeamListCallback callback) {
-        String url = LOCAL_URL + "teams";
+        String url = BASE_URL + "teams";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -301,7 +301,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void isUserInTeam(final TeamBooleanCallback callback){
-        String url = LOCAL_URL + "users/" + SharedPrefsUtil.getUserId(this);
+        String url = BASE_URL + "users/" + SharedPrefsUtil.getUserId(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -338,7 +338,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void getChosenTeam(final TeamStringAndBooleanCallback callback) {
-        String url = LOCAL_URL + "teams/" + teamId;
+        String url = BASE_URL + "teams/" + teamId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -367,7 +367,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     private void joinTeamUser(){
         String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = LOCAL_URL + "User/" + userId + "/teams/" + teamId;
+        String url = BASE_URL + "User/" + userId + "/teams/" + teamId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -392,10 +392,10 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         String url = "";
         if(isPrivate == true) {
-            url = LOCAL_URL + "teams/" + teamId + "/players/" + playerId + "/" + teamPassword + "/" + SharedPrefsUtil.getUserId(this);
+            url = BASE_URL + "teams/" + teamId + "/players/" + playerId + "/" + teamPassword + "/" + SharedPrefsUtil.getUserId(this);
         }
         else{
-            url = LOCAL_URL + "teams/" + teamId + "/players/" + playerId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
+            url = BASE_URL + "teams/" + teamId + "/players/" + playerId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
         }
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
@@ -419,7 +419,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
     private void joinTeamFan(){
 
-        String url = LOCAL_URL + "teams/" + teamId + "/fans/" + fanId + "/" + SharedPrefsUtil.getUserId(this);
+        String url = BASE_URL + "teams/" + teamId + "/fans/" + fanId + "/" + SharedPrefsUtil.getUserId(this);
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -441,7 +441,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void postPlayer(final TeamIdCallback callback) {
-        String url = LOCAL_URL + "players";
+        String url = BASE_URL + "players";
 
         JSONObject postData = new JSONObject();
         try {
@@ -481,7 +481,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void postFan(final TeamIdCallback callback) {
-        String url = LOCAL_URL + "fans";
+        String url = BASE_URL + "fans";
 
         JSONObject postData = new JSONObject();
         try {

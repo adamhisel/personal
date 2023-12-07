@@ -40,4 +40,30 @@ public class ImageDownloader {
 
         requestQueue.add(imageRequest);
     }
+
+    public void downloadTeamImage(Context context, int teamId, ImageView imageView) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        String imageUrl = BASE_URL + "getimage/team/" + teamId;
+
+        ImageRequest imageRequest = new ImageRequest(
+                imageUrl,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        imageView.setImageBitmap(response);
+                    }
+                },
+                0, 0,
+                null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Error downloading image", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        requestQueue.add(imageRequest);
+    }
 }

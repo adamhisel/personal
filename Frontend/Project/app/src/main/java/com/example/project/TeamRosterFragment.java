@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -311,7 +312,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void getPlayers(final TeamIdListsCallback callback){
-        String url = LOCAL_URL + "teams/" + teamId;
+        String url = BASE_URL + "teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -354,7 +355,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
      */
     public void addPlayerDisplay() {
 
-        String url = LOCAL_URL + "teams/" + teamId;
+        String url = BASE_URL + "teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -641,7 +642,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteTeam() {
-        String url = LOCAL_URL + "teams/" + teamId + "/" + SharedPrefsUtil.getUserId(getContext());
+        String url = BASE_URL + "teams/" + teamId + "/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -669,7 +670,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteUserFromTeam(int userId) {
-        String url = LOCAL_URL + "users/" + userId +"/" + teamId;
+        String url = BASE_URL + "users/" + userId +"/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -699,7 +700,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deletePlayer(int pid) {
-        String url = LOCAL_URL + "players/" + pid +"/" + teamId;
+        String url = BASE_URL + "players/" + pid +"/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -729,7 +730,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteFan(int fid) {
-        String url = LOCAL_URL + "fans/" + fid + "/" + teamId;
+        String url = BASE_URL + "fans/" + fid + "/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -759,7 +760,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void deleteCoach(int cid) {
-        String url = LOCAL_URL + "coaches/" + cid + "/" + teamId;
+        String url = BASE_URL + "coaches/" + cid + "/" + teamId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
@@ -802,7 +803,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void getPlayerInfo(int pid, final CoachIdAndNameCallback callback){
-        String url = LOCAL_URL + "player/" + pid;
+        String url = BASE_URL + "player/" + pid;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -830,7 +831,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
 
     private void getTeamInfo(){
-            String url = LOCAL_URL + "teams/" + teamId;
+            String url = BASE_URL + "teams/" + teamId;
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -922,7 +923,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
     }
 
     private void fillTeamSettingsBoxes() {
-        String url = LOCAL_URL + "teams/" + teamId;
+        String url = BASE_URL + "teams/" + teamId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -964,7 +965,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             e.printStackTrace();
         }
 
-        String url = LOCAL_URL + "updateTeam/" + teamId;
+        String url = BASE_URL + "updateTeam/" + teamId;
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
@@ -996,7 +997,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
 
     private void checkIfTeamHasCoach(){
 
-        String url = LOCAL_URL + "teams/" + teamId;
+        String url = BASE_URL + "teams/" + teamId;
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -1052,7 +1053,7 @@ public class TeamRosterFragment extends Fragment implements UpdatePlayerDialogFr
             e.printStackTrace();
         }
 
-        String url = LOCAL_URL + "updatePlayer/" + playerId;
+        String url = BASE_URL + "updatePlayer/" + playerId;
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,

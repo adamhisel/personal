@@ -17,15 +17,18 @@
         android:layout_centerInParent="true"/>
 
 
-    <Button
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/selectImageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Image"/>
+        android:text="Select Image"
+        android:backgroundTint="#000000" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/uploadImageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upload Image"/>
+        android:text="Upload Image"
+        android:backgroundTint="#000000" />
 </LinearLayout>

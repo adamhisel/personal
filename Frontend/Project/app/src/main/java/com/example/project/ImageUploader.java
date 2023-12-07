@@ -57,6 +57,41 @@ public class ImageUploader {
         }
     }
 
+    public void uploadTeamImage(Context context, int teamId, Bitmap imageBitmap) {
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        Bitmap circularBitMap = ImageHelper.getCircularBitmap(imageBitmap);
+
+        File imageFile = bitmapToFile(context, circularBitMap, "image.png");
+
+        if (imageFile != null && imageFile.exists()) {
+            Map<String, String> stringParams = new HashMap<>();
+            stringParams.put("teamId", String.valueOf(teamId));
+
+            MultipartRequest multipartRequest = new MultipartRequest(
+                    BASE_URL + "team/" + teamId + "/upload",
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(context, "Error uploading image", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(context, "Image uploaded successfully!", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    imageFile,
+                    stringParams
+            );
+
+            requestQueue.add(multipartRequest);
+        } else {
+            Toast.makeText(context, "Image file not found!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public static File bitmapToFile(Context context, Bitmap bitmap, String fileName) {
 
         File imagesDir = getImagesDirectory(context);

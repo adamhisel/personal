@@ -5,12 +5,14 @@ import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -68,6 +70,8 @@ public class HomeFragment extends Fragment {
     private ArrayList<Integer> gameIdArr;
 
     private Map<Integer, LinearLayout> teamGamesLLMap = new HashMap<>();
+
+    private ImageDownloader imageDownloader;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,6 +83,8 @@ public class HomeFragment extends Fragment {
         mQueue = Volley.newRequestQueue(requireContext());
         requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         ll = view.findViewById(R.id.cardLL);
+
+        imageDownloader = new ImageDownloader();
 
         ImageButton addTeam = view.findViewById(R.id.plus);
 
@@ -114,7 +120,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     private void displayTeamButtons() {
-        String url = LOCAL_URL + "users/" + SharedPrefsUtil.getUserId(getContext());
+        String url = BASE_URL + "users/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -189,11 +195,9 @@ public class HomeFragment extends Fragment {
                             halfLLHor.weight = 1;
                             halfLLVert.weight = 1;
 
-                            TextView tv = new TextView(requireContext());
-
-                            tv.setLayoutParams(halfLLHor);
-                            tv.setText(teamName);
-                            tv.setTextSize(25);
+                            ImageView iv = new ImageView(requireContext());
+                            iv.setLayoutParams(halfLLHor);
+                            downloadAndSetImage(id, iv);
 
 
 
@@ -230,7 +234,7 @@ public class HomeFragment extends Fragment {
                             buttonLayout.addView(button);
                             buttonLayout.addView(tButton);
 
-                            linearLayout.addView(tv);
+                            linearLayout.addView(iv);
                             linearLayout.addView(buttonLayout);
 
                             LinearLayout gamesLL = new LinearLayout(requireContext());
@@ -369,10 +373,24 @@ public class HomeFragment extends Fragment {
         mQueue.add(request);
     }
 
+    private void downloadAndSetImage(int teamId, ImageView iv) {
+        imageDownloader.downloadTeamImage(getContext(), teamId, iv);
+
+        ViewGroup.LayoutParams params = iv.getLayoutParams();
+
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+
+        params.width = displayMetrics.widthPixels / 5;
+        params.height = displayMetrics.heightPixels / 5;
+        iv.setLayoutParams(params);
+    }
+
 
     private void getGames(int id, LinearLayout parentLL) {
         parentLL.removeAllViews();
-        String url = LOCAL_URL + "games";
+        String url = BASE_URL + "games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -417,7 +435,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void getShotsForGame(int gameId, LinearLayout gameLL, LinearLayout parentLL) {
-        String url = LOCAL_URL + "games/" + gameId + "/shots";
+        String url =  BASE_URL + "games/" + gameId + "/shots";
         JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     int gameFGM = 0;

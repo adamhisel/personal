@@ -38,7 +38,7 @@ import java.util.ArrayList;
  *
  * @author Adam Hisel
  */
-public class AddTeamActivity extends AppCompatActivity {
+public class AddTeamActivity extends AppCompatActivity implements ImageUploadDialogFragment.ImageUploadListener{
 
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
 
@@ -140,8 +140,11 @@ public class AddTeamActivity extends AppCompatActivity {
                                 coachId = id;
                                 joinTeamUser();
                                 joinTeamCoach();
-                                Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
-                                startActivity(intent);
+
+                                ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(false, teamId);
+                                uploadFragment.setImageUploadListener(AddTeamActivity.this);
+                                uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
+
                             }
                         });
                     }
@@ -159,7 +162,7 @@ public class AddTeamActivity extends AppCompatActivity {
 
     }
     private void postTeam(final TeamIdCallback callback) {
-        String url = LOCAL_URL +"teams";
+        String url = BASE_URL +"teams";
 
         JSONObject postData = new JSONObject();
 
@@ -202,7 +205,7 @@ public class AddTeamActivity extends AppCompatActivity {
     }
 
     private void postCoach(final TeamIdCallback callback) {
-        String url = LOCAL_URL +"coaches";
+        String url = BASE_URL +"coaches";
 
         JSONObject postData = new JSONObject();
         try {
@@ -240,7 +243,7 @@ public class AddTeamActivity extends AppCompatActivity {
     private void joinTeamUser(){
         String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = LOCAL_URL +"User/" + userId + "/teams/" + teamId;
+        String url = BASE_URL +"User/" + userId + "/teams/" + teamId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -265,10 +268,10 @@ public class AddTeamActivity extends AppCompatActivity {
 
         String url = "";
         if(isPrivate == true) {
-            url = LOCAL_URL +"teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim() + "/" + SharedPrefsUtil.getUserId(this);
+            url = BASE_URL +"teams/" + teamId + "/coaches/" + coachId + "/" + password.getEditText().getText().toString().trim() + "/" + SharedPrefsUtil.getUserId(this);
         }
         else{
-            url = LOCAL_URL +"teams/" + teamId + "/coaches/" + coachId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
+            url = BASE_URL +"teams/" + teamId + "/coaches/" + coachId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
         }
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -326,6 +329,12 @@ public class AddTeamActivity extends AppCompatActivity {
             password.setError(null);
             return true;
         }
+    }
+
+    @Override
+    public void onImageUploadDismissed() {
+        Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     /**
