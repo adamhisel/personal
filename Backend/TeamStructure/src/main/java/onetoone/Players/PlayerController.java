@@ -32,6 +32,9 @@ public class PlayerController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    TeamRepository teamRepository;
+
     private String success = "{\"message\":\"success\"}";
     private String failure = "{\"message\":\"failure\"}";
 
@@ -75,6 +78,14 @@ public class PlayerController {
     @DeleteMapping(path = "/players/{id}")
     String deletePlayer(@PathVariable int id) {
         playerRepository.deleteById(id);
+        return success;
+    }
+
+    @DeleteMapping(path = "/players/{player_id}/{team_id}")
+    String deletePlayerFromTeam(@PathVariable int player_id, @PathVariable int team_id) {
+        Team temp = teamRepository.findById(team_id);
+        temp.deletePlayer(playerRepository.findById(player_id));
+        playerRepository.deleteById(player_id);
         return success;
     }
 

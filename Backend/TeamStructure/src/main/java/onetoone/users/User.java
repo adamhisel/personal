@@ -119,5 +119,9 @@ public class User{
         this.teams.add(team);
     }
 
+    public void removeTeam(Team team){
+        this.teams.remove(team);
+    }
+
 }
 
