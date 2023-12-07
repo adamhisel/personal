@@ -135,7 +135,9 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
     }
 
     private void sendCustomWorkoutToServer() {
-        String createWorkoutUrl = BASE_URL + "uploadworkout";
+
+        String testUrl = LOCAL_URL + "uploadworkout";
+        String url = BASE_URL + "uploadworkout";
         JSONObject workoutJson = new JSONObject();
         try {
             workoutJson.put("workoutName", workoutName);
@@ -145,7 +147,7 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest createWorkoutRequest = new JsonObjectRequest(Request.Method.POST, createWorkoutUrl, workoutJson,
+        JsonObjectRequest createWorkoutRequest = new JsonObjectRequest(Request.Method.POST, url, workoutJson,
                 response -> {
                     try {
                         // Parse the DTO response
@@ -172,7 +174,8 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
 
     private void sendPointsForWorkout(int customWorkoutId) {
         // URL to add points to the created workout
-        String addPointsUrl = BASE_URL + customWorkoutId + "/addPoints";
+        String url = BASE_URL + customWorkoutId + "/addPoints";
+        String testUrl = LOCAL_URL + customWorkoutId + "/addPoints";
 
         // Create JSON array of points
         JSONArray pointsArray = new JSONArray();
@@ -188,7 +191,7 @@ public class CreateCustomWorkoutActivity extends AppCompatActivity {
         }
 
         // Send the points
-        JsonArrayRequest addPointsRequest = new JsonArrayRequest(Request.Method.POST, addPointsUrl, pointsArray,
+        JsonArrayRequest addPointsRequest = new JsonArrayRequest(Request.Method.POST, url, pointsArray,
                 response -> Log.d("CreateCustomWorkout", "Points added successfully to workout ID: " + customWorkoutId),
                 error -> {
                     Log.e("CreateCustomWorkout", "Error adding points to workout: " + error.toString());

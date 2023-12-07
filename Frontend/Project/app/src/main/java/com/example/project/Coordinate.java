@@ -9,6 +9,14 @@ public class Coordinate {
         this.yCoord = yCoord;
     }
 
+    @Override
+    public String toString() {
+        return "Coordinate{" +
+                "xCoord=" + xCoord +
+                ", yCoord=" + yCoord +
+                '}';
+    }
+
     // Getters and Setters
     public int getXCoord() {
         return xCoord;
@@ -25,4 +33,5 @@ public class Coordinate {
     public void setYCoord(int yCoord) {
         this.yCoord = yCoord;
     }
+
 }

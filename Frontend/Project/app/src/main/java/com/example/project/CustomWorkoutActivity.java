@@ -46,7 +46,9 @@ public class CustomWorkoutActivity extends AppCompatActivity {
     private int twoPointAttempts = 0;
     private List<Coordinate> currentWorkoutCoordinates;
     private int currentShotIndex = 0;
+    private int customWorkoutId;
     private int workoutId;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +57,17 @@ public class CustomWorkoutActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
-        initializeViews();
-        setupCourtImageView();
         mQueue = Volley.newRequestQueue(this);
+        userId = SharedPrefsUtil.getUserId(this);
 
         // Get the custom workout ID passed from the previous activity
-        workoutId = getIntent().getIntExtra("CUSTOM_WORKOUT_ID", -1);
-        if (workoutId != -1) {
-            fetchCustomWorkoutCoordinates(workoutId);
+        customWorkoutId = getIntent().getIntExtra("CUSTOM_WORKOUT_ID", -1);
+        if (customWorkoutId != -1) {
+            fetchCustomWorkoutCoordinates();
         }
 
-        String userId = SharedPrefsUtil.getUserId(this);
+        initializeViews();
+        setupCourtImageView();
         createWorkout(userId);
     }
 
@@ -105,9 +107,6 @@ public class CustomWorkoutActivity extends AppCompatActivity {
 
             int statsTopMargin = instrucTopMargin + binding.tvInstructions.getHeight();
             setViewTopMargin(binding.llStats, statsTopMargin);
-
-            // Delay the initial call to display the first shot icon
-            imageView.postDelayed(() -> displayNextShot(), 500); // Delay of 500 milliseconds
         });
     }
 
@@ -118,30 +117,42 @@ public class CustomWorkoutActivity extends AppCompatActivity {
         view.setLayoutParams(layoutParams);
     }
 
-    private void fetchCustomWorkoutCoordinates(int workoutId) {
-        String url = BASE_URL + "getCustomWorkoutCoordinates/" + workoutId;
-        // Server call to fetch coordinates
+    private void fetchCustomWorkoutCoordinates() {
+        Log.d(TAG, "Fetching coordinates for custom workout ID: " + customWorkoutId);
+        String url = BASE_URL + "getCustomWorkout/" + userId;
+        Log.d("CustomWorkoutActivity", "Fetching custom workouts for user ID: " + userId);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
-            currentWorkoutCoordinates = parseCoordinates(response);
+            Log.d("CustomWorkoutActivity", "Received custom workouts response: " + response.toString());
+            currentWorkoutCoordinates = findAndParseCoordinates(response, customWorkoutId);
+            Log.d("CustomWorkoutActivity", "Coordinates parsed: " + currentWorkoutCoordinates.toString());
             binding.tvRemainingShotsValue.setText(String.valueOf(currentWorkoutCoordinates.size()));
-            displayNextShot(); // Start displaying shots
+            displayNextShot();
         }, error -> {
-            Log.e(TAG, "Error fetching custom workout coordinates: " + error.toString());
+            Log.e("CustomWorkoutActivity", "Error fetching custom workouts: " + error.toString());
         });
         mQueue.add(request);
     }
 
-    private List<Coordinate> parseCoordinates(JSONArray response) {
+
+    private List<Coordinate> findAndParseCoordinates(JSONArray workoutsResponse, int workoutId) {
         List<Coordinate> coordinates = new ArrayList<>();
         try {
-            for (int i = 0; i < response.length(); i++) {
-                JSONObject coordinateJson = response.getJSONObject(i);
-                int x = coordinateJson.getInt("xCoord");
-                int y = coordinateJson.getInt("yCoord");
-                coordinates.add(new Coordinate(x, y));
+            for (int i = 0; i < workoutsResponse.length(); i++) {
+                JSONObject workoutJson = workoutsResponse.getJSONObject(i);
+                int currentId = workoutJson.getInt("customWoutId");
+                if (currentId == workoutId) {
+                    JSONArray coordsJson = workoutJson.getJSONArray("coords");
+                    for (int j = 0; j < coordsJson.length(); j++) {
+                        JSONObject coordJson = coordsJson.getJSONObject(j);
+                        int x = coordJson.getInt("xCoord");
+                        int y = coordJson.getInt("yCoord");
+                        coordinates.add(new Coordinate(x, y));
+                    }
+                    break; // Found the matching workout, no need to continue loop
+                }
             }
         } catch (JSONException e) {
-            Log.e(TAG, "Error parsing coordinates JSON", e);
+            Log.e(TAG, "Error parsing custom workouts JSON", e);
         }
         return coordinates;
     }
@@ -158,14 +169,19 @@ public class CustomWorkoutActivity extends AppCompatActivity {
 
     private String determineShotType(float x, float y) {
 
+        // Scale the coordinates according to the image view dimensions
+        float scaledX = x / (imageView.getWidth() / 600f);
+        float scaledY = y / (imageView.getHeight() / 564f);
+
         // Calculate the distance to the basket
-        float distanceToBasket = (float) Math.sqrt(Math.pow(x - 300f, 2) + Math.pow(y - 65f, 2));
+        float distanceToBasket = (float) Math.sqrt(Math.pow(scaledX - 300f, 2) + Math.pow(scaledY - 65f, 2));
+        Log.d("ShotTypeLog", "Scaled Distance to basket: " + distanceToBasket + " for X: " + scaledX + ", Y: " + scaledY);
 
         String shotType;
 
         // Check for the straight side zones of the 3-point line
-        boolean isBeyondSideZoneLeft = x <= (300f - 264f);
-        boolean isBeyondSideZoneRight = x >= (300f + 264f);
+        boolean isBeyondSideZoneLeft = scaledX <= (300f - 264f);
+        boolean isBeyondSideZoneRight = scaledX >= (300f + 264f);
 
         if (isBeyondSideZoneLeft || isBeyondSideZoneRight || distanceToBasket >= 285) {
             shotType = "Three-Point Shot";
@@ -179,6 +195,7 @@ public class CustomWorkoutActivity extends AppCompatActivity {
             twoPointAttempts++;
         }
 
+        Log.d("ShotTypeLog", "Shot type determined: " + shotType);
         return shotType;
     }
 
@@ -186,15 +203,14 @@ public class CustomWorkoutActivity extends AppCompatActivity {
         Coordinate currentShot = currentWorkoutCoordinates.get(currentShotIndex);
         String shotType = determineShotType(currentShot.getXCoord(), currentShot.getYCoord());
 
-        // Calculate the scaled real-world coordinates
-        float realX = currentShot.getXCoord() / (600f / imageView.getWidth());
-        float realY = currentShot.getYCoord() / (564f / imageView.getHeight());
+        int x = currentShot.getXCoord();
+        int y = currentShot.getYCoord();
 
         int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
 
         // Add the shot with scaled coordinates to the shotsList
-        shotsList.add(new Shots(isMade, value, (int) realX, (int) realY));
-        Log.d("ShotLog", "Preset Shot added: Made=" + isMade + ", Value=" + value + ", X=" + realX + ", Y=" + realY);
+        shotsList.add(new Shots(isMade, value, x, y));
+        Log.d("ShotLog", "Preset Shot added: Made=" + isMade + ", Value=" + value + ", X=" + x + ", Y=" + y + ", " + shotType);
 
         setIconAndPosition(grey, currentShot.getXCoord(), currentShot.getYCoord());
 
@@ -216,24 +232,14 @@ public class CustomWorkoutActivity extends AppCompatActivity {
     // Sets the icon (make or miss) at the touched position on the imageView.
     private void setIconAndPosition(Drawable drawable, float x, float y) {
         // Create a new ImageView instance for each shot
-        ImageView shotIcon = new ImageView(this);
-        shotIcon.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
-        shotIcon.setImageDrawable(drawable);
-
-        // Calculate the scaled position based on the imageView size
-        float scaledX = x * (imageView.getWidth() / 600f);
-        float scaledY = y * (imageView.getHeight() / 564f);
-
-        // Adjusting for the position of the imageView within its parent
-        float adjustedX = scaledX + imageView.getX() - ICON_SIZE_PX;
-        float adjustedY = scaledY + imageView.getY() - ICON_SIZE_PX;
-
-        // Set the position of the icon
-        shotIcon.setX(adjustedX);
-        shotIcon.setY(adjustedY);
-
-        // Add the new ImageView to the same layout as the court imageView
-        ((ViewGroup) imageView.getParent()).addView(shotIcon);
+        ImageView imageView = new ImageView(this);
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
+        imageView.setImageDrawable(drawable);
+        // Center the icon at the touched location
+        imageView.setX(x - ICON_SIZE_PX/2);
+        imageView.setY(y - ICON_SIZE_PX/2);
+        // Add the new ImageView to the root layout
+        binding.getRoot().addView(imageView);
     }
 
     // Updates the stats display with the current shooting percentage and counts.
@@ -249,7 +255,6 @@ public class CustomWorkoutActivity extends AppCompatActivity {
         binding.tvTwoPointValue.setText(String.format("%d/%d", twoPointMakes, twoPointAttempts));
         binding.tvTotalShotsValue.setText(String.format("%d/%d", (twoPointMakes + threePointMakes), totalShots));
         binding.tvRemainingShotsValue.setText(String.valueOf(currentWorkoutCoordinates.size() - currentShotIndex - 1));
-
     }
 
     // Creates a new workout session for the user by sending a request to the server.
