@@ -25,7 +25,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="100dp"
         app:layout_constraintBottom_toTopOf="@+id/btnBegin"
         app:layout_constraintTop_toBottomOf="@+id/tvWorkout"
         tools:layout_editor_absoluteX="20dp">
@@ -55,14 +55,30 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+    <!-- Begin Workout Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBegin"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
         android:backgroundTint="#000"
         android:text="Begin Workout"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="20dp" />
+        app:layout_constraintEnd_toStartOf="@+id/btnCreateCustomWorkout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Create Custom Workout Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCreateCustomWorkout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:backgroundTint="#000"
+        android:text="Custom Workout"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnBegin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

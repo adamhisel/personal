@@ -142,6 +142,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                 for (Player player : players) {
                     sendPlayerShots(gameId, player.getId(), player.getShots());
                 }
+                sendPlayerStats();
                 finish();
             }
         });
@@ -825,6 +826,38 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
 
         mQueue.add(request);
+    }
+
+    // Sends the statistics for each player to the server
+    private void sendPlayerStats() {
+        for (Player player : players) {
+            sendIndividualPlayerStats(player);
+        }
+    }
+
+    // Sends the statistics of an individual player
+    private void sendIndividualPlayerStats(Player player) {
+        String url = BASE_URL + "stats";
+
+        JSONObject statsJson = new JSONObject();
+        try {
+            statsJson.put("assist", player.getAssists());
+            statsJson.put("rebounds", player.getRebounds());
+            statsJson.put("blocks", player.getBlocks());
+            statsJson.put("steals", player.getSteals());
+            statsJson.put("gameID", gameId);
+            statsJson.put("player_id", player.getId());
+
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, statsJson, response -> {
+                Log.d(TAG, "Stats sent successfully for player: " + player.getName());
+            }, error -> {
+                Log.e(TAG, "Error sending stats for player: " + player.getName() + ". Error: " + error.toString());
+            });
+
+            mQueue.add(request);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // Shows the buttons to record a shot as made or missed
