@@ -56,6 +56,8 @@ public class HomeFragment extends Fragment {
 
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
 
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+
     private LinearLayout ll;
 
     private Bundle savedInstance;
@@ -111,7 +113,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     private void displayTeamButtons() {
-        String url = LOCAL_URL + "/users/" + SharedPrefsUtil.getUserId(getContext());
+        String url = BASE_URL + "users/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -369,7 +371,7 @@ public class HomeFragment extends Fragment {
 
     private void getGames(int id, LinearLayout parentLL) {
         parentLL.removeAllViews();
-        String url = LOCAL_URL + "/games";
+        String url = BASE_URL + "games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -414,7 +416,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void getShotsForGame(int gameId, LinearLayout gameLL, LinearLayout parentLL) {
-        String url = LOCAL_URL + "/games/" + gameId + "/shots";
+        String url = BASE_URL + "games/" + gameId + "/shots";
         JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     int gameFGM = 0;

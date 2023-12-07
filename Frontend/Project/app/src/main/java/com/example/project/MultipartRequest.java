@@ -44,6 +44,7 @@ public class MultipartRequest extends Request<String> {
         mStringPart.put(param, value);
     }
 
+
     private void buildMultipartEntity() {
         entity.addPart(FILE_PART_NAME, new FileBody(mFilePart));
         for (Map.Entry<String, String> entry : mStringPart.entrySet()) {

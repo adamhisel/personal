@@ -104,7 +104,7 @@ public class RegistrationActivity extends AppCompatActivity implements ImageUplo
         String testUrl = LOCAL_URL + "users";
 
         Log.d("PostData", postData.toString());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Response", response.toString());

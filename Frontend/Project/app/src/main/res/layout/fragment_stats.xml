@@ -306,6 +306,15 @@
             android:padding="10dp">
 
 
+            <TextView
+                android:id="@+id/leaders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Team Shooting Leaders"
+                android:textColor="#000000"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

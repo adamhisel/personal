@@ -25,14 +25,16 @@ public class ImageUploader {
     public void uploadImage(Context context, int userId, Bitmap imageBitmap) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
-        File imageFile = bitmapToFile(context, imageBitmap, "image.png");
+        Bitmap circularBitMap = ImageHelper.getCircularBitmap(imageBitmap);
+
+        File imageFile = bitmapToFile(context, circularBitMap, "image.png");
 
         if (imageFile != null && imageFile.exists()) {
             Map<String, String> stringParams = new HashMap<>();
             stringParams.put("userId", String.valueOf(userId));
 
             MultipartRequest multipartRequest = new MultipartRequest(
-                    LOCAL_URL + userId + "/upload",
+                    BASE_URL + userId + "/upload",
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {

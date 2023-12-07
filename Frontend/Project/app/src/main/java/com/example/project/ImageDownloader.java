@@ -18,7 +18,7 @@ public class ImageDownloader {
     public void downloadImage(Context context, int imageId, ImageView imageView) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
-        String imageUrl = LOCAL_URL + "getimage/" + imageId;
+        String imageUrl = BASE_URL + "getimage/" + imageId;
 
         ImageRequest imageRequest = new ImageRequest(
                 imageUrl,
