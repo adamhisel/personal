@@ -3,6 +3,7 @@ package com.example.project;
 import android.os.Bundle;
 
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 
@@ -92,7 +93,7 @@ public class StatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentStatsBinding.inflate(inflater, container, false);
-
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         mQueue = Volley.newRequestQueue(requireContext());
 
         teamId = SharedPrefsTeamUtil.getTeamId(requireContext());

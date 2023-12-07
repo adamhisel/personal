@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -76,7 +77,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_coach, container, false);
 
         mQueue = Volley.newRequestQueue(requireContext());
-
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         ll = view.findViewById(R.id.cardLL);
 
         ImageButton addTeam = view.findViewById(R.id.plus);
@@ -113,7 +114,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     private void displayTeamButtons() {
-        String url = BASE_URL + "users/" + SharedPrefsUtil.getUserId(getContext());
+        String url = LOCAL_URL + "users/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -371,7 +372,7 @@ public class HomeFragment extends Fragment {
 
     private void getGames(int id, LinearLayout parentLL) {
         parentLL.removeAllViews();
-        String url = BASE_URL + "games";
+        String url = LOCAL_URL + "games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -416,7 +417,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void getShotsForGame(int gameId, LinearLayout gameLL, LinearLayout parentLL) {
-        String url = BASE_URL + "games/" + gameId + "/shots";
+        String url = LOCAL_URL + "games/" + gameId + "/shots";
         JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     int gameFGM = 0;

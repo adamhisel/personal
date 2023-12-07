@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         String url = BASE_URL + "loginUser/" + userName + "/" + password;
         String testUrl = LOCAL_URL + "loginUser/" + userName + "/" + password;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, testUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Response", response.toString());

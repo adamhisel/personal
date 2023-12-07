@@ -22,7 +22,7 @@ public class ImageUploader {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
 
-    public void uploadImage(Context context, int userId, Bitmap imageBitmap) {
+    public void uploadUserImage(Context context, int userId, Bitmap imageBitmap) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
 
         Bitmap circularBitMap = ImageHelper.getCircularBitmap(imageBitmap);
@@ -34,7 +34,7 @@ public class ImageUploader {
             stringParams.put("userId", String.valueOf(userId));
 
             MultipartRequest multipartRequest = new MultipartRequest(
-                    BASE_URL + userId + "/upload",
+                    BASE_URL + "user/" + userId + "/upload",
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {

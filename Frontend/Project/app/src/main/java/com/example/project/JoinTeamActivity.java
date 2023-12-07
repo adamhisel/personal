@@ -1,6 +1,7 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +43,9 @@ import java.util.ArrayList;
  */
 public class JoinTeamActivity extends AppCompatActivity implements PasswordInputDialogFragment.PasswordInputListener {
 
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private RequestQueue mQueue;
     private ArrayList<String> teamArr;
     private ArrayList<String> idArr;
@@ -69,7 +73,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_team);
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         mQueue = Volley.newRequestQueue(this);
 
         Button joinButton = findViewById(R.id.btnJoin);
@@ -223,7 +227,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
 
     private void fillTeamList(final TeamListCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
+        String url = LOCAL_URL + "teams";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -267,7 +271,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void fillIdList(final TeamListCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams";
+        String url = LOCAL_URL + "teams";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -297,7 +301,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void isUserInTeam(final TeamBooleanCallback callback){
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/users/" + SharedPrefsUtil.getUserId(this);
+        String url = LOCAL_URL + "users/" + SharedPrefsUtil.getUserId(this);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -334,7 +338,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void getChosenTeam(final TeamStringAndBooleanCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId;
+        String url = LOCAL_URL + "teams/" + teamId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -363,7 +367,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     private void joinTeamUser(){
         String userId = SharedPrefsUtil.getUserId(this);
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/User/" + userId + "/teams/" + teamId;
+        String url = LOCAL_URL + "User/" + userId + "/teams/" + teamId;
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -388,10 +392,10 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
         String url = "";
         if(isPrivate == true) {
-            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/players/" + playerId + "/" + teamPassword + "/" + SharedPrefsUtil.getUserId(this);
+            url = LOCAL_URL + "teams/" + teamId + "/players/" + playerId + "/" + teamPassword + "/" + SharedPrefsUtil.getUserId(this);
         }
         else{
-            url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/players/" + playerId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
+            url = LOCAL_URL + "teams/" + teamId + "/players/" + playerId + "/dummy" + "/" + SharedPrefsUtil.getUserId(this);
         }
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
@@ -415,7 +419,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
 
     private void joinTeamFan(){
 
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/teams/" + teamId + "/fans/" + fanId + "/" + SharedPrefsUtil.getUserId(this);
+        String url = LOCAL_URL + "teams/" + teamId + "/fans/" + fanId + "/" + SharedPrefsUtil.getUserId(this);
 
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 response -> {
@@ -437,7 +441,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void postPlayer(final TeamIdCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/players";
+        String url = LOCAL_URL + "players";
 
         JSONObject postData = new JSONObject();
         try {
@@ -477,7 +481,7 @@ public class JoinTeamActivity extends AppCompatActivity implements PasswordInput
     }
 
     private void postFan(final TeamIdCallback callback) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/fans";
+        String url = LOCAL_URL + "fans";
 
         JSONObject postData = new JSONObject();
         try {

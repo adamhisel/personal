@@ -111,7 +111,7 @@ public class ImageUploadDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 userId = Integer.parseInt(SharedPrefsUtil.getUserId(getContext()));
                 ImageUploader uploadManager = new ImageUploader();
-                uploadManager.uploadImage(getContext(), userId, bitmap);
+                uploadManager.uploadUserImage(getContext(), userId, bitmap);
 
                 dismiss();
 
