@@ -75,7 +75,6 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
         Button finish = (Button)findViewById(R.id.finish);
 
         Button backButton = findViewById(R.id.exit);
-        Button upload = findViewById(R.id.upload);
 
         teamName = findViewById(R.id.teamname);
 
@@ -112,16 +111,6 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
             }
         });
 
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(false, teamId);
-                uploadFragment.setImageUploadListener(AddTeamActivity.this);
-                uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
-            }
-        });
-
 
 
         finish.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +142,9 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
                                 joinTeamUser();
                                 joinTeamCoach();
 
-                                Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
-                                startActivity(intent);
+                                ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(false, teamId);
+                                uploadFragment.setImageUploadListener(AddTeamActivity.this);
+                                uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
 
                             }
                         });
@@ -344,7 +334,8 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
 
     @Override
     public void onImageUploadDismissed() {
-
+        Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     /**

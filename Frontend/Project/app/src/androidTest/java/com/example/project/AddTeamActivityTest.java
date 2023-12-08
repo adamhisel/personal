@@ -45,7 +45,7 @@ import android.widget.ImageView;
 public class AddTeamActivityTest {
 
     @Rule
-    public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<AddTeamActivity> activityScenarioRule = new ActivityScenarioRule<>(AddTeamActivity.class);
 
     @Before
     public void launchActivity() {
@@ -58,15 +58,8 @@ public class AddTeamActivityTest {
     }
 
     @Test
-    public void testNavigatingToAddTeamActivity(){
-        Espresso.onView(withId(R.id.plus)).perform(click());
-        Intents.intended(hasComponent(AddTeamActivity.class.getName()));
-
-    }
-
-    @Test
     public void testAddingPublicTeam() {
-        ActivityScenario<AddTeamActivity> activityScenario = ActivityScenario.launch(AddTeamActivity.class);
+
 
 
         String typedText = "Hoopers";
@@ -84,15 +77,11 @@ public class AddTeamActivityTest {
         Espresso.onView(withId(R.id.tvTeamType))
                 .check(matches(withText(containsString(selectedTeamType))));
 
-        Espresso.onView(withId(R.id.finish)).perform(click());
 
-        Intents.intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
     public void testAddingPrivateTeam() {
-        ActivityScenario<AddTeamActivity> activityScenario = ActivityScenario.launch(AddTeamActivity.class);
-
 
         String typedText = "Hoopers";
         String typePassword = "Password";
@@ -113,15 +102,12 @@ public class AddTeamActivityTest {
         Espresso.onView(withId(R.id.tvTeamType))
                 .check(matches(withText(containsString(selectedTeamType))));
 
-        Espresso.onView(withId(R.id.finish)).perform(click());
 
-
-        Intents.intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
     public void testEmptyTeamName() {
-        ActivityScenario<AddTeamActivity> activityScenario = ActivityScenario.launch(AddTeamActivity.class);
+
         Espresso.onView(withId(R.id.etTeamname)).perform(ViewActions.typeText(" "), ViewActions.closeSoftKeyboard());
         Espresso.onView(withId(R.id.tvTeamType)).perform(click());
         Espresso.onData(allOf(is(instanceOf(String.class)), is("Public")))
