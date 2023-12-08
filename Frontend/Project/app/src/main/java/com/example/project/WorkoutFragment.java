@@ -160,6 +160,7 @@ public class WorkoutFragment extends Fragment {
         }
     }
 
+    // Display dialog that will show user's created custom workouts or option to create a new one
     private void showCustomWorkoutDialog() {
         // Inflate the custom workout dialog layout
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.custom_workout_dialog, null);
@@ -185,14 +186,14 @@ public class WorkoutFragment extends Fragment {
             dialog.dismiss();
         });
 
-        // Set up the back/cancel button
+        // Set up the cancel button
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         // Show the dialog
         dialog.show();
     }
 
-
+    // Find all of the custom workouts already created for that user
     private void fetchCustomWorkoutsForUser(String userId, LinearLayout container) {
         String url = BASE_URL + "getCustomWorkout/" + userId;
 
@@ -206,7 +207,7 @@ public class WorkoutFragment extends Fragment {
         mQueue.add(request);
     }
 
-
+    // Get the information from the custom workouts
     private List<CustomWorkout> parseCustomWorkouts(JSONArray response) {
         List<CustomWorkout> customWorkouts = new ArrayList<>();
         try {
@@ -232,7 +233,7 @@ public class WorkoutFragment extends Fragment {
         return customWorkouts;
     }
 
-
+    // Show the custom workouts for the user in the dialog to be selected
     private void displayCustomWorkouts(List<CustomWorkout> customWorkouts, LinearLayout container) {
         container.removeAllViews(); // Clear previous views
 
