@@ -52,7 +52,12 @@ public class ProfileFragment extends Fragment {
 
 
         String userId = SharedPrefsUtil.getUserId(requireActivity());
-        downloadAndSetImage(Integer.parseInt(userId));
+        if(userId != "") {
+            downloadAndSetImage(Integer.parseInt(userId));
+        }
+        else{
+            Toast.makeText(requireActivity(), "No User", Toast.LENGTH_SHORT).show();
+        }
         getProfile(userId);
         setupButtonListeners();
 
