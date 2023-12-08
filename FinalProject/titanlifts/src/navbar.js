@@ -2,9 +2,22 @@ import React from "react";
 import myImage from "./images/TitanLiftsLogo.png";
 import "./Navbar.css";
 
-const Navbar = ({ setShowDemos, setShowAccount, setShowAuthors }) => {
+const Navbar = ({
+  setShowFeed,
+  setShowDemos,
+  setShowAccount,
+  setShowAuthors,
+}) => {
+  const handleFeedClick = () => {
+    setShowFeed(true);
+    setShowDemos(false);
+    setShowAuthors(false);
+    setShowAccount(false);
+  };
+
   const handleDemosClick = () => {
     setShowDemos(true);
+    setShowFeed(false);
     setShowAuthors(false);
     setShowAccount(false);
   };
@@ -12,19 +25,21 @@ const Navbar = ({ setShowDemos, setShowAccount, setShowAuthors }) => {
   const handleAccountClick = () => {
     setShowDemos(false);
     setShowAuthors(false);
+    setShowFeed(false);
     setShowAccount(true);
   };
 
   const handleAuthorsClick = () => {
     setShowAccount(false);
     setShowDemos(false);
+    setShowFeed(false);
     setShowAuthors(true);
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark nav-bg-color">
       <div className="container">
-        <a className="navbar-brand" href="#" /*onClick={handleAccountClick}*/>
+        <a className="navbar-brand" href="#" onClick={handleFeedClick}>
           <img src={myImage} width="80%" alt="Logo"></img>
         </a>
         <button
@@ -42,7 +57,11 @@ const Navbar = ({ setShowDemos, setShowAccount, setShowAuthors }) => {
           <div className="d-flex justify-content-center w-100">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a className="nav-link nav-text-color" href="#">
+                <a
+                  className="nav-link nav-text-color"
+                  href="#"
+                  onClick={handleFeedClick}
+                >
                   Personal Feed
                 </a>
               </li>
