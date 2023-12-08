@@ -14,7 +14,7 @@
         android:id = "@+id/addTeamLayout"
         android:padding="16dp">
 
-    <com.google.android.material.button.MaterialButton
+        <com.google.android.material.button.MaterialButton
         android:id="@+id/exit"
         android:layout_width="125dp"
         android:layout_height="47dp"
@@ -75,13 +75,21 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/finish"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#000"
-            android:text="ADD TEAM"
+            android:text="UPLOAD TEAM LOGO"
             android:textColor="#FFFFFF" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/finish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#000"
+                android:text="ADD TEAM"
+                android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </FrameLayout>

@@ -33,7 +33,7 @@ public class ImageDownloader {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Error downloading image", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, "Error downloading image", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -59,7 +59,7 @@ public class ImageDownloader {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Error downloading image", Toast.LENGTH_SHORT).show();
+                       // Toast.makeText(context, "Error downloading image", Toast.LENGTH_SHORT).show();
                     }
                 }
         );

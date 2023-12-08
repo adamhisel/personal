@@ -34,7 +34,7 @@ import java.util.ArrayList;
 /**
  * Activity that allows a user to make a team for people to join. Will have to option
  * make their team private or public. Private teams will have to have a password to join
- * where public teams wont.
+ * where public teams wont.`
  *
  * @author Adam Hisel
  */
@@ -75,6 +75,7 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
         Button finish = (Button)findViewById(R.id.finish);
 
         Button backButton = findViewById(R.id.exit);
+        Button upload = findViewById(R.id.upload);
 
         teamName = findViewById(R.id.teamname);
 
@@ -111,6 +112,17 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
             }
         });
 
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(false, teamId);
+                uploadFragment.setImageUploadListener(AddTeamActivity.this);
+                uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
+            }
+        });
+
+
 
         finish.setOnClickListener(new View.OnClickListener() {
 
@@ -141,9 +153,8 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
                                 joinTeamUser();
                                 joinTeamCoach();
 
-                                ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(false, teamId);
-                                uploadFragment.setImageUploadListener(AddTeamActivity.this);
-                                uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
+                                Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
+                                startActivity(intent);
 
                             }
                         });
@@ -333,8 +344,7 @@ public class AddTeamActivity extends AppCompatActivity implements ImageUploadDia
 
     @Override
     public void onImageUploadDismissed() {
-        Intent intent = new Intent(AddTeamActivity.this, MainActivity.class);
-        startActivity(intent);
+
     }
 
     /**
