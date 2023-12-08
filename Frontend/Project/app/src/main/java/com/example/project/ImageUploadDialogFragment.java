@@ -61,6 +61,7 @@ public class ImageUploadDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_image_upload_dialog, null);
         dialog.setContentView(view);
 
+
         if (dialog.getWindow() != null) {
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
             params.width = WindowManager.LayoutParams.MATCH_PARENT;
