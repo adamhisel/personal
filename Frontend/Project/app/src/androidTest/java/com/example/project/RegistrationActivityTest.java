@@ -84,7 +84,7 @@ public class RegistrationActivityTest {
         Espresso.onView(withId(R.id.etLastName)).perform(ViewActions.typeText("Doe"));
         Espresso.onView(withId(R.id.etEmail)).perform(ViewActions.typeText("john@example.com"));
         Espresso.onView(withId(R.id.etPhoneNumber)).perform(ViewActions.typeText("1234567890"));
-        Espresso.onView(withId(R.id.etPassword)).perform(ViewActions.typeText("password"));
+        Espresso.onView(withId(R.id.etPassword)).perform(ViewActions.typeText("password"), ViewActions.closeSoftKeyboard());
 
         Espresso.onView(withId(R.id.btnSignUp)).perform(ViewActions.click());
     }
