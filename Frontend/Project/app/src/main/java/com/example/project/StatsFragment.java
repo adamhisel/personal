@@ -3,6 +3,7 @@ package com.example.project;
 import android.os.Bundle;
 
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 
@@ -92,7 +93,7 @@ public class StatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentStatsBinding.inflate(inflater, container, false);
-
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         mQueue = Volley.newRequestQueue(requireContext());
 
         teamId = SharedPrefsTeamUtil.getTeamId(requireContext());
@@ -253,7 +254,6 @@ public class StatsFragment extends Fragment {
     private void findLeaders() {
         // Create a list from elements of HashMap
         List<Map.Entry<Integer, Integer>> list = new LinkedList<>(playerPointsMap.entrySet());
-
         // Sort the list
         list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
@@ -262,6 +262,7 @@ public class StatsFragment extends Fragment {
             if (player != null) {
                 String playerDetails = player.getName() + " - " + entry.getValue() + " pts";
                 TextView textView = new TextView(requireContext());
+                textView.setTextSize(15);
                 textView.setText(playerDetails);
                 binding.ll.addView(textView);
             }

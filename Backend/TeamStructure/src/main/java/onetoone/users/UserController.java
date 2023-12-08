@@ -120,6 +120,22 @@ public class UserController {
         return success;
     }
 
+    @DeleteMapping(path = "/users/{user_id}/{team_id}")
+    String deleteUserFromTeam(@PathVariable int user_id, @PathVariable int team_id) {
+        Team temp = teamRepository.findById(team_id);
+        User user = userRepository.findById(user_id);
+        temp.deleteUser(user);
+        user.removeTeam(temp);
+        teamRepository.save(temp);
+        userRepository.save(user);
+
+
+
+
+        return success;
+    }
+
+
     @GetMapping("loginUser/{userName}/{password}")
     User loginUser(@PathVariable String userName, @PathVariable String password){
         return userRepository.findByuserNameAndPassword(userName,password);

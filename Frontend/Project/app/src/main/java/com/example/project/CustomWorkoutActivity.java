@@ -2,24 +2,25 @@ package com.example.project;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.project.databinding.ActivityWorkoutBinding;
+import com.example.project.databinding.ActivityCustomWorkoutBinding;
+import com.example.project.databinding.ActivityPresetWorkoutBinding;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,43 +29,45 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * WorkoutActivity is an activity that represents a basketball workout session.
- * It allows users to track their basketball shots on a court, marking them as made or missed,
- * and provides feedback on shot types based on the location of the shot.
- *
- * @author Jagger Gourley
- */
-public class WorkoutActivity extends AppCompatActivity {
+public class CustomWorkoutActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private static final int ICON_SIZE_PX = (int) (20 * Resources.getSystem().getDisplayMetrics().density);
     private static RequestQueue mQueue;
     private final List<Shots> shotsList = new ArrayList<>();
-    private ActivityWorkoutBinding binding;
+    private ActivityCustomWorkoutBinding binding;
     private ImageView imageView;
-    private Drawable green, red;
+    private Drawable green, grey;
     private int totalShots = 0;
     private int threePointMakes = 0;
     private int threePointAttempts = 0;
     private int twoPointMakes = 0;
     private int twoPointAttempts = 0;
+    private List<Coordinate> currentWorkoutCoordinates;
+    private int currentShotIndex = 0;
+    private int customWorkoutId;
     private int workoutId;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityWorkoutBinding.inflate(getLayoutInflater());
+        binding = ActivityCustomWorkoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
+        mQueue = Volley.newRequestQueue(this);
+        userId = SharedPrefsUtil.getUserId(this);
+
+        // Get the custom workout ID passed from the previous activity
+        customWorkoutId = getIntent().getIntExtra("CUSTOM_WORKOUT_ID", -1);
+        if (customWorkoutId != -1) {
+            fetchCustomWorkoutCoordinates();
+        }
+
         initializeViews();
         setupCourtImageView();
-        setupShotTypeIndicator();
-
-        String userId = SharedPrefsUtil.getUserId(this);
-        mQueue = Volley.newRequestQueue(this);
         createWorkout(userId);
     }
 
@@ -72,11 +75,12 @@ public class WorkoutActivity extends AppCompatActivity {
     private void initializeViews() {
         imageView = binding.courtImageView;
         green = ContextCompat.getDrawable(this, R.drawable.outline_circle_10);
-        red = ContextCompat.getDrawable(this, R.drawable.outline_cancel_10);
+        grey = ContextCompat.getDrawable(this, R.drawable.grey_outline_circle_24);
         String userName = SharedPrefsUtil.getUserName(this);
         binding.tvUserInfo.setText(userName);
 
-        hideShotButtons();
+        binding.btnMake.setOnClickListener(v -> recordMakeOrMiss(true));
+        binding.btnMiss.setOnClickListener(v -> recordMakeOrMiss(false));
 
         binding.btnEndSession.setOnClickListener(view -> {
             sendShots(workoutId, shotsList);
@@ -98,11 +102,11 @@ public class WorkoutActivity extends AppCompatActivity {
             int buttonsTopMargin = imageHeight;
             setViewTopMargin(binding.llButtons, buttonsTopMargin + 10);
 
-            int statsTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 50; // 50 is the space between buttons and stats
-            setViewTopMargin(binding.llStats, statsTopMargin);
+            int instrucTopMargin = buttonsTopMargin + binding.llButtons.getHeight() + 25;
+            setViewTopMargin(binding.tvInstructions, instrucTopMargin);
 
-//            int coordsTopMargin = statsTopMargin + binding.llStats.getHeight() + 10;
-//            setViewTopMargin(binding.tvShotCoordinates, coordsTopMargin);
+            int statsTopMargin = instrucTopMargin + binding.tvInstructions.getHeight();
+            setViewTopMargin(binding.llStats, statsTopMargin);
         });
     }
 
@@ -113,40 +117,71 @@ public class WorkoutActivity extends AppCompatActivity {
         view.setLayoutParams(layoutParams);
     }
 
-    // Sets up the shot type indicator based on user's touch on the imageView.
-    private void setupShotTypeIndicator() {
-        imageView.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                recordBasketballShot(event);
-                return true;
-            }
-            return false;
+    private void fetchCustomWorkoutCoordinates() {
+        Log.d(TAG, "Fetching coordinates for custom workout ID: " + customWorkoutId);
+        String url = BASE_URL + "getCustomWorkout/" + userId;
+        Log.d("CustomWorkoutActivity", "Fetching custom workouts for user ID: " + userId);
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
+            Log.d("CustomWorkoutActivity", "Received custom workouts response: " + response.toString());
+            currentWorkoutCoordinates = findAndParseCoordinates(response, customWorkoutId);
+            Log.d("CustomWorkoutActivity", "Coordinates parsed: " + currentWorkoutCoordinates.toString());
+            binding.tvRemainingShotsValue.setText(String.valueOf(currentWorkoutCoordinates.size()));
+            displayNextShot();
+        }, error -> {
+            Log.e("CustomWorkoutActivity", "Error fetching custom workouts: " + error.toString());
         });
+        mQueue.add(request);
     }
 
-    // Records the basketball shot location and type based on touch coordinates.
-    private void recordBasketballShot(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
 
-        // Scaling factors
-        float widthScale = 600f / imageView.getWidth();
-        float heightScale = 564f / imageView.getHeight();
+    private List<Coordinate> findAndParseCoordinates(JSONArray workoutsResponse, int workoutId) {
+        List<Coordinate> coordinates = new ArrayList<>();
+        try {
+            for (int i = 0; i < workoutsResponse.length(); i++) {
+                JSONObject workoutJson = workoutsResponse.getJSONObject(i);
+                int currentId = workoutJson.getInt("customWoutId");
+                if (currentId == workoutId) {
+                    JSONArray coordsJson = workoutJson.getJSONArray("coords");
+                    for (int j = 0; j < coordsJson.length(); j++) {
+                        JSONObject coordJson = coordsJson.getJSONObject(j);
+                        int x = coordJson.getInt("xCoord");
+                        int y = coordJson.getInt("yCoord");
+                        coordinates.add(new Coordinate(x, y));
+                    }
+                    break; // Found the matching workout, no need to continue loop
+                }
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing custom workouts JSON", e);
+        }
+        return coordinates;
+    }
 
-        // Real-world coordinates of the touch point
-        float realX = x * widthScale;
-        float realY = y * heightScale;
+    private void displayNextShot() {
+        if (currentWorkoutCoordinates != null && currentShotIndex < currentWorkoutCoordinates.size()) {
+            Coordinate currentShot = currentWorkoutCoordinates.get(currentShotIndex);
+            setIconAndPosition(green, currentShot.getXCoord(), currentShot.getYCoord());
+        } else {
+            hideShotButtons();
+            Toast.makeText(this, "Workout complete!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-//        binding.tvShotCoordinates.setText(String.format("Shot Coordinates: (%.2f, %.2f)", realX, realY));
+    private String determineShotType(float x, float y) {
+
+        // Scale the coordinates according to the image view dimensions
+        float scaledX = x / (imageView.getWidth() / 600f);
+        float scaledY = y / (imageView.getHeight() / 564f);
 
         // Calculate the distance to the basket
-        float distanceToBasket = (float) Math.sqrt(Math.pow(realX - 300f, 2) + Math.pow(realY - 65f, 2));
+        float distanceToBasket = (float) Math.sqrt(Math.pow(scaledX - 300f, 2) + Math.pow(scaledY - 65f, 2));
+        Log.d("ShotTypeLog", "Scaled Distance to basket: " + distanceToBasket + " for X: " + scaledX + ", Y: " + scaledY);
 
         String shotType;
 
         // Check for the straight side zones of the 3-point line
-        boolean isBeyondSideZoneLeft = realX <= (300f - 264f);
-        boolean isBeyondSideZoneRight = realX >= (300f + 264f);
+        boolean isBeyondSideZoneLeft = scaledX <= (300f - 264f);
+        boolean isBeyondSideZoneRight = scaledX >= (300f + 264f);
 
         if (isBeyondSideZoneLeft || isBeyondSideZoneRight || distanceToBasket >= 285) {
             shotType = "Three-Point Shot";
@@ -160,39 +195,39 @@ public class WorkoutActivity extends AppCompatActivity {
             twoPointAttempts++;
         }
 
-        showShotButtons();
-
-        // Show dialog to record shot as make or miss
-        recordMakeOrMiss(shotType, x, y);
+        Log.d("ShotTypeLog", "Shot type determined: " + shotType);
+        return shotType;
     }
 
-    // Displays buttons to record the basketball shot as a make or miss.
-    private void recordMakeOrMiss(String shotType, float x, float y) {
-        binding.btnMake.setOnClickListener(v -> {
-            int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
-            shotsList.add(new Shots(true, value, (int) x, (int) y));
-            Log.d("ShotLog", "Shot added: Made=" + true + ", Value=" + value + ", X=" + x + ", Y=" + y);
-            setIconAndPosition(green, x + imageView.getLeft(), y + imageView.getTop());
+    private void recordMakeOrMiss(boolean isMade) {
+        Coordinate currentShot = currentWorkoutCoordinates.get(currentShotIndex);
+        String shotType = determineShotType(currentShot.getXCoord(), currentShot.getYCoord());
+
+        int x = currentShot.getXCoord();
+        int y = currentShot.getYCoord();
+
+        int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
+
+        // Add the shot with scaled coordinates to the shotsList
+        shotsList.add(new Shots(isMade, value, x, y));
+        Log.d("ShotLog", "Preset Shot added: Made=" + isMade + ", Value=" + value + ", X=" + x + ", Y=" + y + ", " + shotType);
+
+        setIconAndPosition(grey, currentShot.getXCoord(), currentShot.getYCoord());
+
+        if (isMade) {
             if ("Three-Point Shot".equals(shotType)) {
                 threePointMakes++;
             } else {
                 twoPointMakes++;
             }
-            totalShots++;
-            updateStats();
-            hideShotButtons();
-        });
+        }
 
-        binding.btnMiss.setOnClickListener(v -> {
-            int value = "Three-Point Shot".equals(shotType) ? 3 : 2;
-            shotsList.add(new Shots(false, value, (int) x, (int) y));
-            Log.d("ShotLog", "Shot added: Made=" + false + ", Value=" + value + ", X=" + x + ", Y=" + y);
-            setIconAndPosition(red, x + imageView.getLeft(), y + imageView.getTop());
-            totalShots++;
-            updateStats();
-            hideShotButtons();
-        });
+        totalShots++;
+        updateStats();
+        currentShotIndex++;
+        displayNextShot();
     }
+
 
     // Sets the icon (make or miss) at the touched position on the imageView.
     private void setIconAndPosition(Drawable drawable, float x, float y) {
@@ -201,8 +236,8 @@ public class WorkoutActivity extends AppCompatActivity {
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ICON_SIZE_PX, ICON_SIZE_PX));
         imageView.setImageDrawable(drawable);
         // Center the icon at the touched location
-        imageView.setX(x - ICON_SIZE_PX);
-        imageView.setY(y - ICON_SIZE_PX);
+        imageView.setX(x - ICON_SIZE_PX/2);
+        imageView.setY(y - ICON_SIZE_PX/2);
         // Add the new ImageView to the root layout
         binding.getRoot().addView(imageView);
     }
@@ -219,6 +254,7 @@ public class WorkoutActivity extends AppCompatActivity {
         binding.tvThreePointValue.setText(String.format("%d/%d", threePointMakes, threePointAttempts));
         binding.tvTwoPointValue.setText(String.format("%d/%d", twoPointMakes, twoPointAttempts));
         binding.tvTotalShotsValue.setText(String.format("%d/%d", (twoPointMakes + threePointMakes), totalShots));
+        binding.tvRemainingShotsValue.setText(String.valueOf(currentWorkoutCoordinates.size() - currentShotIndex - 1));
     }
 
     // Creates a new workout session for the user by sending a request to the server.
@@ -272,16 +308,9 @@ public class WorkoutActivity extends AppCompatActivity {
         mQueue.add(request);
     }
 
-    // Shows the make and miss buttons on the screen.
-    private void showShotButtons() {
-        binding.btnMake.setVisibility(View.VISIBLE);
-        binding.btnMiss.setVisibility(View.VISIBLE);
-    }
-
     // Hides the make and miss buttons from the screen.
     private void hideShotButtons() {
         binding.btnMake.setVisibility(View.GONE);
         binding.btnMiss.setVisibility(View.GONE);
     }
-
 }

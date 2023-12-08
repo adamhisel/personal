@@ -45,17 +45,12 @@ public class Player {
      * @JsonIgnore is to assure that there is no infinite loop while returning either user/laptop objects (laptop->user->laptop->...)
      */
     @ManyToOne
-    @JoinColumn(name = "team_id")
     @JsonIgnore
     private Team team;
-    @ManyToMany
-    @JoinTable(name = "game_player", // The name of the join table
-            joinColumns = @JoinColumn(name = "player_id"), // The column name for the Player foreign key
-            inverseJoinColumns = @JoinColumn(name = "game_id") // The column name for the Game foreign key
-    )
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Game> games = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Stat> stats = new ArrayList<>();
 
 

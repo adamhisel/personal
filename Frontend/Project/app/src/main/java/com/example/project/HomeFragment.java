@@ -5,12 +5,14 @@ import android.content.res.ColorStateList;
 import android.graphics.BlendMode;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -54,6 +57,10 @@ public class HomeFragment extends Fragment {
 
     private RequestQueue mQueue;
 
+    private static final String LOCAL_URL = "http://10.0.2.2:8080/";
+
+    private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
+
     private LinearLayout ll;
 
     private Bundle savedInstance;
@@ -63,6 +70,8 @@ public class HomeFragment extends Fragment {
     private ArrayList<Integer> gameIdArr;
 
     private Map<Integer, LinearLayout> teamGamesLLMap = new HashMap<>();
+
+    private ImageDownloader imageDownloader;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,8 +81,10 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_coach, container, false);
 
         mQueue = Volley.newRequestQueue(requireContext());
-
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
         ll = view.findViewById(R.id.cardLL);
+
+        imageDownloader = new ImageDownloader();
 
         ImageButton addTeam = view.findViewById(R.id.plus);
 
@@ -109,7 +120,7 @@ public class HomeFragment extends Fragment {
      * they are generated so which then opens into the specific team roster.
      */
     private void displayTeamButtons() {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/users/" + SharedPrefsUtil.getUserId(getContext());
+        String url = BASE_URL + "users/" + SharedPrefsUtil.getUserId(getContext());
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -122,6 +133,8 @@ public class HomeFragment extends Fragment {
                         ArrayList<Integer> teamIds = new ArrayList<>();
                         ArrayList<Integer> coachUserIds = new ArrayList<>();
                         ArrayList<Integer> fanUserIds = new ArrayList<>();
+                        ArrayList<Integer> coachIds = new ArrayList<>();
+                        ArrayList<Integer> fanIds = new ArrayList<>();
 
                         for (int i = 0; i < teams.length(); i++) {
                             JSONObject team = teams.getJSONObject(i);
@@ -133,11 +146,13 @@ public class HomeFragment extends Fragment {
                             for(int l = 0; l < coaches.length(); l++){
                                 JSONObject coach = coaches.getJSONObject(l);
                                 coachUserIds.add(coach.getInt("user_id"));
+                                coachIds.add(coach.getInt("id"));
                             }
 
                             for(int l = 0; l < fans.length(); l++){
                                 JSONObject fan = fans.getJSONObject(l);
                                 fanUserIds.add(fan.getInt("user_id"));
+                                fanIds.add(fan.getInt("id"));
 
                             }
                         }
@@ -180,11 +195,9 @@ public class HomeFragment extends Fragment {
                             halfLLHor.weight = 1;
                             halfLLVert.weight = 1;
 
-                            TextView tv = new TextView(requireContext());
-
-                            tv.setLayoutParams(halfLLHor);
-                            tv.setText(teamName);
-                            tv.setTextSize(25);
+                            ImageView iv = new ImageView(requireContext());
+                            iv.setLayoutParams(halfLLHor);
+                            downloadAndSetImage(id, iv);
 
 
 
@@ -201,7 +214,7 @@ public class HomeFragment extends Fragment {
                             button.setLayoutParams(halfLLVert);
                             button.setTextColor(Color.WHITE);
                             button.setBackgroundColor(Color.BLACK);
-                            button.setText("View Team");
+                            button.setText("View " + teamName);
                             button.setTag(id);
                             button.setTextSize(20);
 
@@ -211,6 +224,8 @@ public class HomeFragment extends Fragment {
                             tButton.setText("View Recent Game");
                             tButton.setTextOff("View Recent Game");
                             tButton.setTextOn("Hide Recent Game");
+                            tButton.setTrackTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+                            tButton.setThumbTintList(ColorStateList.valueOf(Color.BLACK));
                             tButton.setId(id);
                             tButton.setTextSize(20);
 
@@ -219,7 +234,7 @@ public class HomeFragment extends Fragment {
                             buttonLayout.addView(button);
                             buttonLayout.addView(tButton);
 
-                            linearLayout.addView(tv);
+                            linearLayout.addView(iv);
                             linearLayout.addView(buttonLayout);
 
                             LinearLayout gamesLL = new LinearLayout(requireContext());
@@ -299,28 +314,35 @@ public class HomeFragment extends Fragment {
                                         String p = SharedPrefsUtil.getUserId(getContext());
                                         String isCoach = "false";
                                         String isFan = "false";
+                                        int coachId = 0;
+                                        int fanId = 0;
                                         for(int i = 0; i < coachUserIds.size(); i++){
-                                            int coachId = coachUserIds.get(i);
-                                            if(SharedPrefsUtil.getUserId(getContext()).equals(String.valueOf(coachId))){
+                                            int coachUserId = coachUserIds.get(i);
+
+                                            if(SharedPrefsUtil.getUserId(getContext()).equals(String.valueOf(coachUserId))){
                                                 isCoach = "true";
+                                                coachId = coachIds.get(i);
                                                 break;
                                             }else{
                                                 isCoach = "false";
+                                                coachId = 0;
                                             }
 
                                         }
                                         for(int j = 0; j < fanUserIds.size(); j++){
-                                            int fanId = fanUserIds.get(j);
-                                            if(SharedPrefsUtil.getUserId(getContext()).equals(String.valueOf(fanId))){
+                                            int fanUserId = fanUserIds.get(j);
+                                            if(SharedPrefsUtil.getUserId(getContext()).equals(String.valueOf(fanUserId))){
                                                 isFan = "true";
+                                                fanId = fanIds.get(j);
                                                 break;
                                             }else{
                                                 isFan = "false";
+                                                fanId = 0;
                                             }
 
                                         }
 
-                                        SharedPrefsTeamUtil.saveTeamData(getContext(), teamName, String.valueOf(id), isCoach, isFan);
+                                        SharedPrefsTeamUtil.saveTeamData(getContext(), teamName, String.valueOf(id), isCoach, isFan, String.valueOf(fanId), String.valueOf(coachId));
                                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                                         TeamRosterFragment newFragment = new TeamRosterFragment();
 
@@ -351,10 +373,23 @@ public class HomeFragment extends Fragment {
         mQueue.add(request);
     }
 
+    private void downloadAndSetImage(int teamId, ImageView iv) {
+        imageDownloader.downloadTeamImage(getContext(), teamId, iv);
+
+        ViewGroup.LayoutParams params = iv.getLayoutParams();
+
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+
+        params.width = displayMetrics.widthPixels / 5;
+        params.height = displayMetrics.heightPixels / 5;
+        iv.setLayoutParams(params);
+    }
 
     private void getGames(int id, LinearLayout parentLL) {
         parentLL.removeAllViews();
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/games";
+        String url = BASE_URL + "games";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
@@ -399,7 +434,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void getShotsForGame(int gameId, LinearLayout gameLL, LinearLayout parentLL) {
-        String url = "http://coms-309-018.class.las.iastate.edu:8080/games/" + gameId + "/shots";
+        String url =  BASE_URL + "games/" + gameId + "/shots";
         JsonArrayRequest shotsRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
                     int gameFGM = 0;

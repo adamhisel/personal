@@ -1,5 +1,7 @@
 package onetoone.CustomWorkout;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import onetoone.Shots.Shots;
 
 import javax.persistence.*;
@@ -11,11 +13,11 @@ import onetoone.Points.Points;
 
 @Entity
 public class CustomWorkout {
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
    private int customWoutId;
-   @ElementCollection
-   @CollectionTable(name = "points", joinColumns = @JoinColumn(name = "customWoutId"))
+   @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
+   @JsonIgnoreProperties("workout") // Add this line
    private List<Points> coords;
 private String workoutName;
 private int userId;
@@ -29,6 +31,7 @@ public CustomWorkout (List<Points> coords, String workoutName, int userId){
    this.coords = coords;
    this.userId = userId;
    this.workoutName = workoutName;
+   this.customWoutId = customWoutId;
 }
 
    public List<Points> getCoords() {
@@ -53,5 +56,9 @@ public CustomWorkout (List<Points> coords, String workoutName, int userId){
 
    public void setUserId(int userId) {
       this.userId = userId;
+   }
+
+   public int getCustomWoutId() {
+      return customWoutId;
    }
 }

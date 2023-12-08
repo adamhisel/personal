@@ -1,6 +1,7 @@
 package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -42,7 +43,7 @@ public class TeamChat extends AppCompatActivity implements WebSocketListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_chat);
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         scrollViewChat = (ScrollView) findViewById(R.id.scrollView);
         sendBtn = (Button) findViewById(R.id.send);
         exitBtn = (Button) findViewById(R.id.exit);

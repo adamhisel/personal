@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,7 +36,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityEditProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         setupButtonListeners();
         mQueue = Volley.newRequestQueue(this);
     }
@@ -44,6 +45,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setupButtonListeners() {
         binding.btnSave.setOnClickListener(view -> handleSave());
         binding.btnCancel.setOnClickListener(view -> finish());
+//        binding.selectBtn.setOnClickListener(view -> {ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment();
+//            uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");});
     }
 
     // Handles the save button click by attempting to update the user's profile.
@@ -74,7 +77,7 @@ public class EditProfileActivity extends AppCompatActivity {
         String testUrl = LOCAL_URL + "updateUser/" + userId;
 
         // Create and execute a POST request to update the user's profile
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, testUrl, postData,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -179,9 +179,11 @@ public class TeamController {
 
 
 
-    @DeleteMapping("/teams/{id}")
-    String deleteTeam(@PathVariable int id){
-        teamRepository.deleteById(id);
+    @DeleteMapping("/teams/{team_id}/{user_id}")
+    String deleteTeam(@PathVariable int team_id, @PathVariable int user_id){
+        User temp = userRepository.findById(user_id);
+        temp.removeTeam(teamRepository.findById(team_id));
+        teamRepository.deleteById(team_id);
         return success;
     }
 }

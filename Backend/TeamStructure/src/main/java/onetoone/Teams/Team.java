@@ -48,12 +48,6 @@ public class Team {
     private String password;
 
 
-    /*
-     * @OneToOne creates a relation between the current entity/table(Laptop) with the entity/table defined below it(User)
-     * cascade is responsible propagating all changes, even to children of the class Eg: changes made to laptop within a user object will be reflected
-     * in the database (more info : https://www.baeldung.com/jpa-cascade-types)
-     * @JoinColumn defines the ownership of the foreign key i.e. the user table will have a field called laptop_id
-     */
     @OneToMany
     public List<Player> players;
 
@@ -115,6 +109,10 @@ public class Team {
         this.players.add(player);
     }
 
+    public void deletePlayer(Player player){
+      this.players.remove(player);
+    }
+
     public List getCoaches(){ return coaches; }
 
     public void setCoaches(List<Coach> coaches){
@@ -123,6 +121,10 @@ public class Team {
 
     public void addCoach(Coach coach){
         this.coaches.add(coach);
+    }
+
+    public void deleteCoach(Coach coach){
+        this.coaches.remove(coach);
     }
 
     public List getFans(){ return fans; }
@@ -135,6 +137,10 @@ public class Team {
         this.fans.add(fan);
     }
 
+    public void deleteFan(Fan fan){
+        this.fans.remove(fan);
+    }
+
     public List getUsers(){
         return this.users;
     }
@@ -144,6 +150,11 @@ public class Team {
     }
 
     public void addUser(User user){ users.add(user);}
+
+    public void deleteUser(User user){
+        this.users.remove(user);
+    }
+
 
     public String getPassword(){
         return password;

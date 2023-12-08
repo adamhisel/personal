@@ -8,9 +8,13 @@ import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,6 +39,7 @@ public class ProfileFragment extends Fragment {
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
     private static RequestQueue mQueue;
+    private ImageDownloader imageDownloader;
     private FragmentProfileBinding binding;
 
     @Override
@@ -42,12 +47,29 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
 
         mQueue = Volley.newRequestQueue(requireActivity());
+        requireActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.black));
+        imageDownloader = new ImageDownloader();
+
 
         String userId = SharedPrefsUtil.getUserId(requireActivity());
+        downloadAndSetImage(Integer.parseInt(userId));
         getProfile(userId);
         setupButtonListeners();
 
         return binding.getRoot();
+    }
+
+    private void downloadAndSetImage(int userId) {
+        imageDownloader.downloadUserImage(getContext(), userId, binding.imageView);
+        ViewGroup.LayoutParams params = binding.imageView.getLayoutParams();
+
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+
+        params.width = displayMetrics.widthPixels / 2;
+        params.height = displayMetrics.heightPixels / 2;
+        binding.imageView.setLayoutParams(params);
     }
 
     // Refresh profile details when fragment is resumed.

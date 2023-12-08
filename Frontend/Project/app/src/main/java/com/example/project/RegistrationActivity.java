@@ -27,7 +27,7 @@ import org.json.JSONObject;
  *
  * @author Jagger Gourley
  */
-public class RegistrationActivity extends AppCompatActivity {
+public class RegistrationActivity extends AppCompatActivity implements ImageUploadDialogFragment.ImageUploadListener{
 
     private static final String BASE_URL = "http://coms-309-018.class.las.iastate.edu:8080/";
     private static final String LOCAL_URL = "http://10.0.2.2:8080/";
@@ -50,6 +50,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 handleSignUp();
+
             }
         });
 
@@ -62,6 +63,7 @@ public class RegistrationActivity extends AppCompatActivity {
             Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
             startActivity(intent);
         });
+
     }
 
     // Gathers input data and performs validation
@@ -131,10 +133,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
             Toast.makeText(RegistrationActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
-            // Redirect to MainActivity
-            Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            ImageUploadDialogFragment uploadFragment = new ImageUploadDialogFragment(true, 0);
+            uploadFragment.setImageUploadListener(RegistrationActivity.this);
+            uploadFragment.show(getSupportFragmentManager(), "ImageUploadFragment");
+
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(RegistrationActivity.this, "Unexpected response from server", Toast.LENGTH_SHORT).show();
@@ -228,4 +230,11 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onImageUploadDismissed() {
+        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
 }
