@@ -59,11 +59,6 @@ public class RegistrationActivity extends AppCompatActivity implements ImageUplo
             startActivity(intent);
         });
 
-        binding.btnTest.setOnClickListener(view -> {
-            Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
-
     }
 
     // Gathers input data and performs validation
