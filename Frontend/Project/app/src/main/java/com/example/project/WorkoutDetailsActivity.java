@@ -133,7 +133,6 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
     }
 
     // Sets the drawable icon at the specified x and y coordinates
-
     private void setIconAndPosition(Drawable drawable, float x, float y) {
         // Create a new ImageView instance for each shot
         ImageView imageView = new ImageView(this);
@@ -153,7 +152,6 @@ public class WorkoutDetailsActivity extends AppCompatActivity {
         if (totalShots > 0) {
             shootingPercentage = (float) (threePointMakes + twoPointMakes) / totalShots * 100;
         }
-
         binding.tvFGPercentValue.setText(String.format("%.2f%%", shootingPercentage));
         binding.tvThreePointValue.setText(String.format("%d/%d", threePointMakes, threePointAttempts));
         binding.tvTwoPointValue.setText(String.format("%d/%d", twoPointMakes, twoPointAttempts));

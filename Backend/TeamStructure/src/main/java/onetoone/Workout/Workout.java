@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import onetoone.users.User;
+import org.springframework.http.ResponseEntity;
 
 @Entity
 public class Workout {

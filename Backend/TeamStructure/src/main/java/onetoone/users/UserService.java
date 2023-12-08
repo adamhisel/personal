@@ -30,4 +30,5 @@ public class UserService {
     }
 
 
+    public User findByID(int i) {return userRepository.findById(i);}
 }
