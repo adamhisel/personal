@@ -2,12 +2,8 @@ import React from "react";
 import myImage from "./images/TitanLiftsLogo.png";
 import "./Navbar.css";
 
-const Navbar = ({
-  setShowFeed,
-  setShowDemos,
-  setShowAccount,
-  setShowAuthors,
-}) => {
+const Navbar = ({ setShowFeed, setShowDemos, setShowAccount, setShowAuthors }) => {
+
   const handleFeedClick = () => {
     setShowFeed(true);
     setShowDemos(false);
@@ -17,23 +13,23 @@ const Navbar = ({
 
   const handleDemosClick = () => {
     setShowDemos(true);
-    setShowFeed(false);
     setShowAuthors(false);
     setShowAccount(false);
+    setShowFeed(false);
   };
 
   const handleAccountClick = () => {
     setShowDemos(false);
     setShowAuthors(false);
-    setShowFeed(false);
     setShowAccount(true);
+    setShowFeed(false);
   };
 
   const handleAuthorsClick = () => {
     setShowAccount(false);
     setShowDemos(false);
-    setShowFeed(false);
     setShowAuthors(true);
+    setShowFeed(false);
   };
 
   return (
@@ -57,9 +53,8 @@ const Navbar = ({
           <div className="d-flex justify-content-center w-100">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <a
+              <a
                   className="nav-link nav-text-color"
-                  href="#"
                   onClick={handleFeedClick}
                 >
                   Personal Feed
@@ -68,7 +63,6 @@ const Navbar = ({
               <li className="nav-item">
                 <a
                   className="nav-link nav-text-color"
-                  href="#"
                   onClick={handleDemosClick}
                 >
                   Demos
@@ -77,7 +71,6 @@ const Navbar = ({
               <li className="nav-item">
                 <a
                   className="nav-link nav-text-color"
-                  href="#"
                   onClick={handleAccountClick}
                 >
                   Account
@@ -86,7 +79,6 @@ const Navbar = ({
               <li>
                 <a
                   className="nav-link nav-text-color"
-                  href="#"
                   onClick={handleAuthorsClick}
                 >
                   Authors

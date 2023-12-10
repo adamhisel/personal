@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const Account = () => {
+const Account = ( { setIsLoggedIn, setShowFeed, setNewAcctClicked, setSignOutClicked, setShowAccount, setShowLogin, loggedInUserId} ) => {
   const [user, setUser] = useState("");
 
   const [isUpdateFormValid, setIsUpdateFormValid] = useState("");
@@ -8,29 +8,25 @@ const Account = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
 
   const [firstNameValid, setFirstNameValid] = useState(null);
   const [lastNameValid, setLastNameValid] = useState(null);
   const [usernameValid, setUsernameValid] = useState(null);
-  const [emailValid, setEmailValid] = useState(null);
 
   const [showUpdateForm, setShowUpdateForm] = useState(false);
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
   const [usernameError, setUsernameError] = useState("");
-  const [emailError, setEmailError] = useState("");
 
   const [updatedUser, setUpdatedUser] = useState({
     firstname: "",
     lastname: "",
     username: "",
-    email: ""
   });
 
   useEffect(() => {
-    getUserById(1);
+    getUserById(loggedInUserId);
   }, []);
 
   function getUserById(id) {
@@ -42,22 +38,53 @@ const Account = () => {
       });
   }
 
+  const updateUser = async () => {
+    const userId = loggedInUserId; // Update this with the actual user ID
+    const updatedData = {
+      firstname,
+      lastname,
+      username,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8081/users/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        
+        getUserById(userId);
+        // Additionally, you might want to set success messages or perform further actions here
+      } else {
+       
+        console.error("Update failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
   const handleUpdateClick = (e) => {
     e.preventDefault();
     setShowUpdateForm(true);
   };
 
-  const handleUpdateFormSubmit = (e) => {
+  const handleUpdateFormSubmit = async (e) => {
     e.preventDefault();
     setShowUpdateForm(false);
     setFirstName("");
     setLastName("");
     setUsername("");
-    setEmail("");
     setFirstNameValid(null);
     setLastNameValid(null);
     setUsernameValid(null);
-    setEmailValid(null);
+
+    updateUser();
+    
   };
 
   const handleUpdateFormReturn = (e) => {
@@ -66,8 +93,19 @@ const Account = () => {
     setFirstNameValid(null);
     setLastNameValid(null);
     setUsernameValid(null);
-    setEmailValid(null);
+
   };
+
+  const handleSignOutClick = (e) => {
+    e.preventDefault();
+    setSignOutClicked(true);
+    setIsLoggedIn(false);
+    setShowFeed(false);
+    setShowAccount(false);
+    setNewAcctClicked(false);
+    setShowLogin(true);
+
+  }
 
   const isValid = () => {
     let val = true;
@@ -95,17 +133,10 @@ const Account = () => {
     } else {
       setUsernameValid(true);
     }
-  
-    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-      setEmailValid(false);
-      setEmailError("Must provide a valid email like abcd@something.com");
-      val = false;
-    } else {
-      setEmailValid(true);
-    }
+
   
     if (val) {
-      setUpdatedUser({ firstname, lastname, username, email });
+      setUpdatedUser({ firstname, lastname, username});
       setIsUpdateFormValid(true);
     }
     
@@ -166,20 +197,7 @@ const Account = () => {
                 <div className="invalid-feedback">{usernameError}</div>
               )}
           </div>
-          <div className="mb-3">
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              className={`form-control ${emailValid === false ? "is-invalid" : ""}`}
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              />
-    
-              {!emailValid && (
-                <div className="invalid-feedback">{emailError}</div>
-              )}
-          </div>
+          
           <button type="submit" className="btn btn-primary">
             Save Changes
           </button>
@@ -208,9 +226,7 @@ const Account = () => {
               <p className="card-text">
                 <strong>Username:</strong> {user.username}
               </p>
-              <p className="card-text">
-                <strong>Email:</strong> {user.email}
-              </p>
+              
             </div>
           </div>
         </div>
@@ -227,7 +243,7 @@ const Account = () => {
                   </button>
                 </p>
                 <p className="card-text">
-                  <button className="btn btn-danger">Sign Out</button>
+                  <button className="btn btn-danger" onClick={handleSignOutClick}>Sign Out</button>
                 </p>
               </div>
             </div>
