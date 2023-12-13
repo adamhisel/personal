@@ -140,10 +140,7 @@ app.get("/users/:id", async (req, res) => {
     const firstname = values[2];
     const lastname = values[3];
     const password = values[4];
-    const subscribed = values[5];
-    const cardNumber = values[6];
-    const expMonth = values[7];
-    const expYear = values[8];
+  
   
     console.log(id, username);
     const newDocument = {
@@ -153,10 +150,7 @@ app.get("/users/:id", async (req, res) => {
       "firstname" : firstname,
       "lastname" : lastname,
       "password" : password,
-      "subscribed" : subscribed,
-      "cardNumber" : cardNumber,
-      "expMonth" : expMonth,
-      "expYear" : expYear
+    
     };
   
     const results = await db.collection("users").insertOne(newDocument);
@@ -164,6 +158,7 @@ app.get("/users/:id", async (req, res) => {
     res.send(results);
   
   });
+  
   app.put("/users/:id", async (req, res) => {
     const userId = Number(req.params.id);
     const userDataToUpdate = req.body;
@@ -227,14 +222,16 @@ app.get("/workouts/:id", async (req, res) => {
     const keys = Object.keys(req.body);
     const values = Object.values(req.body);
     const id = values[0];
-    const date = values[1];
-    const category = values[2];
-    const lifts = values[3];
+    const uid = values[1];
+    const date = values[2];
+    const category = values[3];
+    const lifts = values[4];
   
     console.log(id, date);
     const newDocument = {
   
       "id" : id,
+      "user_id" : uid,
       "date" : date,
       "category" : category,
       "lifts" : lifts,
@@ -248,19 +245,19 @@ app.get("/workouts/:id", async (req, res) => {
 
   app.put("/workouts/:id", async (req, res) => {
     const workoutId = Number(req.params.id);
-    const workoutDataToUpdate = req.body;
+    const newCategory = req.body.category; 
   
     await client.connect();
   
     const query = { id: workoutId };
-    const updatedValues = { $set: workoutDataToUpdate };
+    const updatedValues = { $set: { category: newCategory } }; 
   
     const result = await db.collection("workouts").updateOne(query, updatedValues);
   
     if (result.modifiedCount === 0) {
       res.status(404).send("Workout not found");
     } else {
-      res.status(200).send("Workout updated successfully");
+      res.status(200).send("Category updated successfully");
     }
   });
 
@@ -279,6 +276,7 @@ app.get("/workouts/:id", async (req, res) => {
       res.status(200).send("Workout deleted successfully");
     }
   });
+
 
 
   

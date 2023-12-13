@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./demos.css";
+import "./demos.css"
 
 const Demos = () => {
   const [query, setQuery] = useState("");
@@ -33,11 +33,6 @@ const Demos = () => {
 
   const [idCounter, setIdCounter] = useState(0);
 
-  const incrementCounter = () => {
-    setIdCounter(lifts.length + 1);
-  };
-
-
 
 
   useEffect(() => {
@@ -60,6 +55,10 @@ const Demos = () => {
     
       setShowAddLiftForm(false);
       setShowDemos(true);
+      setName("");
+      setCategory("");
+      setMuscles("");
+      setImgLink("");
 
       
   
@@ -197,6 +196,7 @@ const Demos = () => {
         console.log(data);
         if (Array.isArray(data)) {
           setLifts(data);
+          setIdCounter(data.length + 1);
         } else {
           console.error("Invalid data format received for lifts:", data);
         }
@@ -210,7 +210,7 @@ const Demos = () => {
     <div className="app-container">
       {showDemos && (
         <div className="container" id="demos">
-          <h1 className="text-center">Lift Demos</h1>
+          <h1 className="text-center py-4">Lift Demos</h1>
           <div className="d-flex justify-content-between">
             <div className="search-bar-container">
               <input
@@ -237,7 +237,7 @@ const Demos = () => {
         </div>
       )}
 
-      {showAddLiftForm && (
+{showAddLiftForm && (
         <div className="container" id="validation">
           <div className="row">
             <div className="col-8">
@@ -249,7 +249,6 @@ const Demos = () => {
                   e.preventDefault();
                   isValid().then((isValidResult) => {
                     if (isValidResult) {
-                      incrementCounter();
                       handleLiftFormSubmit(e);
                       postLiftMethod();
                     }
