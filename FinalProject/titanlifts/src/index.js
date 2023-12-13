@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import Demos from "./demos.js";
@@ -20,6 +20,25 @@ const App = () => {
   const [newAcctClicked, setNewAcctClicked] = useState(false);
   const [signOutClicked, setSignOutClicked] = useState(false);
   const [loggedInUserId, setLoggedInUserId] = useState(0);
+
+
+
+  useEffect(() => {
+    if (signOutClicked) {
+      setIsLoggedIn(false);
+      setShowFeed(false);
+      setShowAccount(false);
+      setNewAcctClicked(false);
+      setShowLogin(true); // Ensure the login page is shown after sign out
+      setSignOutClicked(false);
+    }
+  }, [signOutClicked]);
+
+  useEffect(() => {
+    if (newAcctClicked) {
+      setShowLogin(false);
+    }
+  }, [newAcctClicked]);
 
   return (
     <div>
@@ -63,6 +82,7 @@ const App = () => {
             setShowFeed={setShowFeed}
             setShowLogin={setShowLogin}
             setNewAcctClicked={setNewAcctClicked}
+            setLoggedInUserId={setLoggedInUserId}
           />
         ) : showLogin ? (
           <Login

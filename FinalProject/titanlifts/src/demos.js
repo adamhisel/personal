@@ -210,7 +210,7 @@ const Demos = () => {
     <div className="app-container">
       {showDemos && (
         <div className="container" id="demos">
-          <h1 className="text-center">Lift Demos</h1>
+          <h1 className="text-center py-4">Lift Demos</h1>
           <div className="d-flex justify-content-between">
             <div className="search-bar-container">
               <input
@@ -237,7 +237,7 @@ const Demos = () => {
         </div>
       )}
 
-      {showAddLiftForm && (
+{showAddLiftForm && (
         <div className="container" id="validation">
           <div className="row">
             <div className="col-8">

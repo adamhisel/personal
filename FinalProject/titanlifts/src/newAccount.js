@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import myImage from "./images/TitanLiftsLogo.png";
 import "./login.css";
 
-const CreateAccount = ({ setIsLoggedIn, setShowFeed, setShowLogin, setNewAcctClicked }) => {
+const CreateAccount = ({
+  setIsLoggedIn,
+  setShowFeed,
+  setShowLogin,
+  setNewAcctClicked,
+  setLoggedInUserId,
+}) => {
   const [allUsers, setAllUsers] = useState([]);
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -20,8 +26,7 @@ const CreateAccount = ({ setIsLoggedIn, setShowFeed, setShowLogin, setNewAcctCli
     e.preventDefault();
     setNewAcctClicked(false);
     setShowLogin(true);
-
-  }
+  };
 
   const getUserMethod = () => {
     fetch("http://localhost:8081/listUsers")
@@ -30,6 +35,12 @@ const CreateAccount = ({ setIsLoggedIn, setShowFeed, setShowLogin, setNewAcctCli
         if (Array.isArray(data)) {
           setAllUsers(data);
           setIdCounter(data.length + 1);
+
+          const mostRecentUser = data.reduce((prev, current) =>
+            prev.id > current.id ? prev : current
+          );
+
+          setLoggedInUserId(mostRecentUser.id);
         } else {
           console.error("Invalid data format received for users:", data);
         }
@@ -50,25 +61,23 @@ const CreateAccount = ({ setIsLoggedIn, setShowFeed, setShowLogin, setNewAcctCli
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         id: idCounter,
-        username,
-        firstname: firstName,
-        lastname: lastName,
-        password,
+        username: username.trim(),
+        firstname: firstName.trim(),
+        lastname: lastName.trim(),
+        password: password.trim(),
       }),
     })
       .then((response) => response.json())
       .then((data) => {
-
+        setSuccess("Account Creation Successful");
+        getUserMethod();
         setIsLoggedIn(true);
         setShowFeed(true);
-        setSuccess("Account Creation Successful");
-    
       })
       .catch((error) => {
         console.error("Error posting user:", error);
       });
   };
-
 
   return (
     <div className="login-page">
@@ -109,7 +118,7 @@ const CreateAccount = ({ setIsLoggedIn, setShowFeed, setShowLogin, setNewAcctCli
               required
             />
           </div>
-        
+
           <div>
             <input
               type="password"
@@ -132,7 +141,7 @@ const CreateAccount = ({ setIsLoggedIn, setShowFeed, setShowLogin, setNewAcctCli
             <button type="submit">Create Account</button>
           </div>
           <div className="pb-3">
-            <button onClick = {handleBackClick}>Back</button>
+            <button onClick={handleBackClick}>Back</button>
           </div>
         </form>
       </div>
