@@ -79,7 +79,7 @@ public class JoinTeamActivityTest {
     public void testJoiningAsPlayer() {
         // Perform actions to join as a player
         Espresso.onView(withId(R.id.tvTeamName)).perform(click());
-        Espresso.onData(anything()).inRoot(isPlatformPopup()).atPosition(1).perform(click());
+        Espresso.onData(anything()).inRoot(isPlatformPopup()).atPosition(0).perform(click());
 
         Espresso.onView(withId(R.id.tvUserType)).perform(click());
         Espresso.onData(allOf(is(instanceOf(String.class)), is("Player"))).inRoot(isPlatformPopup()).perform(click());
