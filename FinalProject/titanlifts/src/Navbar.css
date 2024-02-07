@@ -1,0 +1,35 @@
+.nav-bg-color{
+    background-color: lightgray;
+  }
+  
+  .nav-text-color{
+    color: black;
+    font-size: 120%;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .navbar-nav {
+    display: flex;
+    gap: 20px; /* Adjust the space between items as needed */
+  }
+  
+  .nav-item {
+    list-style: none;
+    
+  }
+  
+  .nav-link {
+    color: #000000; /* Change the color as needed */
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .nav-link:hover {
+    color: #ffffff; /* Change the color on hover as needed */
+    text-decoration: underline;
+  }
+  
