@@ -5,3 +5,5 @@ Author: Adam Hisel
 This is my implementation of a Pokemon Game using C/C++. This game includes a lot of features, including moving through a world by crossing through maps,
 encountering Pokemon and catching them, encountering trainers and battling them, and more. This was a semester-long project that I really enjoyed making.
 We started off by using C and then slowly transitioned to C++, so this implementation contains C and C++-style coding. 
+
+Includes: C/C++ code, ncurses GUI, heaps and class inheritance
