@@ -1,0 +1,20 @@
+README - COM S 327 04/17/2024
+
+Author: Adam Hisel
+
+Im going to start by saying this project was tough and I have a lot of bugs to still debug.
+I didnt have enough timw to hash out some of the segmentation faults and bad alloc errors, but 
+if you try to run it multiple times it will eventually work so please bear with me.
+
+My implementation of pokemon encounters works flawlessly. To start the user chooses the pokemon
+they want to start the battle with. For there they use the up and down keys to select their move.
+They continue to do this until one of the pokemon has fainted. If the pc's pokemon has fainted the
+user can either flee, choose another pokemon or revive the pokemon right there(choose to do this instead
+of just leaving). If the opponents pokemon faints first then the user has the oppurtunity to open its inventory
+and catch the pokemon. My pokemon fight works really well. For my trainer fights I was very low on time with. Its not
+as clear as my other fights. When one of the trainer or pc's pokemon all faint the fight is over by trying to switch to an 
+already fainted pokemon. If you try to fight with all fainted pokemon the fight instantly ends. 
+
+Lastly, I wasnt able to incorporate the 'B' command, but I was planning on doing thay for next weeks assignment, sorry.
+
+Please help me out  :/
