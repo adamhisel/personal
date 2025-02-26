@@ -16,6 +16,8 @@ Project 2: Titan Lifts - Webpage implementation using React, JS, NodeJS, and Mon
 
 Project 3: Stat Sheet Stuffer - Android App implementation using written in Java through Android Studio (Frontend) and IntelliJ (Backend). My team and I made a basketball stat-tracking app for teams to use. 
 
+Project 4: Pokemon Game - C++ Implementation of a retro Pokemon game using ASCII values as the attributes in the game.
+
 **Skills**
 
 My skill set includes:
