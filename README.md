@@ -9,7 +9,9 @@ Projects
 Here are some of the projects you'll find in this repository:
 
 Project 1: TOUCHMARK - Smaller webpage project using HTML, JS, and CSS that exemplifies a fake catalog. 
+
 Project 2: Titan Lifts - Webpage implementation using React, JS, NodeJS, and MongoDB that exemplifies and personal workout log book.
+
 Project 3: Stat Sheet Stuffer - Android App implementation using written in Java through Android Studio (Frontend) and IntelliJ (Backend). My team and I made a basketball stat-tracking app for teams to use. 
 
 Skills
