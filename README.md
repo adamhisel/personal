@@ -17,16 +17,15 @@ Project 3: Stat Sheet Stuffer - Android App implementation using written in Java
 Skills
 My skill set includes:
 
-Programming languages: Java, Python, C, C++, LEGv8, HTML, JavaScript, React
-Other skills: Proficient in using git commands, runners, SCRUM boards, and CRUD operations
+Programming languages: Python, Java, C, C++, HTML, CSS, JavaScript
+Other skills: Proficient in using git commands, runners, SCRUM boards, and CRUD operations, REST API's
 
 
 Contribution
 If you'd like to contribute to any of the projects or have suggestions for improvement, feel free to open an issue or submit a pull request. Contributions are always welcome!
 
 Contact
-You can reach me at adamhisel12@yahoo.com for any inquiries or collaborations.
+You can reach me at adam.j.hisel@gmail.com for any inquiries or collaborations.
 
 
 Thank you for visiting my personal repository!
-
