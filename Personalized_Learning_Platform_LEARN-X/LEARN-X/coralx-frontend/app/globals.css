@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*=========================
+  CSS VARIABLES (THEME)
+=========================*/
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* white */
+    --foreground: 0 0% 0%;   /* black */
+    --card: 0 0% 98%;         /* very light gray */
+    --card-foreground: 0 0% 10%; /* near black text */
+    --muted: 0 0% 90%;        /* light gray */
+    --muted-foreground: 0 0% 40%; /* medium gray */
+    --primary: 210 100% 40%;  /* slightly softer blue */
+    --primary-foreground: 0 0% 100%; /* white text on blue */
+    --border: 0 0% 80%;       /* light gray border */
+    --ring: 210 100% 50%;     /* same blue */
+    --radius: 0.5rem;
+  
+    --blue-foreground: 210 100% 40%;         /* ~text-blue-600 */
+    --blue-muted: 210 100% 50%;              /* ~text-blue-500 */
+    --blue-border: 210 100% 60%;             /* ~border-blue-400 */
+    --blue-accent: 210 100% 90%;             /* ~bg-blue-100 */
+    --blue-accent-hover: 210 100% 80%;       /* ~hover:bg-blue-200 */
+    --blue-shadow: 210 100% 80%;             /* ~shadow-blue-200/10 */
+  }
+
+  /* .light {
+    --background: 0 0% 100%; 
+    --foreground: 0 0% 0%; 
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 40%;
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --border: 0 0% 85%;
+    --ring: 210 100% 50%;
+    --blue-foreground: 210 100% 40%;
+    --blue-muted: 210 100% 30%;
+    --blue-border: 210 100% 30%;
+    --blue-accent: 210 100% 60%;
+    --blue-accent-hover: 210 100% 50%;
+    --blue-shadow: 210 100% 90%;
+  } */
+
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    @apply w-full overflow-x-hidden;
+    scroll-behavior: smooth;
+    max-width: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+  }
+}
+
+/*=========================
+  REUSABLE UTILITY CLASSES
+=========================*/
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-shadow {
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .backdrop-blur {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .purple-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-sky-400;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent purple-gradient;
+  }
+
+  .text-blue-foreground {
+    color: hsl(var(--blue-foreground));
+  }
+}
+
+/*=========================
+  COMPONENT STYLES
+=========================*/
+.glass-effect {
+  @apply backdrop-blur-lg bg-white/5 border border-white/10;
+}
+
+.section {
+  @apply py-16 md:py-24 px-6 w-full;
+}
+
+.section-inner {
+  @apply max-w-7xl mx-auto w-full;
+}
+
+.reveal {
+  @apply opacity-0 transition-all duration-1000 ease-out;
+}
+
+.reveal.active {
+  @apply opacity-100 transform-none;
+}
+
+.reveal[data-delay="1"] {
+  transition-delay: 0.1s;
+}
+.reveal[data-delay="2"] {
+  transition-delay: 0.2s;
+}
+.reveal[data-delay="3"] {
+  transition-delay: 0.3s;
+}
+
+/*=========================
+  LANDING PAGE SPECIFIC
+=========================*/
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/*=========================
+  MARKDOWN STYLING
+=========================*/
+
+.markdown-content {
+  max-width: 1080px; 
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem 1rem;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  color: hsl(var(--blue-foreground));
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.markdown-content p {
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  text-align: left;
+}
+
+.markdown-content a {
+  color: hsl(var(--blue-foreground));
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.markdown-content a:hover {
+  color: hsl(var(--blue-accent-hover));
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.markdown-content code {
+  background-color: hsl(var(--muted));
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.95em;
+}
+
+.markdown-content pre {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--foreground));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid hsl(var(--blue-border));
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+  text-align: left;
+}
