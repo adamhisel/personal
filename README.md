@@ -14,12 +14,11 @@ Project 1: Learn-X is a project developed to solve a common issue in higher educ
 
 Project 2: Pokemon Game - C++ Implementation of a retro Pokemon game using ASCII values as the attributes in the game.(Learn More in the directories README)
 
-Project 1: TOUCHMARK - Smaller webpage project using HTML, JS, and CSS that exemplifies a fake catalog. 
-
-Project 2: Titan Lifts - Webpage implementation using React, JS, NodeJS, and MongoDB that exemplifies and personal workout log book.
-
 Project 3: Stat Sheet Stuffer - Android App implementation using written in Java through Android Studio (Frontend) and IntelliJ (Backend). My team and I made a basketball stat-tracking app for teams to use. 
 
+Project 4: Titan Lifts - Webpage implementation using React, JS, NodeJS, and MongoDB that exemplifies and personal workout log book.
+
+Project 5: TOUCHMARK - Smaller webpage project using HTML, JS, and CSS that exemplifies a fake catalog. 
 
 **Skills**
 
