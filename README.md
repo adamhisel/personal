@@ -10,13 +10,16 @@ Currently, I am a student at Iowa State University pursuing a Bachelor of Scienc
 
 Here are some of the projects you'll find in this repository:
 
+Project 1: Learn-X is a project developed to solve a common issue in higher education: learning materials like slides, PDFs, and lectures are not one-size-fits-all. Every student learns differently, and Learn-X bridges that gap by using AI to personalize content based on each student’s unique learning persona. (Learn More inside its README)
+
+Project 2: Pokemon Game - C++ Implementation of a retro Pokemon game using ASCII values as the attributes in the game.(Learn More in the directories README)
+
 Project 1: TOUCHMARK - Smaller webpage project using HTML, JS, and CSS that exemplifies a fake catalog. 
 
 Project 2: Titan Lifts - Webpage implementation using React, JS, NodeJS, and MongoDB that exemplifies and personal workout log book.
 
 Project 3: Stat Sheet Stuffer - Android App implementation using written in Java through Android Studio (Frontend) and IntelliJ (Backend). My team and I made a basketball stat-tracking app for teams to use. 
 
-Project 4: Pokemon Game - C++ Implementation of a retro Pokemon game using ASCII values as the attributes in the game.
 
 **Skills**
 
