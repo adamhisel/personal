@@ -1,40 +1,42 @@
-Personal Repository README
+# Personal Repository README
 
-Welcome to my personal repository! This repository serves as a showcase of my projects, skills, and interests. Feel free to explore the various projects and resources available here.
+Welcome to my personal repository! This repository serves as a showcase of my development experience, technical skills, and interest in full-stack software engineering. Feel free to explore the projects and code samples provided here.
 
-**About Me**
+## About Me
 
-Currently, I am a student at Iowa State University pursuing a Bachelor of Science in Computer Science and a Minor in Mathematics. I enjoy working in teams on coding projects and am very passionate about Computer Science. 
+I recently graduated from Iowa State University with a Bachelor of Science in Computer Science and a Minor in Mathematics, earning Magna Cum Laude honors. I have experience with both frontend and backend technologies, including React, Node.js, Next.js, Java, Python, C++, and database management with PostgreSQL, MySQL, and MongoDB. I enjoy solving real-world problems through collaborative development, agile workflows, and building applications that are both functional and user-friendly.
 
-**Projects**
+## Projects
 
-Here are some of the projects you'll find in this repository:
+### Learn-X (AI-Powered Personalized Learning Platform)
+An AI-driven project developed to address gaps in higher education by personalizing course materials using AI personas. This full-stack platform was built with Next.js, Docker, OpenAI APIs, and RAG (Retrieval-Augmented Generation) techniques, and was developed collaboratively with a team of 5 students.
 
-Project 1: Learn-X is a project developed to solve a common issue in higher education: learning materials like slides, PDFs, and lectures are not one-size-fits-all. Every student learns differently, and Learn-X bridges that gap by using AI to personalize content based on each student’s unique learning persona. (Learn More inside its README)
+### Pokémon Game (C++)
+A text-based C++ implementation of a retro Pokémon-style game, utilizing ASCII characters for visuals and attributes. Developed as a semester-long academic project with an emphasis on memory management and object-oriented design.
 
-Project 2: Pokemon Game - C++ Implementation of a retro Pokemon game using ASCII values as the attributes in the game.(Learn More in the directories README)
+### Basketball Shot Plotter & Stat Sheet
+An Android app developed in Java using Android Studio for the front end and IntelliJ for backend logic. It tracks and visualizes basketball stats for teams, with MySQL integration and Git-based version control for team collaboration.
 
-Project 3: Stat Sheet Stuffer - Android App implementation using written in Java through Android Studio (Frontend) and IntelliJ (Backend). My team and I made a basketball stat-tracking app for teams to use. 
+### Titan Lifts (Workout Web App)
+A full-stack workout tracking application built with React, Node.js, and MongoDB. It allows users to log and view personal workout routines with a clean, responsive interface.
 
-Project 4: Titan Lifts - Webpage implementation using React, JS, NodeJS, and MongoDB that exemplifies and personal workout log book.
+### Touchmark Catalog Page
+A simple front-end project using HTML, CSS, and JavaScript to build a mock online product catalog.
 
-Project 5: TOUCHMARK - Smaller webpage project using HTML, JS, and CSS that exemplifies a fake catalog. 
+## Technical Skills
 
-**Skills**
+- **Programming Languages**: Python, Java, C, C++, HTML, CSS, JavaScript
+- **Web Development**: React, Node.js, Next.js, REST APIs
+- **Database Management**: MySQL, MongoDB, PostgreSQL
+- **Tools & Practices**: Git, Agile/SCRUM, CI/CD pipelines, Unit Testing (JUnit, Mocha)
 
-My skill set includes:
+## Contribution
 
-Programming languages: Python, Java, C, C++, HTML, CSS, JavaScript
-Other skills: Proficient in using git commands, runners, SCRUM boards, and CRUD operations, REST API's
+If you'd like to contribute to any of the projects or have suggestions for improvement, feel free to open an issue or submit a pull request. Contributions and feedback are always welcome!
 
+## Contact
 
-**Contribution**
+adam.j.hisel@gmail.com  
+[LinkedIn](https://www.linkedin.com/in/adamhisel)
 
-If you'd like to contribute to any of the projects or have suggestions for improvement, feel free to open an issue or submit a pull request. Contributions are always welcome!
-
-**Contact**
-
-You can reach me at adam.j.hisel@gmail.com for any inquiries or collaborations.
-
-
-Thank you for visiting my personal repository!
+Thanks for visiting!
