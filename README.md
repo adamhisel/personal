@@ -26,7 +26,7 @@ A simple front-end project using HTML, CSS, and JavaScript to build a mock onlin
 ## Technical Skills
 
 - **Programming Languages**: Python, Java, C, C++, HTML, CSS, JavaScript
-- **Web Development**: React, Node.js, Next.js, REST APIs
+- **Web Development**: Angular, React, Node.js, Next.js, REST APIs
 - **Database Management**: MySQL, MongoDB, PostgreSQL
 - **Tools & Practices**: Git, Agile/SCRUM, CI/CD pipelines, Unit Testing (JUnit, Mocha)
 
